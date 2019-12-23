@@ -65,7 +65,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setLocation(Point3D p) {
-       p = this.location;
+        p = this.location;
     }
 
     @Override
@@ -115,9 +115,9 @@ public class NodeData implements node_data {
         return this.edge_hash.values();
     }
 
-    public edge_data remove_node(){
+    public edge_data remove_node(int key){
         for (edge_data edge : edge_hash.values()){
-            if(edge.getDest() == this.getKey()){
+            if(edge.getDest() == key){
                 return this.edge_hash.remove(edge.getDest());
             }
         }
@@ -125,7 +125,7 @@ public class NodeData implements node_data {
     }
 
     public edge_data remove_edge(int dest){
-       return this.edge_hash.remove(dest);
+        return this.edge_hash.remove(dest);
     }
 
     public int edgeSize() {
@@ -133,6 +133,9 @@ public class NodeData implements node_data {
     }
 
     public String toString(){
+        if(this.edge_hash.isEmpty()){
+            return "key: " + this.key;
+        }
         String s = this.key + ": ";
         for (edge_data e : edge_hash.values()){
             s += ((EdgeData)e).toString();
