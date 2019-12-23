@@ -47,7 +47,7 @@ public class DGraph implements graph{
 	@Override
 	public node_data removeNode(int key) {
 		for (node_data n : node_hash.values()){
-			((NodeData)n).remove_node();
+			((NodeData)n).remove_node(key);
 		}
 		counter++;
 		return this.node_hash.remove(key);
@@ -84,6 +84,33 @@ public class DGraph implements graph{
 			s += ((NodeData)n).toString() + " , ";
 		}
 		return s;
+	}
+
+	public static void main(String[] args) {
+		DGraph graph = new DGraph();
+		NodeData n1 = new NodeData(1);
+		NodeData n2 = new NodeData(2);
+		NodeData n3 = new NodeData(3);
+		NodeData n4 = new NodeData(4);
+		graph.addNode(n1);
+		graph.addNode(n2);
+		graph.addNode(n3);
+		graph.addNode(n4);
+		System.out.println("node size: " + graph.nodeSize());
+		graph.connect(1 ,2 , 10.4);
+		graph.connect(4 , 3 , 22);
+		System.out.println("edge from 1: " + graph.getE(1));
+		System.out.println("edge size: " + graph.edgeSize());
+		graph.connect(3 , 1 , 78.3);
+		graph.connect(1 , 4 , 20.2);
+		System.out.println("edge from 1: " + graph.getE(1));
+		System.out.println("edge size: " + graph.edgeSize());
+		graph.removeNode(1);
+		System.out.println("node size: " + graph.nodeSize());
+		System.out.println("edge size: " + graph.edgeSize());
+		graph.removeEdge(4 , 3);
+		System.out.println(graph.toString());
+		System.out.println(graph.getMC());
 	}
 
 }
