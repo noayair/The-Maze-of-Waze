@@ -17,7 +17,7 @@ public class NodeData implements node_data {
     //default constructor
     public NodeData(){
         this.key = 0;
-        this.weight = 0;
+        this.weight = 10000;
         this.location = new Point3D(0,0,0);
         this.info = "";
         this.tag = 0;
@@ -37,19 +37,10 @@ public class NodeData implements node_data {
         this.key = key;
         this.tag = 0;
         this.info = null;
-        this.weight = Double.MAX_VALUE;
+        this.weight = 100000;
         this.edge_hash = new HashMap<Integer, edge_data>();
         this.location = null;
     }
-
-    //copy constructor
-//    public NodeData(int key , double weight , Point3D location , String info , int tag){
-//        key = this.key;
-//        weight = this.weight;
-//        location = this.location;
-//        info = this.info;
-//        tag = this.tag;
-//    }
 
     //Getters and Setters
 
@@ -65,7 +56,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setLocation(Point3D p) {
-       p = this.location;
+       this.location = p;
     }
 
     @Override
@@ -75,7 +66,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setWeight(double w) {
-        w = this.weight;
+        this.weight = w;
     }
 
     @Override
@@ -85,7 +76,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setInfo(String s) {
-        s = this.info;
+        this.info = s;
     }
 
     @Override
@@ -95,7 +86,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setTag(int t) {
-        t = this.tag;
+        this.tag = t;
     }
 
 //    public void setKey(int key){
@@ -130,6 +121,16 @@ public class NodeData implements node_data {
 
     public int edgeSize() {
         return this.edge_hash.size();
+    }
+
+    public node_data copy(){
+        node_data n = new NodeData(this.getKey());
+        n.setInfo(this.info);
+        n.setWeight(this.weight);
+        n.setTag(this.tag);
+        n.setLocation(this.location);
+
+        return null;
     }
 
     public String toString(){
