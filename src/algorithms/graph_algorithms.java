@@ -24,7 +24,7 @@ public interface graph_algorithms {
 	 * @param g
 	 */
 	public void init(graph g);
-	/** 
+	/**
 	 * Compute a deep copy of this graph.
 	 * @return
 	 */
@@ -35,15 +35,15 @@ public interface graph_algorithms {
 	 */
 	public void init(String file_name) throws IOException;
 	/** Saves the graph to a file.
-	 * 
+	 *
 	 * @param file_name
 	 */
 	public void save(String file_name);
-/**
- * Returns true if and only if (iff) there is a valid path from EVREY node to each
- * other node. NOTE: assume directional graph - a valid path (a-->b) does NOT imply a valid path (b-->a).
- * @return
- */
+	/**
+	 * Returns true if and only if (iff) there is a valid path from EVREY node to each
+	 * other node. NOTE: assume directional graph - a valid path (a-->b) does NOT imply a valid path (b-->a).
+	 * @return
+	 */
 	public boolean isConnected();
 	/**
 	 * returns the length of the shortest path between src to dest
@@ -63,9 +63,9 @@ public interface graph_algorithms {
 	public List<node_data> shortestPath(int src, int dest);
 	/**
 	 * computes a relatively short path which visit each node in the targets List.
-	 * Note: this is NOT the classical traveling salesman problem, 
-	 * as you can visit a node more than once, and there is no need to return to source node - 
-	 * just a simple path going over all nodes in the list. 
+	 * Note: this is NOT the classical traveling salesman problem,
+	 * as you can visit a node more than once, and there is no need to return to source node -
+	 * just a simple path going over all nodes in the list.
 	 * @param targets
 	 * @return
 	 */

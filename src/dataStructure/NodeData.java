@@ -56,7 +56,6 @@ public class NodeData implements node_data {
 
     @Override
     public void setLocation(Point3D p) {
-       this.location = p;
     }
 
     @Override
@@ -116,7 +115,7 @@ public class NodeData implements node_data {
     }
 
     public edge_data remove_edge(int dest){
-       return this.edge_hash.remove(dest);
+        return this.edge_hash.remove(dest);
     }
 
     public int edgeSize() {
