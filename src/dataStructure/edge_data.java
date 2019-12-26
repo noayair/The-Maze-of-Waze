@@ -1,6 +1,6 @@
 package dataStructure;
 /**
- * This interface represents the set of operations applicable on a 
+ * This interface represents the set of operations applicable on a
  * directional edge(src,dest) in a (directional) weighted graph.
  * @author boaz.benmoshe
  *
@@ -31,13 +31,13 @@ public interface edge_data {
 	 */
 	public void setInfo(String s);
 	/**
-	 * Temporal data (aka color: e,g, white, gray, black) 
-	 * which can be used be algorithms 
+	 * Temporal data (aka color: e,g, white, gray, black)
+	 * which can be used be algorithms
 	 * @return
 	 */
 	public int getTag();
-	/** 
-	 * Allow setting the "tag" value for temporal marking an edge - common 
+	/**
+	 * Allow setting the "tag" value for temporal marking an edge - common
 	 * practice for marking by algorithms.
 	 * @param t - the new value of the tag
 	 */
