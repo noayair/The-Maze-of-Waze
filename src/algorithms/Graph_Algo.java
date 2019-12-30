@@ -19,6 +19,10 @@ public class Graph_Algo implements graph_algorithms {
 		init(g);
 	}
 
+	public Graph_Algo() {
+		this.graph = null;
+	}
+
 	@Override
 	public void init(graph g) {
 		this.graph = g;
@@ -69,7 +73,7 @@ public class Graph_Algo implements graph_algorithms {
 			queue.add(n);
 			while (!queue.isEmpty()) {
 				for (edge_data e : graph.getE(n.getKey())) {
-					if (graph.getNode(e.getDest()).getTag() != 1) {
+					if(graph.getNode(e.getDest()).getTag() != 1) {
 						queue.add(graph.getNode(e.getDest()));
 						graph.getNode(e.getDest()).setTag(1);
 					}
@@ -123,7 +127,7 @@ public class Graph_Algo implements graph_algorithms {
 		return ans;
 	}
 
-	public void cost_way(node_data node) {//calculates the weight of the node and updates so that it is minimal
+	public void cost_way(node_data node) { //calculates the weight of the node and updates so that it is minimal
 		double w = 0;
 		for (edge_data e : graph.getE(node.getKey())) {
 			w = node.getWeight() + e.getWeight();
@@ -134,7 +138,7 @@ public class Graph_Algo implements graph_algorithms {
 		}
 	}
 
-	public void clear(graph g) {
+	public void clear(graph g) { // set all the node tag to 0
 		for (node_data n : g.getV()) {
 			n.setTag(0);
 		}
@@ -161,8 +165,33 @@ public class Graph_Algo implements graph_algorithms {
 
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
-		// TODO Auto-generated method stub
-		return null;
+		int src;
+		int dest;
+		int i = 0;
+		node_data n = new NodeData();
+		List<node_data> shortest_path = new LinkedList<>();
+		List<node_data> ans = new LinkedList<>();
+		if (!this.isConnected()){
+			return null;
+		}
+		while(!targets.isEmpty()){
+			i = 0;
+			src = targets.get(0);
+			dest = targets.get(1);
+			shortest_path = this.shortestPath(src , dest);
+			Iterator<node_data> iter = shortest_path.listIterator();
+			ans.add(this.graph.getNode(src));
+			targets.remove(i);
+			while(iter.hasNext()){
+				n = iter.next();
+				if(targets.contains(n.getKey())){
+					ans.add(n);
+					i = targets.indexOf(n.getKey());
+					targets.remove(i);
+				}
+			}
+		}
+		return ans;
 	}
 
 	@Override
@@ -187,7 +216,7 @@ public class Graph_Algo implements graph_algorithms {
 		graph.addNode(n5);
 		graph.addNode(n6);
 		graph.addNode(n7);
-		graph.connect(1, 2, 4);
+		graph.connect(2, 1, 4);
 		graph.connect(1, 3, 3);
 		graph.connect(1, 5, 20);
 		graph.connect(3, 2, 6);
@@ -205,24 +234,33 @@ public class Graph_Algo implements graph_algorithms {
 		System.out.println(list);
 		boolean b = g.isConnected();
 		System.out.println(b);
-		DGraph dg = new DGraph();
-		Graph_Algo gr = new Graph_Algo(dg);
-		NodeData node1 = new NodeData(1);
-		NodeData node2 = new NodeData(2);
-		NodeData node3 = new NodeData(3);
-		NodeData node4 = new NodeData(4);
-		NodeData node5 = new NodeData(5);
-		dg.addNode(node1);
-		dg.addNode(node2);
-		dg.addNode(node3);
-		dg.addNode(node4);
-		dg.addNode(node5);
-		dg.connect(1, 3, 1);
-		dg.connect(3, 5, 2);
-		dg.connect(5, 4, 3);
-		dg.connect(4, 2, 4);
-		dg.connect(2, 1, 5);
-		boolean bool = gr.isConnected();
-		System.out.println(bool);
+		List<Integer> target = new LinkedList<>();
+		target.add(1);
+		target.add(2);
+		target.add(3);
+		target.add(4);
+		target.add(5);
+		LinkedList<node_data> list1 = new LinkedList<>();
+		list1 = (LinkedList<node_data>) g.TSP(target);
+		System.out.println(list1);
+//		DGraph dg = new DGraph();
+//		Graph_Algo gr = new Graph_Algo(dg);
+//		NodeData node1 = new NodeData(1);
+//		NodeData node2 = new NodeData(2);
+//		NodeData node3 = new NodeData(3);
+//		NodeData node4 = new NodeData(4);
+//		NodeData node5 = new NodeData(5);
+//		dg.addNode(node1);
+//		dg.addNode(node2);
+//		dg.addNode(node3);
+//		dg.addNode(node4);
+//		dg.addNode(node5);
+//		dg.connect(1,3,1);
+//		dg.connect(3,5,2);
+//		dg.connect(5,4,3);
+//		dg.connect(4,2,4);
+//		dg.connect(2,1,5);
+//		boolean bool = gr.isConnected();
+//		System.out.println(bool);
 	}
 }

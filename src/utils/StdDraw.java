@@ -27,6 +27,11 @@ package utils;
  *
  ******************************************************************************/
 
+import algorithms.Graph_Algo;
+import dataStructure.EdgeData;
+import gui.Graph_GUI;
+//import org.graalvm.compiler.graph.Graph;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FileDialog;
@@ -67,13 +72,7 @@ import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -479,7 +478,8 @@ import javax.swing.KeyStroke;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
-
+	private static Graph_GUI gui;
+	private static Graph_Algo algo;
 	/**
 	 *  The color black.
 	 */
@@ -717,6 +717,25 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
 		menuBar.add(menu);
+		JMenu Graph = new JMenu("Add");
+		menuBar.add(Graph);
+		JMenuItem Edge = new JMenuItem("add Edge");
+		Edge.addActionListener(std);
+		Graph.add(Edge);
+		JMenuItem Node = new JMenuItem("add Node");
+		Node.addActionListener(std);
+		Graph.add(Node);
+		JMenu Algo = new JMenu("Algorithems");
+		menuBar.add(Algo);
+		JMenuItem isConnect = new JMenuItem("isConnect");
+		isConnect.addActionListener(std);
+		Algo.add(isConnect);
+		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
+		shortestPathDist.addActionListener(std);
+		Algo.add(shortestPathDist);
+		JMenuItem TSP = new JMenuItem("TSP");
+		TSP.addActionListener(std);
+		Algo.add(TSP);
 		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
 		menuItem1.addActionListener(std);
 		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
@@ -1648,18 +1667,31 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+		switch (e.getActionCommand()){
+			case "Save":
+				String file = JOptionPane.showInputDialog(null, "File name:");
+				if (file != null){
+					file = "save graph/" + file + ".txt";
+					gui.save(file);
+				}
+				break;
+			case "Add Edge":
+
+
+
 		}
+//		String s = e.getActionCommand();
+//		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
+//		chooser.setVisible(true);
+//		String filename = chooser.getFile();
+//		if (filename != null) {
+//			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+//		}
 	}
 
 
