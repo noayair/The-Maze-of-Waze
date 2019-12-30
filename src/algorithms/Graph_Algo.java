@@ -65,12 +65,14 @@ public class Graph_Algo implements graph_algorithms {
 	public boolean isConnected() {
 		Queue<node_data> queue = new LinkedList<>();
 		for (node_data n : graph.getV()) {
-			while (!graph.getE(n.getKey()).isEmpty()) {
-				n.setTag(1);
-				queue.add(n);
+			n.setTag(1);
+			queue.add(n);
+			while (!queue.isEmpty()) {
 				for (edge_data e : graph.getE(n.getKey())) {
-					queue.add(graph.getNode(e.getDest()));
-					graph.getNode(e.getDest()).setTag(1);
+					if(graph.getNode(e.getDest()).getTag() != 1) {
+						queue.add(graph.getNode(e.getDest()));
+						graph.getNode(e.getDest()).setTag(1);
+					}
 				}
 				queue.remove();
 				n = queue.peek();
@@ -80,6 +82,7 @@ public class Graph_Algo implements graph_algorithms {
 					return false;
 				}
 			}
+			clear(graph);
 		}
 		return true;
 	}
@@ -90,7 +93,7 @@ public class Graph_Algo implements graph_algorithms {
 			return 0;
 		}
 		for (node_data n : graph.getV()) { //update all the nodes weight to infinity
-			n.setWeight(10000);
+			n.setWeight(Double.POSITIVE_INFINITY);
 		}
 		graph.getNode(src).setWeight(0); //update the src weight to 0
 		int counter = 0;
@@ -202,5 +205,24 @@ public class Graph_Algo implements graph_algorithms {
 		System.out.println(list);
 		boolean b = g.isConnected();
 		System.out.println(b);
+		DGraph dg = new DGraph();
+		Graph_Algo gr = new Graph_Algo(dg);
+		NodeData node1 = new NodeData(1);
+		NodeData node2 = new NodeData(2);
+		NodeData node3 = new NodeData(3);
+		NodeData node4 = new NodeData(4);
+		NodeData node5 = new NodeData(5);
+		dg.addNode(node1);
+		dg.addNode(node2);
+		dg.addNode(node3);
+		dg.addNode(node4);
+		dg.addNode(node5);
+		dg.connect(1,3,1);
+		dg.connect(3,5,2);
+		dg.connect(5,4,3);
+		dg.connect(4,2,4);
+		dg.connect(2,1,5);
+		boolean bool = gr.isConnected();
+		System.out.println(bool);
 	}
 }

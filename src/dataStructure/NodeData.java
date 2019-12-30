@@ -17,7 +17,7 @@ public class NodeData implements node_data {
     //default constructor
     public NodeData(){
         this.key = 0;
-        this.weight = 10000;
+        this.weight = Double.POSITIVE_INFINITY;
         this.location = new Point3D(0,0,0);
         this.info = "";
         this.tag = 0;
@@ -37,7 +37,7 @@ public class NodeData implements node_data {
         this.key = key;
         this.tag = 0;
         this.info = null;
-        this.weight = 100000;
+        this.weight = Double.POSITIVE_INFINITY;
         this.edge_hash = new HashMap<Integer, edge_data>();
         this.location = null;
     }
@@ -56,6 +56,7 @@ public class NodeData implements node_data {
 
     @Override
     public void setLocation(Point3D p) {
+        this.location = p;
     }
 
     @Override
