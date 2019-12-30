@@ -69,7 +69,7 @@ public class Graph_Algo implements graph_algorithms {
 			queue.add(n);
 			while (!queue.isEmpty()) {
 				for (edge_data e : graph.getE(n.getKey())) {
-					if(graph.getNode(e.getDest()).getTag() != 1) {
+					if (graph.getNode(e.getDest()).getTag() != 1) {
 						queue.add(graph.getNode(e.getDest()));
 						graph.getNode(e.getDest()).setTag(1);
 					}
@@ -217,11 +217,11 @@ public class Graph_Algo implements graph_algorithms {
 		dg.addNode(node3);
 		dg.addNode(node4);
 		dg.addNode(node5);
-		dg.connect(1,3,1);
-		dg.connect(3,5,2);
-		dg.connect(5,4,3);
-		dg.connect(4,2,4);
-		dg.connect(2,1,5);
+		dg.connect(1, 3, 1);
+		dg.connect(3, 5, 2);
+		dg.connect(5, 4, 3);
+		dg.connect(4, 2, 4);
+		dg.connect(2, 1, 5);
 		boolean bool = gr.isConnected();
 		System.out.println(bool);
 	}

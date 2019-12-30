@@ -20,25 +20,25 @@ public class Graph_GUI {
         String s = "";
         for (node_data n : g.getV()) {
             Point3D p = n.getLocation();
-            StdDraw.filledCircle(p.x(), p.y(),1);
+            StdDraw.filledCircle(p.x(), p.y(), 1);
             s += Integer.toString(n.getKey());
-            StdDraw.text(p.x() +2,p.y() +2,s);
+            StdDraw.text(p.x() + 2, p.y() + 2, s);
             s = "";
         }
         for (node_data n : g.getV()) {
-            for (edge_data e : g.getE(n.getKey())){
+            for (edge_data e : g.getE(n.getKey())) {
                 double src_x = n.getLocation().x();
                 double src_y = n.getLocation().y();
                 double dest_x = g.getNode(e.getDest()).getLocation().x();
                 double dest_y = g.getNode(e.getDest()).getLocation().y();
                 StdDraw.setPenColor(Color.RED);
                 StdDraw.setPenRadius(0.002);
-                StdDraw.line(src_x , src_y , dest_x , dest_y);
+                StdDraw.line(src_x, src_y, dest_x, dest_y);
                 String weight = Double.toString(e.getWeight());
-                StdDraw.text((src_x + dest_x)/2 , (src_y + dest_y)/2 , weight);
+                StdDraw.text((src_x + dest_x) / 2, (src_y + dest_y) / 2, weight);
                 StdDraw.setPenColor(Color.yellow);
                 StdDraw.setPenRadius(0.01);
-                StdDraw.filledCircle(dest_x , dest_y+2,1);
+                StdDraw.filledCircle(dest_x, dest_y + 2, 1);
             }
         }
     }
@@ -47,19 +47,19 @@ public class Graph_GUI {
         DGraph graph = new DGraph();
         Graph_Algo g = new Graph_Algo(graph);
         NodeData n1 = new NodeData(1);
-        n1.setLocation(new Point3D(80,90));
+        n1.setLocation(new Point3D(80, 90));
         NodeData n2 = new NodeData(2);
-        n2.setLocation(new Point3D(80,60));
+        n2.setLocation(new Point3D(80, 60));
         NodeData n3 = new NodeData(3);
-        n3.setLocation(new Point3D(70,70));
+        n3.setLocation(new Point3D(70, 70));
         NodeData n4 = new NodeData(4);
-        n4.setLocation(new Point3D(50,60));
+        n4.setLocation(new Point3D(50, 60));
         NodeData n5 = new NodeData(5);
-        n5.setLocation(new Point3D(50,90));
+        n5.setLocation(new Point3D(50, 90));
         NodeData n6 = new NodeData(6);
-        n6.setLocation(new Point3D(20,30));
+        n6.setLocation(new Point3D(20, 30));
         NodeData n7 = new NodeData(7);
-        n7.setLocation(new Point3D(20,50));
+        n7.setLocation(new Point3D(20, 50));
         graph.addNode(n1);
         graph.addNode(n2);
         graph.addNode(n3);
