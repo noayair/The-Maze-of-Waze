@@ -2,7 +2,7 @@ package utils;
 
 //package stdDraw;
 // https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
-/******************************************************************************
+/**************************
  *  Compilation:  javac StdDraw.java
  *  Execution:    java StdDraw
  *  Dependencies: none
@@ -25,7 +25,12 @@ package utils;
  *    -  don't use AffineTransform for rescaling since it inverts
  *       images and strings
  *
- ******************************************************************************/
+ **************************/
+
+import algorithms.Graph_Algo;
+import dataStructure.EdgeData;
+import gui.Graph_GUI;
+//import org.graalvm.compiler.graph.Graph;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -67,18 +72,12 @@ import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
  *  creating drawings with your programs. It uses a simple graphics model that
- *  allows you to create drawings consisting of points, lines, squares, 
+ *  allows you to create drawings consisting of points, lines, squares,
  *  circles, and other geometric shapes in a window on your computer and
  *  to save the drawings to a file. Standard drawing also includes
  *  facilities for text, color, pictures, and animation, along with
@@ -247,7 +246,7 @@ import javax.swing.KeyStroke;
  *  <li> {@link #setScale(double min, double max)}
  *  </ul>
  *  <p>
- *  The arguments are the coordinates of the minimum and maximum 
+ *  The arguments are the coordinates of the minimum and maximum
  *  <em>x</em>- or <em>y</em>-coordinates that will appear in the canvas.
  *  For example, if you  wish to use the default coordinate system but
  *  leave a small margin, you can call {@code StdDraw.setScale(-.05, 1.05)}.
@@ -311,7 +310,7 @@ import javax.swing.KeyStroke;
  *  <p>
  *  The supported image formats are JPEG and PNG. The filename must have either the
  *  extension .jpg or .png.
- *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG 
+ *  We recommend using PNG for drawing that consist solely of geometric shapes and JPEG
  *  for drawings that contains pictures.
  *  <p>
  *  <b>Clearing the canvas.</b>
@@ -346,7 +345,7 @@ import javax.swing.KeyStroke;
  *  all drawing takes place on the <em>offscreen canvas</em>. The offscreen canvas
  *  is not displayed. Only when you call
  *  {@link #show()} does your drawing get copied from the offscreen canvas to
- *  the onscreen canvas, where it is displayed in the standard drawing window. You 
+ *  the onscreen canvas, where it is displayed in the standard drawing window. You
  *  can think of double buffering as collecting all of the lines, points, shapes,
  *  and text that you tell it to draw, and then drawing them all
  *  <em>simultaneously</em>, upon request.
@@ -479,7 +478,8 @@ import javax.swing.KeyStroke;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
-
+	private static Graph_GUI gui;
+	private static Graph_Algo algo;
 	/**
 	 *  The color black.
 	 */
@@ -717,6 +717,25 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
 		menuBar.add(menu);
+		JMenu Graph = new JMenu("Add");
+		menuBar.add(Graph);
+		JMenuItem Edge = new JMenuItem("add Edge");
+		Edge.addActionListener(std);
+		Graph.add(Edge);
+		JMenuItem Node = new JMenuItem("add Node");
+		Node.addActionListener(std);
+		Graph.add(Node);
+		JMenu Algo = new JMenu("Algorithems");
+		menuBar.add(Algo);
+		JMenuItem isConnect = new JMenuItem("isConnect");
+		isConnect.addActionListener(std);
+		Algo.add(isConnect);
+		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
+		shortestPathDist.addActionListener(std);
+		Algo.add(shortestPathDist);
+		JMenuItem TSP = new JMenuItem("TSP");
+		TSP.addActionListener(std);
+		Algo.add(TSP);
 		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
 		menuItem1.addActionListener(std);
 		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
@@ -726,9 +745,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  User and screen coordinate systems.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Sets the <em>x</em>-scale to be the default (between 0.0 and 1.0).
@@ -945,9 +964,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  Drawing geometric shapes.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Draws a line segment between (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>) and
@@ -975,28 +994,28 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		offscreen.fillRect((int) Math.round(scaleX(x)), (int) Math.round(scaleY(y)), 1, 1);
 	}
 
-	/**
-	 * Draws a point centered at (<em>x</em>, <em>y</em>).
-	 * The point is a filled circle whose radius is equal to the pen radius.
-	 * To draw a single-pixel point, first set the pen radius to 0.
-	 *
-	 * @param x the <em>x</em>-coordinate of the point
-	 * @param y the <em>y</em>-coordinate of the point
-	 */
-	public static void point(double x, double y) {
-		double xs = scaleX(x);
-		double ys = scaleY(y);
-		double r = penRadius;
-		float scaledPenRadius = (float) (r * DEFAULT_SIZE);
+/**
+ * Draws a point centered at (<em>x</em>, <em>y</em>).
+ * The point is a filled circle whose radius is equal to the pen radius.
+ * To draw a single-pixel point, first set the pen radius to 0.
+ *
+ * @param x the <em>x</em>-coordinate of the point
+ * @param y the <em>y</em>-coordinate of the point
+ */
+public static void point(double x, double y) {
+	double xs = scaleX(x);
+	double ys = scaleY(y);
+	double r = penRadius;
+	float scaledPenRadius = (float) (r * DEFAULT_SIZE);
 
-		// double ws = factorX(2*r);
-		// double hs = factorY(2*r);
-		// if (ws <= 1 && hs <= 1) pixel(x, y);
-		if (scaledPenRadius <= 1) pixel(x, y);
-		else offscreen.fill(new Ellipse2D.Double(xs - scaledPenRadius/2, ys - scaledPenRadius/2,
-				scaledPenRadius, scaledPenRadius));
-		draw();
-	}
+	// double ws = factorX(2*r);
+	// double hs = factorY(2*r);
+	// if (ws <= 1 && hs <= 1) pixel(x, y);
+	if (scaledPenRadius <= 1) pixel(x, y);
+	else offscreen.fill(new Ellipse2D.Double(xs - scaledPenRadius/2, ys - scaledPenRadius/2,
+			scaledPenRadius, scaledPenRadius));
+	draw();
+}
 
 	/**
 	 * Draws a circle of the specified radius, centered at (<em>x</em>, <em>y</em>).
@@ -1191,7 +1210,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1220,7 +1239,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Draws a polygon with the vertices 
+	 * Draws a polygon with the vertices
 	 * (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>),
 	 * (<em>x</em><sub>1</sub>, <em>y</em><sub>1</sub>), ...,
 	 * (<em>x</em><sub><em>n</em>–1</sub>, <em>y</em><sub><em>n</em>–1</sub>).
@@ -1249,9 +1268,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  Drawing images.
-	 ***************************************************************************/
+	 *************************/
 	// get an image from the given filename
 	private static Image getImage(String filename) {
 		if (filename == null) throw new IllegalArgumentException();
@@ -1287,13 +1306,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		return icon.getImage();
 	}
 
-	/***************************************************************************
+	/*************************
 	 * [Summer 2016] Should we update to use ImageIO instead of ImageIcon()?
 	 *               Seems to have some issues loading images on some systems
 	 *               and slows things down on other systems.
 	 *               especially if you don't call ImageIO.setUseCache(false)
 	 *               One advantage is that it returns a BufferedImage.
-	 ***************************************************************************/
+	 *************************/
 	/*
     private static BufferedImage getImage(String filename) {
         if (filename == null) throw new IllegalArgumentException();
@@ -1303,7 +1322,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = new URL(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1313,7 +1332,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource(filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1323,7 +1342,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
             URL url = StdDraw.class.getResource("/" + filename);
             BufferedImage image = ImageIO.read(url);
             return image;
-        } 
+        }
         catch (IOException e) {
             // ignore
         }
@@ -1457,9 +1476,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		draw();
 	}
 
-	/***************************************************************************
+	/*************************
 	 *  Drawing text.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Write the given text string in the current font, centered at (<em>x</em>, <em>y</em>).
@@ -1548,7 +1567,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		pause(t);
 		enableDoubleBuffering();
 	}
-
 	/**
 	 * Pause for t milliseconds. This method is intended to support computer animations.
 	 * @param t number of milliseconds
@@ -1577,7 +1595,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Enable double buffering. All subsequent calls to 
+	 * Enable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be deffered until the next call
 	 * to show(). Useful for animations.
@@ -1587,7 +1605,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 	/**
-	 * Disable double buffering. All subsequent calls to 
+	 * Disable double buffering. All subsequent calls to
 	 * drawing methods such as {@code line()}, {@code circle()},
 	 * and {@code square()} will be displayed on screen when called.
 	 * This is the default.
@@ -1597,9 +1615,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  Save drawing to a file.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Saves the drawing to using the specified filename.
@@ -1648,24 +1666,37 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		}
 	}
 
-
 	/**
 	 * This method cannot be called directly.
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-		chooser.setVisible(true);
-		String filename = chooser.getFile();
-		if (filename != null) {
-			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+		switch (e.getActionCommand()){
+			case "Save":
+				String file = JOptionPane.showInputDialog(null, "File name:");
+				if (file != null){
+					file = "save graph/" + file + ".txt";
+					gui.save(file);
+				}
+				break;
+			case "Add Edge":
+
+
+
 		}
+//		String s = e.getActionCommand();
+//		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
+//		chooser.setVisible(true);
+//		String filename = chooser.getFile();
+//		if (filename != null) {
+//			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
+//		}
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  Mouse interactions.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Returns true if the mouse is being pressed.
@@ -1783,9 +1814,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/***************************************************************************
+	/*************************
 	 *  Keyboard interactions.
-	 ***************************************************************************/
+	 *************************/
 
 	/**
 	 * Returns true if the user has typed a key (that has not yet been processed).
@@ -1904,5 +1935,5 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 }
 
 
-//Copyright © 2000–2017, Robert Sedgewick and Kevin Wayne. 
+//Copyright © 2000–2017, Robert Sedgewick and Kevin Wayne.
 //Last updated: Mon Aug 27 16:43:47 EDT 2018.

@@ -9,8 +9,36 @@ import utils.Point3D;
 import utils.StdDraw;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
 
-public class Graph_GUI {
+public class Graph_GUI{
+    public static Graph_Algo g = new Graph_Algo();
+    public static DGraph graph = new DGraph();
+
+
+    public Graph_GUI(){
+        g = new Graph_Algo();
+        graph = new DGraph();
+//        StdDraw.g = this;
+        g.init(graph);
+    }
+
+    public void init_from(String file_name) {
+        try {
+            g.init(file_name);
+            graph = (DGraph) g.copy();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void save(String file_name){
+        g.init(graph);
+        g.save(file_name);
+    }
+
     public static void DrawGraph(DGraph g) {
         StdDraw.setCanvasSize(600, 600);
         StdDraw.setXscale(-100, 100);
@@ -38,7 +66,8 @@ public class Graph_GUI {
                 StdDraw.text((src_x + dest_x)/2 , (src_y + dest_y)/2 , weight);
                 StdDraw.setPenColor(Color.yellow);
                 StdDraw.setPenRadius(0.01);
-                StdDraw.filledCircle(dest_x , dest_y+2,1);
+                StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, 1);
+
             }
         }
     }
