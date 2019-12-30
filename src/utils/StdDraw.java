@@ -32,6 +32,11 @@ import dataStructure.EdgeData;
 import gui.Graph_GUI;
 //import org.graalvm.compiler.graph.Graph;
 
+import algorithms.Graph_Algo;
+import dataStructure.EdgeData;
+import gui.Graph_GUI;
+//import org.graalvm.compiler.graph.Graph;
+
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.FileDialog;
