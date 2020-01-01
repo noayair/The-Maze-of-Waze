@@ -6,13 +6,19 @@ import utils.Point3D;
 import java.util.Collection;
 import java.util.HashMap;
 
+/**
+ *This class represents the set of operations applicable on a
+ *node (vertex) in a (directional) weighted graph.
+ * @author Noa Yair and Oriya Kronfeld
+ */
+
 public class NodeData implements node_data {
-    private int key;
-    private double weight;
-    private Point3D location;
-    private String info;
-    private int tag;
-    private HashMap<Integer,edge_data> edge_hash;
+    private int key; //the id of the node
+    private double weight; //the weight of the node
+    private Point3D location; //the location of the node
+    private String info; //indicates which node I came from, used for functions in Graph_Algo
+    private int tag; //indicates if I was already at this vertex or not, used for functions in Graph_Algo
+    private HashMap<Integer,edge_data> edge_hash; //hash map of all the edges that emerge from the node
 
     //default constructor
     public NodeData(){
@@ -23,7 +29,8 @@ public class NodeData implements node_data {
         this.tag = 0;
         this.edge_hash = new HashMap<Integer, edge_data>();
     }
-    //constructor
+    //constructors
+
     public NodeData (int key , double weight , Point3D location , String info , int tag){
         this.key = key;
         this.weight = weight;
@@ -89,23 +96,38 @@ public class NodeData implements node_data {
         this.tag = t;
     }
 
-//    public void setKey(int key){
-//        this.key = key;
-//    }
+    public edge_data getEdge(int dest){
+        if(!this.edge_hash.containsKey(dest)){
+            return null;
+        }
+        return this.edge_hash.get(dest);
+    }
 
     //functions
+
+    /**
+     * function that add a new edge to the hash map
+     */
     public void add_edge(int dest , edge_data e){
         this.edge_hash.put(dest , e);
     }
 
-    public edge_data getEdge(int dest){
-        return this.edge_hash.get(dest);
-    }
-
+    /**
+     * This method return a pointer (shallow copy) for the
+     * collection representing all the edges getting out of
+     * the given node (all the edges starting (source) at the given node).
+     * @return Collection<edge_data>
+     */
     public Collection<edge_data> getE() {
         return this.edge_hash.values();
     }
 
+    /**
+     * Delete the node (with the given ID) from the graph -
+     * and removes all edges which starts or ends at this node.
+     * @return the data of the removed node (null if none).
+     * @param key - the ID of the node we want to delete.
+     */
     public edge_data remove_node(int key){
         for (edge_data edge : edge_hash.values()){
             if(edge.getDest() == key){
@@ -115,10 +137,17 @@ public class NodeData implements node_data {
         return null;
     }
 
+    /**
+     * Delete the edge from the graph,
+     * @return the data of the removed edge (null if none).
+     */
     public edge_data remove_edge(int dest){
         return this.edge_hash.remove(dest);
     }
 
+    /**
+     * @return the number of edges (assume directional graph).
+     */
     public int edgeSize() {
         return this.edge_hash.size();
     }

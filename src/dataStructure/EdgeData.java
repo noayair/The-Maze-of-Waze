@@ -1,5 +1,11 @@
 package dataStructure;
 
+/**
+ *  This interface represents the set of operations applicable on a
+ *  directional edge(src,dest) in a (directional) weighted graph.
+ *  @author Noa Yair and Oriya Kronfeld
+ */
+
 public class EdgeData implements edge_data {
     private int src;
     private int dest;
@@ -15,6 +21,8 @@ public class EdgeData implements edge_data {
         this.info = "";
         this.tag = 0;
     }
+
+    //constructors
 
     public EdgeData(int src , int dest , double weight){
         this.src = src;
@@ -33,6 +41,7 @@ public class EdgeData implements edge_data {
     }
 
     //Getters and Setters
+
     @Override
     public int getSrc() {
         return this.src;
@@ -69,6 +78,7 @@ public class EdgeData implements edge_data {
     }
 
     //functions
+
     public String toString(){
         return String.valueOf(this.dest);
     }

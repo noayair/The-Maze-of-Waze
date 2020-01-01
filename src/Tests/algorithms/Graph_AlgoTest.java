@@ -64,12 +64,18 @@ public class Graph_AlgoTest {
 
     @Test
     public void shortestPathDist() {
-        assertEquals(19.0 , g.shortestPathDist(1,7) , 0.0000001);
+        assertEquals(19 , g.shortestPathDist(1 , 7) , 0.0000001);
+        assertEquals(5 , g.shortestPathDist(4 , 7) , 0.0000001);
+        assertEquals(14 , g.shortestPathDist(1 , 4) , 0.0000001);
+        assertEquals(23 , g.shortestPathDist(7 , 1) , 0.0000001);
     }
 
     @Test
     public void shortestPath() {
         assertEquals("[1, 3, 4, 6, 7]" , g.shortestPath(1,7).toString());
+        assertEquals("[4, 6, 7]" , g.shortestPath(4,7).toString());
+        assertEquals("[1, 3, 4]" , g.shortestPath(1,4).toString());
+        assertEquals("[7, 5, 3, 2, 1]" , g.shortestPath(7,1).toString());
     }
 
     @Test
@@ -81,6 +87,13 @@ public class Graph_AlgoTest {
         target.add(4);
         target.add(5);
         assertEquals("[1, 3, 2, 4, 5]" , g.TSP(target).toString());
+        List<Integer> target1 = new LinkedList<>();
+        target1.add(6);
+        target1.add(2);
+        target1.add(4);
+        target1.add(1);
+        target1.add(7);
+        assertEquals("[6, 7, 2, 4, 1]" , g.TSP(target1).toString());
     }
 
     @Test

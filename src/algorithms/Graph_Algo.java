@@ -247,6 +247,14 @@ public class Graph_Algo implements graph_algorithms {
 		LinkedList<node_data> list1 = new LinkedList<>();
 		list1 = (LinkedList<node_data>) g.TSP(target);
 		System.out.println(list1);
+		List<Integer> target1 = new LinkedList<>();
+		target1.add(6);
+		target1.add(2);
+		target1.add(4);
+		target1.add(1);
+		target1.add(7);
+		list1 = (LinkedList<node_data>) g.TSP(target1);
+		System.out.println(list1);
 		g.copy();
 //		DGraph dg = new DGraph();
 //		Graph_Algo gr = new Graph_Algo(dg);
