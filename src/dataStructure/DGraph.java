@@ -81,7 +81,7 @@ public class DGraph implements graph{
 	public String toString(){
 		String s = "";
 		for (node_data n : this.node_hash.values()){
-			s += ((NodeData)n).toString() + " , ";
+			s += ((NodeData)n).toString();
 		}
 		return s;
 	}
@@ -108,7 +108,7 @@ public class DGraph implements graph{
 		graph.removeNode(1);
 		System.out.println("node size: " + graph.nodeSize());
 		System.out.println("edge size: " + graph.edgeSize());
-		graph.removeEdge(4 , 3);
+//		graph.removeEdge(4 , 3);
 		System.out.println(graph.toString());
 		System.out.println(graph.getMC());
 	}

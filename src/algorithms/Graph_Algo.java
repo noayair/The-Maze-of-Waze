@@ -34,7 +34,7 @@ public class Graph_Algo implements graph_algorithms {
 			FileInputStream file = new FileInputStream(file_name);
 			ObjectInputStream in = new ObjectInputStream(file);
 
-			graph = (DGraph) in.readObject();
+			this.graph = (graph) in.readObject();
 
 			in.close();
 			file.close();
@@ -196,7 +196,11 @@ public class Graph_Algo implements graph_algorithms {
 
 	@Override
 	public graph copy() {
-		return null;
+		graph ans = new DGraph();
+		for(node_data n : this.graph.getV()){
+			ans.addNode(n);
+		}
+		return ans;
 	}
 
 	public static void main(String[] args) {
@@ -243,6 +247,7 @@ public class Graph_Algo implements graph_algorithms {
 		LinkedList<node_data> list1 = new LinkedList<>();
 		list1 = (LinkedList<node_data>) g.TSP(target);
 		System.out.println(list1);
+		g.copy();
 //		DGraph dg = new DGraph();
 //		Graph_Algo gr = new Graph_Algo(dg);
 //		NodeData node1 = new NodeData(1);

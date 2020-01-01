@@ -70,6 +70,6 @@ public class EdgeData implements edge_data {
 
     //functions
     public String toString(){
-        return "source: " + this.src + " , destination: " + this.dest;
+        return String.valueOf(this.dest);
     }
 }

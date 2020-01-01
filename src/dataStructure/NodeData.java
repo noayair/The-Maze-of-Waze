@@ -123,24 +123,7 @@ public class NodeData implements node_data {
         return this.edge_hash.size();
     }
 
-    public node_data copy(){
-        node_data n = new NodeData(this.getKey());
-        n.setInfo(this.info);
-        n.setWeight(this.weight);
-        n.setTag(this.tag);
-        n.setLocation(this.location);
-
-        return null;
-    }
-
     public String toString(){
-        if(this.edge_hash.isEmpty()){
-            return "key: " + this.key;
-        }
-        String s = this.key + ": ";
-        for (edge_data e : edge_hash.values()){
-            s += ((EdgeData)e).toString();
-        }
-        return s;
+        return String.valueOf(this.key);
     }
 }
