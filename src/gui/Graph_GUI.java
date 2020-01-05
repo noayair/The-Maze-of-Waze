@@ -20,14 +20,12 @@ public class Graph_GUI{
         algo = new Graph_Algo();
         dgraph = new DGraph();
         StdDraw.g = this;
-        //     this.openCanvas();
     }
 
     public Graph_GUI (graph d){
         dgraph=d;
         algo.init(d);
         StdDraw.g=this;
-        this.openCanvas();
     }
 
     public void addNode(int key, double x, double y){
@@ -85,17 +83,6 @@ public class Graph_GUI{
         return algo.TSP(targets);
     }
 
-    public void openCanvas(){
-//        StdDraw.setCanvasSize(600,600);
-//        StdDraw.setXscale(-100,100);
-//        StdDraw.setYscale(-100,100);
-        //DrawGraph();
-    }
-
-    //    public void DrawGraph()
-//    {
-//        DrawGraph(null);
-//    }
     public void DrawGraph() {
         graph g = this.dgraph;
 
@@ -132,61 +119,49 @@ public class Graph_GUI{
     }
 
     public static void main(String[] args) {
-        node_data[] node = new NodeData[10000];
+        //example of the graph
+        NodeData n1 = new NodeData(1);
+        n1.setLocation(new Point3D(80,90));
+        NodeData n2 = new NodeData(2);
+        n2.setLocation(new Point3D(80,60));
+        NodeData n3 = new NodeData(3);
+        n3.setLocation(new Point3D(70,70));
+        NodeData n4 = new NodeData(4);
+        n4.setLocation(new Point3D(50,60));
+        NodeData n5 = new NodeData(5);
+        n5.setLocation(new Point3D(50,90));
+        NodeData n6 = new NodeData(6);
+        n6.setLocation(new Point3D(20,30));
+        NodeData n7 = new NodeData(7);
+        n7.setLocation(new Point3D(20,50));
+        node_data n8 = new NodeData(8);
+        n8.setLocation(new Point3D(2,7));
+
+
         DGraph dgraph = new DGraph();
-        for (int i = 0; i < node.length; i++) {
-            node[i] = new NodeData(i);
-            double x = ((Math.random()*201)-100);
-            double y = ((Math.random()*201)-100);
-            Point3D p = new Point3D(x , y);
-            node[i].setLocation(p);
-            dgraph.addNode(node[i]);
-            if(i > 1 && i < node.length-1) {
-                double w = ((Math.random()* 201)-100);
-                dgraph.connect(node[i-1].getKey(), node[i].getKey(), w);
-            }
-        }
-//        NodeData n1 = new NodeData(1);
-//        n1.setLocation(new Point3D(80,90));
-//        NodeData n2 = new NodeData(2);
-//        n2.setLocation(new Point3D(80,60));
-//        NodeData n3 = new NodeData(3);
-//        n3.setLocation(new Point3D(70,70));
-//        NodeData n4 = new NodeData(4);
-//        n4.setLocation(new Point3D(50,60));
-//        NodeData n5 = new NodeData(5);
-//        n5.setLocation(new Point3D(50,90));
-//        NodeData n6 = new NodeData(6);
-//        n6.setLocation(new Point3D(20,30));
-//        NodeData n7 = new NodeData(7);
-//        n7.setLocation(new Point3D(20,50));
+        dgraph.addNode(n1);
+        dgraph.addNode(n2);
+        dgraph.addNode(n3);
+        dgraph.addNode(n4);
+        dgraph.addNode(n5);
+        dgraph.addNode(n6);
+        dgraph.addNode(n7);
 
+        dgraph.connect(2, 1, 4);
+        dgraph.connect(1, 3, 3);
+        dgraph.connect(1, 5, 20);
+        dgraph.connect(3, 2, 6);
+        dgraph.connect(2, 4, 5);
+        dgraph.connect(4, 6, 2);
+        dgraph.connect(6, 7, 3);
+        dgraph.connect(7, 5, 5);
+        dgraph.connect(3, 4, 11);
+        dgraph.connect(4, 5, 10);
+        dgraph.connect(5, 3, 8);
 
-//        DGraph dgraph = new DGraph();
-//        dgraph.addNode(n1);
-//        dgraph.addNode(n2);
-//        dgraph.addNode(n3);
-//        dgraph.addNode(n4);
-//        dgraph.addNode(n5);
-//        dgraph.addNode(n6);
-//        dgraph.addNode(n7);
-//        dgraph.connect(2, 1, 4);
-//        dgraph.connect(1, 3, 3);
-//        dgraph.connect(1, 5, 20);
-//        dgraph.connect(3, 2, 6);
-//        dgraph.connect(2, 4, 5);
-//        dgraph.connect(4, 6, 2);
-//        dgraph.connect(6, 7, 3);
-//        dgraph.connect(7, 5, 5);
-//        dgraph.connect(3, 4, 11);
-//        dgraph.connect(4, 5, 10);
-//        dgraph.connect(5, 3, 8);
-//
         Graph_GUI p = new Graph_GUI(dgraph);
         p.algo.init(dgraph);
 
         p.DrawGraph();
-//        Graph_GUI p = new Graph_GUI();
-//        p.DrawGraph();
     }
 }

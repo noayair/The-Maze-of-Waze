@@ -40,7 +40,7 @@ public class DGraph implements graph , Serializable {
 	 */
 	@Override
 	public edge_data getEdge(int src, int dest) {
-		return ((NodeData)node_hash.get(src)).getEdge(dest);
+		return ((NodeData)node_hash.get(src)).getEdge(dest); // go to function getEdge in the NodeData and return the requested edge
 	}
 
 	//functions
@@ -51,6 +51,9 @@ public class DGraph implements graph , Serializable {
 	 */
 	@Override
 	public void addNode(node_data n) {
+		if(this.node_hash.containsKey(n.getKey())){ // if this key is already exists in the graph
+			throw new RuntimeException("this key is already exists");
+		}
 		this.node_hash.put(n.getKey() , n);
 		counter++;
 	}
@@ -63,6 +66,12 @@ public class DGraph implements graph , Serializable {
 	 */
 	@Override
 	public void connect(int src, int dest, double w) {
+		if(!node_hash.containsKey(src)){
+			throw new RuntimeException("Error - the source node does not exist");
+		}
+		if(!node_hash.containsKey(dest)){
+			throw new RuntimeException("Error - the destination node does not exist");
+		}
 		EdgeData e = new EdgeData(src , dest , w);
 		((NodeData)node_hash.get(src)).add_edge(dest , e);
 		counter++;
@@ -86,7 +95,7 @@ public class DGraph implements graph , Serializable {
 	 */
 	@Override
 	public Collection<edge_data> getE(int node_id) {
-		return ((NodeData)node_hash.get(node_id)).getE();
+		return ((NodeData)node_hash.get(node_id)).getE(); // go to function in NodeData
 	}
 
 	/**
@@ -97,6 +106,9 @@ public class DGraph implements graph , Serializable {
 	 */
 	@Override
 	public node_data removeNode(int key) {
+		if(!this.node_hash.containsKey(key)){
+			throw new RuntimeException("Error - the node you want to remove does not exist");
+		}
 		for (node_data n : node_hash.values()){
 			((NodeData)n).remove_node(key);
 		}
@@ -105,12 +117,15 @@ public class DGraph implements graph , Serializable {
 	}
 
 	/**
-	 * Delete the edge from the graph,
+	 * Delete the edge from the graph.
 	 * @return the data of the removed edge (null if none).
 	 */
 	@Override
 	public edge_data removeEdge(int src, int dest) {
 		counter++;
+		if(!node_hash.containsKey(src) || !node_hash.containsKey(dest)){
+			throw new RuntimeException("Error - the edge you want to remove does not exist");
+		}
 		return ((NodeData)this.node_hash.get(src)).remove_edge(dest);
 	}
 
@@ -160,7 +175,7 @@ public class DGraph implements graph , Serializable {
 		graph.addNode(n2);
 		graph.addNode(n3);
 		graph.addNode(n4);
-		graph.connect(2,2,4);
+//		graph.connect(2,2,4);
 		System.out.println("node size: " + graph.nodeSize());
 		graph.connect(1 ,2 , 10.4);
 		graph.connect(4 , 3 , 22);
@@ -170,12 +185,15 @@ public class DGraph implements graph , Serializable {
 		graph.connect(1 , 4 , 20.2);
 		System.out.println("edge from 1: " + graph.getE(1));
 		System.out.println("edge size: " + graph.edgeSize());
-		graph.removeNode(1);
+//		graph.removeNode(1);
 		System.out.println("node size: " + graph.nodeSize());
 		System.out.println("edge size: " + graph.edgeSize());
 //		graph.removeEdge(4 , 3);
+//		graph.removeEdge(9,2);
 		System.out.println(graph.toString());
 		System.out.println(graph.getMC());
+		System.out.println(n3.toString());
+		System.out.println(graph.getEdge(1,2).toString());
 	}
 
 }

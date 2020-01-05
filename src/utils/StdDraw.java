@@ -1716,17 +1716,22 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				break;
 
 			case "add Edge":
+				JFrame edge = new JFrame();
 				String src = JOptionPane.showInputDialog("Please enter a src");
 				String dest = JOptionPane.showInputDialog("Please enter a dest");
 				String weight = JOptionPane.showInputDialog("Please enter a weight");
 				int src1 = 0;
 				int dest1 = 0;
-				int weight1 = 0;
-				src1 = Integer.parseInt(src);
-				dest1 = Integer.parseInt(dest);
-				weight1 = Integer.parseInt(weight);
-				g.add_edge(src1, dest1, weight1);
-				g.DrawGraph();
+				double weight1 = 0;
+				try {
+					src1 = Integer.parseInt(src);
+					dest1 = Integer.parseInt(dest);
+					weight1 = Double.parseDouble(weight);
+					g.add_edge(src1, dest1, weight1);
+					g.DrawGraph();
+				}catch (Exception badInput){
+					JOptionPane.showMessageDialog(edge, "Error - src or dest are not exist or the weigh is not positive", "Error", 0);
+				}
 				break;
 
 			case "add Node":
@@ -1741,15 +1746,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					k = Integer.parseInt(key);
 					x = Integer.parseInt(xp);
 					y = Integer.parseInt(yp);
+					g.addNode(k, x, y);
+					g.DrawGraph();
+					if (x < -100 || x > 100 || y < -100 || y > 100){
+						JOptionPane.showMessageDialog(node, "Error - this node can't be added , you have exceeded the range", "Error", 0);
+					}
 				} catch (Exception badInput) {
-					System.err.println("Error");
-					JOptionPane.showMessageDialog(node, "Error", "Error", 0);
+					JOptionPane.showMessageDialog(node, "Error - this key is already exists", "Error", 0);
 				}
-				if (x < -100 || x > 100 || y < -100 || y > 100){
-					System.out.println("Error - this node can't be added , you have exceeded the range");
-				}
-				g.addNode(k, x, y);
-				g.DrawGraph();
 				break;
 
 			case "remove Node":
@@ -1758,12 +1762,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				String key1 = JOptionPane.showInputDialog(reNode, "Please enter key");
 				try {
 					k1 = Integer.parseInt(key1);
+					g.removeNode(k1);
+					g.DrawGraph();
 				} catch (Exception badInput) {
-					System.err.println("The key is not exist");
 					JOptionPane.showMessageDialog(reNode, "Error: The key is not exist ", "Error", 0);
 				}
-				g.removeNode(k1);
-				g.DrawGraph();
 				break;
 			case "remove Edge":
 				JFrame reEdge = new JFrame();
@@ -1777,16 +1780,13 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					g.removeEdge(srcEdge1, destEdge1);
 					g.DrawGraph();
 				} catch (Exception badInput) {
-					System.err.println("Please enter src and dest are not correct");
 					JOptionPane.showMessageDialog(reEdge, "Error: src and dest are not correct ", "Error", 0);
-
 				}
 				break;
 
 			case "isConnected":
 				JFrame connect = new JFrame();
 				boolean ans = g.isConnected();
-				System.out.println(ans);
 				if (ans == true) {
 					JOptionPane.showMessageDialog(connect, " is Connected.");
 				} else {
@@ -1807,7 +1807,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					g.DrawGraph();
 					JOptionPane.showMessageDialog(Stpd, "The Shortest path is :" + d);
 				} catch (Exception badInput) {
-					System.err.println("Please enter src and dest are not correct");
 					JOptionPane.showMessageDialog(Stpd, "Error: src and dest are not correct ", "Error", 0);
 				}
 
@@ -1844,8 +1843,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					l=g.TSP(list);
 					JOptionPane.showMessageDialog(Tsp, "The list is :" + l.toString());
 				} catch (Exception badInput) {
-					System.err.println("Error");
-					JOptionPane.showMessageDialog(Tsp, "Error:  ", "Error", 0);
+					JOptionPane.showMessageDialog(Tsp, "Error: this graph is not connected", "Error", 0);
 				}
 				break;
 		}

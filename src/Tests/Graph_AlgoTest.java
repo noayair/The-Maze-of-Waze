@@ -78,10 +78,10 @@ public class Graph_AlgoTest {
     @Test
     public void shortestPath() {
         graph_algorithms gr = create_graph();
-        assertEquals("[1, 3, 4, 6, 7]" , gr.shortestPath(1,7).toString());
-        assertEquals("[4, 6, 7]" , gr.shortestPath(4,7).toString());
-        assertEquals("[1, 3, 4]" , gr.shortestPath(1,4).toString());
-        assertEquals("[7, 5, 3, 2, 1]" , gr.shortestPath(7,1).toString());
+        assertEquals("[key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6], key: 6, edges: [src: 6 dest: 7], key: 7, edges: [src: 7 dest: 5]]" , gr.shortestPath(1,7).toString());
+        assertEquals("[key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6], key: 6, edges: [src: 6 dest: 7], key: 7, edges: [src: 7 dest: 5]]" , gr.shortestPath(4,7).toString());
+        assertEquals("[key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6]]" , gr.shortestPath(1,4).toString());
+        assertEquals("[key: 7, edges: [src: 7 dest: 5], key: 5, edges: [src: 5 dest: 3], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 2, edges: [src: 2 dest: 1, src: 2 dest: 4], key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5]]" , gr.shortestPath(7,1).toString());
     }
 
     @Test
@@ -93,27 +93,27 @@ public class Graph_AlgoTest {
         target.add(3);
         target.add(4);
         target.add(5);
-        assertEquals("[1, 3, 2, 4, 5]" , gr.TSP(target).toString());
+        assertEquals("[key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 2, edges: [src: 2 dest: 1, src: 2 dest: 4], key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6], key: 5, edges: [src: 5 dest: 3]]" , gr.TSP(target).toString());
         List<Integer> target1 = new LinkedList<>();
         target1.add(6);
         target1.add(2);
         target1.add(4);
         target1.add(1);
         target1.add(7);
-        assertEquals("[6, 7, 5, 3, 2, 4, 5, 3, 2, 1]" , gr.TSP(target1).toString());
+        assertEquals("[key: 6, edges: [src: 6 dest: 7], key: 7, edges: [src: 7 dest: 5], key: 5, edges: [src: 5 dest: 3], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 2, edges: [src: 2 dest: 1, src: 2 dest: 4], key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6], key: 5, edges: [src: 5 dest: 3], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 2, edges: [src: 2 dest: 1, src: 2 dest: 4], key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5]]" , gr.TSP(target1).toString());
     }
 
     @Test
     public void copy() {
         graph_algorithms gr = create_graph();
         graph g1 = gr.copy();
-        assertEquals("[1, 2, 3, 4, 5, 6, 7]" , g1.getV().toString());
-        assertEquals("[3, 5]" , g1.getE(1).toString());
-        assertEquals("[1, 4]" , g1.getE(2).toString());
-        assertEquals("[2, 4]" , g1.getE(3).toString());
-        assertEquals("[5, 6]" , g1.getE(4).toString());
-        assertEquals("[3]" , g1.getE(5).toString());
-        assertEquals("[7]" , g1.getE(6).toString());
-        assertEquals("[5]" , g1.getE(7).toString());
+        assertEquals("[key: 1, edges: [src: 1 dest: 3, src: 1 dest: 5], key: 2, edges: [src: 2 dest: 1, src: 2 dest: 4], key: 3, edges: [src: 3 dest: 2, src: 3 dest: 4], key: 4, edges: [src: 4 dest: 5, src: 4 dest: 6], key: 5, edges: [src: 5 dest: 3], key: 6, edges: [src: 6 dest: 7], key: 7, edges: [src: 7 dest: 5]]" , g1.getV().toString());
+        assertEquals("[src: 1 dest: 3, src: 1 dest: 5]" , g1.getE(1).toString());
+        assertEquals("[src: 2 dest: 1, src: 2 dest: 4]" , g1.getE(2).toString());
+        assertEquals("[src: 3 dest: 2, src: 3 dest: 4]" , g1.getE(3).toString());
+        assertEquals("[src: 4 dest: 5, src: 4 dest: 6]" , g1.getE(4).toString());
+        assertEquals("[src: 5 dest: 3]" , g1.getE(5).toString());
+        assertEquals("[src: 6 dest: 7]" , g1.getE(6).toString());
+        assertEquals("[src: 7 dest: 5]" , g1.getE(7).toString());
     }
 }

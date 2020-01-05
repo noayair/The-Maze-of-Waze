@@ -33,6 +33,9 @@ public class EdgeData implements edge_data , Serializable {
         }
         this.src = src;
         this.dest = dest;
+        if(weight <= 0){
+            throw new RuntimeException("Error - the weight can't be negative");
+        }
         this.weight = weight;
         this.tag = 0;
         this.info = null;
@@ -86,6 +89,11 @@ public class EdgeData implements edge_data , Serializable {
     //functions
 
     public String toString(){
-        return String.valueOf(this.dest);
+        String s = "";
+        s += "src: ";
+        s += String.valueOf(this.src);
+        s += " dest: ";
+        s += String.valueOf(this.dest);
+        return s;
     }
 }

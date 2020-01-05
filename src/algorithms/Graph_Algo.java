@@ -7,14 +7,16 @@ import java.util.*;
 import dataStructure.*;
 
 /**
- * This empty class represents the set of graph-theory algorithms
- * which should be implemented as part of Ex2 - Do edit this class.
+ This class implemets graph_algorithms.
+ represents the "regular" Graph Theory algorithms including-
+ Contains a set of algorithems and methods that can be performed on a given graph.
  * @author Noa Yair and Oriya Kronfeld
  *
  */
 public class Graph_Algo implements graph_algorithms , Serializable {
 	private graph graph;
 
+	// constructors
 	public Graph_Algo(graph g) {
 		init(g);
 	}
@@ -23,16 +25,26 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		this.graph = null;
 	}
 
+	//Getters
+
 	public graph getGraph()
 	{
 		return graph;
 	}
 
+	/**
+	 * Init this set of algorithms on the parameter - graph.
+	 * @param g
+	 */
 	@Override
 	public void init(graph g) {
 		this.graph = g;
 	}
 
+	/**
+	 * Init a graph from file
+	 * @param file_name
+	 */
 	@Override
 	public void init(String file_name) {
 		try
@@ -61,6 +73,10 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		}
 	}
 
+	/** Saves the graph to a file.
+	 *
+	 * @param file_name
+	 */
 	@Override
 	public void save(String file_name) {
 		try
@@ -82,6 +98,11 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 
 	}
 
+	/**
+	 * Returns true if and only if (iff) there is a valid path from EVREY node to each
+	 * other node. NOTE: assume directional graph - a valid path (a-->b) does NOT imply a valid path (b-->a).
+	 * @return
+	 */
 	@Override
 	public boolean isConnected() {
 		Queue<node_data> queue = new LinkedList<>();
@@ -108,6 +129,12 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		return true;
 	}
 
+	/**
+	 * returns the length of the shortest path between src to dest
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return
+	 */
 	@Override
 	public double shortestPathDist(int src, int dest) {
 		if (src == dest) {
@@ -163,6 +190,14 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 			n.setTag(0);
 		}
 	}
+	/**
+	 * returns the the shortest path between src to dest - as an ordered List of nodes:
+	 * src--> n1-->n2-->...dest
+	 * see: https://en.wikipedia.org/wiki/Shortest_path_problem
+	 * @param src - start node
+	 * @param dest - end (target) node
+	 * @return
+	 */
 
 	@Override
 	public List<node_data> shortestPath(int src, int dest) {
@@ -186,6 +221,14 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		return list;
 	}
 
+	/**
+	 * computes a relatively short path which visit each node in the targets List.
+	 * Note: this is NOT the classical traveling salesman problem,
+	 * as you can visit a node more than once, and there is no need to return to source node -
+	 * just a simple path going over all nodes in the list.
+	 * @param targets
+	 * @return
+	 */
 	@Override
 	public List<node_data> TSP(List<Integer> targets) {
 		int src;
@@ -199,10 +242,12 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		}
 		while(!targets.isEmpty()){
 			if(targets.size() == 1){
-				if(!ans.contains(this.graph.getNode(targets.get(0))) || ans.indexOf(this.graph.getNode(targets.get(0))) != ans.size()-1) {
-					ans.add(this.graph.getNode(targets.get(0)));
-					break;
-				}
+				if(!ans.contains(this.graph.getNode(targets.get(0)))) {
+						ans.add(this.graph.getNode(targets.get(0)));
+						break;
+					}else{
+						break;
+					}
 			}
 			i = 0;
 			src = targets.get(0);
@@ -255,7 +300,7 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		graph.addNode(n5);
 		graph.addNode(n6);
 		graph.addNode(n7);
-//		graph.connect(2, 1, 4);
+		graph.connect(2, 1, 4);
 		graph.connect(1, 3, 3);
 		graph.connect(1, 5, 20);
 		graph.connect(3, 2, 6);
@@ -273,15 +318,15 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 //		System.out.println(list);
 //		boolean b = g.isConnected();
 //		System.out.println(b);
-//		List<Integer> target = new LinkedList<>();
-//		target.add(1);
-//		target.add(2);
-//		target.add(3);
+		List<Integer> target = new LinkedList<>();
+		target.add(1);
+		target.add(2);
+		target.add(3);
+		target.add(3);
 //		target.add(4);
-//		target.add(4);
-//		LinkedList<node_data> list1 = new LinkedList<>();
-//		list1 = (LinkedList<node_data>) g.TSP(target);
-//		System.out.println(list1);
+		LinkedList<node_data> list1 = new LinkedList<>();
+		list1 = (LinkedList<node_data>) g.TSP(target);
+		System.out.println(list1);
 //		List<Integer> target1 = new LinkedList<>();
 //		target1.add(7);
 //		target1.add(2);

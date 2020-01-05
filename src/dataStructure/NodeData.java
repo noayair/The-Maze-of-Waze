@@ -162,7 +162,19 @@ public class NodeData implements node_data , Serializable {
         return this.edge_hash.size();
     }
 
+    public String help_toString(){
+        String ans = "";
+        ans += this.edge_hash.values().toString();
+        return ans;
+    }
+
     public String toString(){
-        return String.valueOf(this.key);
+        String ans = "key: ";
+        ans += String.valueOf(this.key) + ", ";
+        if(!this.edge_hash.isEmpty()) {
+            ans += "edges: ";
+            ans += help_toString();
+        }
+        return ans;
     }
 }
