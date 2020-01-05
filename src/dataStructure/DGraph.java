@@ -1,5 +1,6 @@
 package dataStructure;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -8,7 +9,7 @@ import java.util.HashMap;
  * @author Noa Yair and Oriya Kronfeld
  */
 
-public class DGraph implements graph{
+public class DGraph implements graph , Serializable {
 	private HashMap<Integer,node_data> node_hash;
 	private int counter;
 
@@ -50,9 +51,6 @@ public class DGraph implements graph{
 	 */
 	@Override
 	public void addNode(node_data n) {
-		if(this.node_hash.containsKey(n.getKey())){ // if this key is already exists in the graph
-			throw new RuntimeException("this key is already exists");
-		}
 		this.node_hash.put(n.getKey() , n);
 		counter++;
 	}

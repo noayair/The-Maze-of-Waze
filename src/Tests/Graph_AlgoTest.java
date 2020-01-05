@@ -1,10 +1,11 @@
-package algorithms;
-
+import algorithms.Graph_Algo;
+import algorithms.graph_algorithms;
 import dataStructure.DGraph;
 import dataStructure.NodeData;
 import dataStructure.graph;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,12 +15,12 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class Graph_AlgoTest {
-    public static Graph_Algo g = new Graph_Algo();
+//    public static Graph_Algo g;
 
-    @Before
-    public void setUp() throws Exception {
+    public graph_algorithms create_graph() {
         graph graphs = new DGraph();
-        g.init(graphs);
+//        g = new Graph_Algo(graphs);
+//        g.init(graphs);
         Graph_Algo g = new Graph_Algo(graphs);
         NodeData n1 = new NodeData(1);
         NodeData n2 = new NodeData(2);
@@ -46,59 +47,66 @@ public class Graph_AlgoTest {
         graphs.connect(3, 4, 11);
         graphs.connect(4, 5, 10);
         graphs.connect(5, 3, 8);
+        return g;
     }
 
     @Test
     public void save_init() throws IOException {
-        g.save("file.txt");
-        graph g2 = new DGraph();
-        graph_algorithms gr = new Graph_Algo(g2);
-        gr.init("file.txt");
-        assertEquals(g.shortestPath(1,7) , gr.shortestPath(1,7));
+        graph_algorithms gr = create_graph();
+        gr.save("file.txt");
+        graph_algorithms g2 = new Graph_Algo();
+        graph_algorithms gra = new Graph_Algo();
+        gra.init("file.txt");
+        assertEquals(gr.shortestPath(1,7).toString() , gra.shortestPath(1,7).toString());
     }
 
     @Test
     public void isConnected() {
-        assertEquals(true , g.isConnected());
+        graph_algorithms gr = create_graph();
+        assertEquals(true , gr.isConnected());
     }
 
     @Test
     public void shortestPathDist() {
-        assertEquals(19 , g.shortestPathDist(1 , 7) , 0.0000001);
-        assertEquals(5 , g.shortestPathDist(4 , 7) , 0.0000001);
-        assertEquals(14 , g.shortestPathDist(1 , 4) , 0.0000001);
-        assertEquals(23 , g.shortestPathDist(7 , 1) , 0.0000001);
+        graph_algorithms gr = create_graph();
+        assertEquals(19 , gr.shortestPathDist(1 , 7) , 0.0000001);
+        assertEquals(5 , gr.shortestPathDist(4 , 7) , 0.0000001);
+        assertEquals(14 , gr.shortestPathDist(1 , 4) , 0.0000001);
+        assertEquals(23 , gr.shortestPathDist(7 , 1) , 0.0000001);
     }
 
     @Test
     public void shortestPath() {
-        assertEquals("[1, 3, 4, 6, 7]" , g.shortestPath(1,7).toString());
-        assertEquals("[4, 6, 7]" , g.shortestPath(4,7).toString());
-        assertEquals("[1, 3, 4]" , g.shortestPath(1,4).toString());
-        assertEquals("[7, 5, 3, 2, 1]" , g.shortestPath(7,1).toString());
+        graph_algorithms gr = create_graph();
+        assertEquals("[1, 3, 4, 6, 7]" , gr.shortestPath(1,7).toString());
+        assertEquals("[4, 6, 7]" , gr.shortestPath(4,7).toString());
+        assertEquals("[1, 3, 4]" , gr.shortestPath(1,4).toString());
+        assertEquals("[7, 5, 3, 2, 1]" , gr.shortestPath(7,1).toString());
     }
 
     @Test
     public void TSP() {
+        graph_algorithms gr = create_graph();
         List<Integer> target = new LinkedList<>();
         target.add(1);
         target.add(2);
         target.add(3);
         target.add(4);
         target.add(5);
-        assertEquals("[1, 3, 2, 4, 5]" , g.TSP(target).toString());
+        assertEquals("[1, 3, 2, 4, 5]" , gr.TSP(target).toString());
         List<Integer> target1 = new LinkedList<>();
         target1.add(6);
         target1.add(2);
         target1.add(4);
         target1.add(1);
         target1.add(7);
-        assertEquals("[6, 7, 2, 4, 1]" , g.TSP(target1).toString());
+        assertEquals("[6, 7, 5, 3, 2, 4, 5, 3, 2, 1]" , gr.TSP(target1).toString());
     }
 
     @Test
     public void copy() {
-        graph g1 = g.copy();
+        graph_algorithms gr = create_graph();
+        graph g1 = gr.copy();
         assertEquals("[1, 2, 3, 4, 5, 6, 7]" , g1.getV().toString());
         assertEquals("[3, 5]" , g1.getE(1).toString());
         assertEquals("[1, 4]" , g1.getE(2).toString());

@@ -1,12 +1,15 @@
 package dataStructure;
 
+import java.io.IOException;
+import java.io.Serializable;
+
 /**
  *  This interface represents the set of operations applicable on a
  *  directional edge(src,dest) in a (directional) weighted graph.
  *  @author Noa Yair and Oriya Kronfeld
  */
 
-public class EdgeData implements edge_data {
+public class EdgeData implements edge_data , Serializable {
     private int src;
     private int dest;
     private double weight;
@@ -25,6 +28,9 @@ public class EdgeData implements edge_data {
     //constructors
 
     public EdgeData(int src , int dest , double weight){
+        if(src == dest){
+            throw new RuntimeException("Error - the same source and destination cannot be entered");
+        }
         this.src = src;
         this.dest = dest;
         this.weight = weight;

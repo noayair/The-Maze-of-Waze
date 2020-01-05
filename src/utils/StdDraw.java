@@ -2,7 +2,7 @@ package utils;
 
 //package stdDraw;
 // https://introcs.cs.princeton.edu/java/stdlib/StdDraw.java.html
-/**************************
+/******************************************************************************
  *  Compilation:  javac StdDraw.java
  *  Execution:    java StdDraw
  *  Dependencies: none
@@ -25,15 +25,10 @@ package utils;
  *    -  don't use AffineTransform for rescaling since it inverts
  *       images and strings
  *
- **************************/
+ ******************************************************************************/
 
 import algorithms.Graph_Algo;
-import dataStructure.EdgeData;
-import gui.Graph_GUI;
-//import org.graalvm.compiler.graph.Graph;
-
-import algorithms.Graph_Algo;
-import dataStructure.EdgeData;
+import dataStructure.*;
 import gui.Graph_GUI;
 //import org.graalvm.compiler.graph.Graph;
 
@@ -67,12 +62,14 @@ import java.awt.image.DirectColorModel;
 import java.awt.image.WritableRaster;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
@@ -483,8 +480,8 @@ import javax.swing.*;
  *  @author Kevin Wayne
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
-	private static Graph_GUI gui;
-	private static Graph_Algo algo;
+	public static Graph_GUI g;
+
 	/**
 	 *  The color black.
 	 */
@@ -721,38 +718,53 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("File");
+		JMenuItem menuItem1 = new JMenuItem("Save");
+		menuItem1.addActionListener(std);
+		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+		menu.add(menuItem1);
 		menuBar.add(menu);
-		JMenu Graph = new JMenu("Add");
+		JMenuItem upload = new JMenuItem("upload");
+		upload.addActionListener(std);
+		menu.add(upload);
+		JMenu Graph = new JMenu("Graph");
 		menuBar.add(Graph);
-		JMenuItem Edge = new JMenuItem("add Edge");
-		Edge.addActionListener(std);
-		Graph.add(Edge);
+
 		JMenuItem Node = new JMenuItem("add Node");
 		Node.addActionListener(std);
 		Graph.add(Node);
+		JMenuItem Edge = new JMenuItem("add Edge");
+		Edge.addActionListener(std);
+		Graph.add(Edge);
+		JMenuItem removeNode = new JMenuItem("remove Node");
+		removeNode.addActionListener(std);
+		Graph.add(removeNode);
+		JMenuItem removeEdge = new JMenuItem("remove Edge");
+		removeEdge.addActionListener(std);
+		Graph.add(removeEdge);
+
 		JMenu Algo = new JMenu("Algorithems");
 		menuBar.add(Algo);
-		JMenuItem isConnect = new JMenuItem("isConnect");
+		JMenuItem isConnect = new JMenuItem("isConnected");
 		isConnect.addActionListener(std);
 		Algo.add(isConnect);
 		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
 		shortestPathDist.addActionListener(std);
 		Algo.add(shortestPathDist);
+		JMenuItem shortestPath = new JMenuItem("shortestPath");
+		shortestPath.addActionListener(std);
+		Algo.add(shortestPath);
 		JMenuItem TSP = new JMenuItem("TSP");
 		TSP.addActionListener(std);
 		Algo.add(TSP);
-		JMenuItem menuItem1 = new JMenuItem(" Save...   ");
-		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
-		menu.add(menuItem1);
+
 		return menuBar;
 	}
 
 
-	/*************************
+	/***************************************************************************
 	 *  User and screen coordinate systems.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Sets the <em>x</em>-scale to be the default (between 0.0 and 1.0).
@@ -969,9 +981,9 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	}
 
 
-	/*************************
+	/***************************************************************************
 	 *  Drawing geometric shapes.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Draws a line segment between (<em>x</em><sub>0</sub>, <em>y</em><sub>0</sub>) and
@@ -999,28 +1011,28 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		offscreen.fillRect((int) Math.round(scaleX(x)), (int) Math.round(scaleY(y)), 1, 1);
 	}
 
-/**
- * Draws a point centered at (<em>x</em>, <em>y</em>).
- * The point is a filled circle whose radius is equal to the pen radius.
- * To draw a single-pixel point, first set the pen radius to 0.
- *
- * @param x the <em>x</em>-coordinate of the point
- * @param y the <em>y</em>-coordinate of the point
- */
-public static void point(double x, double y) {
-	double xs = scaleX(x);
-	double ys = scaleY(y);
-	double r = penRadius;
-	float scaledPenRadius = (float) (r * DEFAULT_SIZE);
+	/**
+	 * Draws a point centered at (<em>x</em>, <em>y</em>).
+	 * The point is a filled circle whose radius is equal to the pen radius.
+	 * To draw a single-pixel point, first set the pen radius to 0.
+	 *
+	 * @param x the <em>x</em>-coordinate of the point
+	 * @param y the <em>y</em>-coordinate of the point
+	 */
+	public static void point(double x, double y) {
+		double xs = scaleX(x);
+		double ys = scaleY(y);
+		double r = penRadius;
+		float scaledPenRadius = (float) (r * DEFAULT_SIZE);
 
-	// double ws = factorX(2*r);
-	// double hs = factorY(2*r);
-	// if (ws <= 1 && hs <= 1) pixel(x, y);
-	if (scaledPenRadius <= 1) pixel(x, y);
-	else offscreen.fill(new Ellipse2D.Double(xs - scaledPenRadius/2, ys - scaledPenRadius/2,
-			scaledPenRadius, scaledPenRadius));
-	draw();
-}
+		// double ws = factorX(2*r);
+		// double hs = factorY(2*r);
+		// if (ws <= 1 && hs <= 1) pixel(x, y);
+		if (scaledPenRadius <= 1) pixel(x, y);
+		else offscreen.fill(new Ellipse2D.Double(xs - scaledPenRadius/2, ys - scaledPenRadius/2,
+				scaledPenRadius, scaledPenRadius));
+		draw();
+	}
 
 	/**
 	 * Draws a circle of the specified radius, centered at (<em>x</em>, <em>y</em>).
@@ -1273,9 +1285,9 @@ public static void point(double x, double y) {
 	}
 
 
-	/*************************
+	/***************************************************************************
 	 *  Drawing images.
-	 *************************/
+	 ***************************************************************************/
 	// get an image from the given filename
 	private static Image getImage(String filename) {
 		if (filename == null) throw new IllegalArgumentException();
@@ -1311,13 +1323,13 @@ public static void point(double x, double y) {
 		return icon.getImage();
 	}
 
-	/*************************
+	/***************************************************************************
 	 * [Summer 2016] Should we update to use ImageIO instead of ImageIcon()?
 	 *               Seems to have some issues loading images on some systems
 	 *               and slows things down on other systems.
 	 *               especially if you don't call ImageIO.setUseCache(false)
 	 *               One advantage is that it returns a BufferedImage.
-	 *************************/
+	 ***************************************************************************/
 	/*
     private static BufferedImage getImage(String filename) {
         if (filename == null) throw new IllegalArgumentException();
@@ -1481,9 +1493,9 @@ public static void point(double x, double y) {
 		draw();
 	}
 
-	/*************************
+	/***************************************************************************
 	 *  Drawing text.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Write the given text string in the current font, centered at (<em>x</em>, <em>y</em>).
@@ -1572,6 +1584,7 @@ public static void point(double x, double y) {
 		pause(t);
 		enableDoubleBuffering();
 	}
+
 	/**
 	 * Pause for t milliseconds. This method is intended to support computer animations.
 	 * @param t number of milliseconds
@@ -1620,9 +1633,9 @@ public static void point(double x, double y) {
 	}
 
 
-	/*************************
+	/***************************************************************************
 	 *  Save drawing to a file.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Saves the drawing to using the specified filename.
@@ -1676,32 +1689,177 @@ public static void point(double x, double y) {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		switch (e.getActionCommand()){
+		String s = e.getActionCommand();
+		switch (s) {
 			case "Save":
-				String file = JOptionPane.showInputDialog(null, "File name:");
-				if (file != null){
-					file = "save graph/" + file + ".txt";
-					gui.save(file);
+				FileDialog save_window = new FileDialog(StdDraw.frame, "Save Graph", FileDialog.SAVE);
+				save_window.setVisible(true);
+				String Save_name = save_window.getFile();
+				if (Save_name != null) {
+					g.save(save_window.getDirectory() + File.separator + save_window.getFile());
 				}
 				break;
-			case "Add Edge":
+			case "upload":
+				FileDialog load_window = new FileDialog(StdDraw.frame, "upload", FileDialog.LOAD);
+				load_window.setVisible(true);
+				String load_name = load_window.getFile();
+				if (load_name != null) {
+					try {
+						graph loadedGraph = g.up(load_window.getDirectory() + File.separator + load_window.getFile());
+						g.dgraph = loadedGraph;
+						g.DrawGraph();
+					} catch (FileNotFoundException ex) {
+						ex.printStackTrace();
+					}
 
+				}
+				break;
 
+			case "add Edge":
+				String src = JOptionPane.showInputDialog("Please enter a src");
+				String dest = JOptionPane.showInputDialog("Please enter a dest");
+				String weight = JOptionPane.showInputDialog("Please enter a weight");
+				int src1 = 0;
+				int dest1 = 0;
+				int weight1 = 0;
+				src1 = Integer.parseInt(src);
+				dest1 = Integer.parseInt(dest);
+				weight1 = Integer.parseInt(weight);
+				g.add_edge(src1, dest1, weight1);
+				g.DrawGraph();
+				break;
 
+			case "add Node":
+				JFrame node = new JFrame();
+				String key = JOptionPane.showInputDialog("Please enter key");
+				String xp = JOptionPane.showInputDialog("Please enter x");
+				String yp = JOptionPane.showInputDialog("Please enter y");
+				int k = 0;
+				int x = 0;
+				int y = 0;
+				try {
+					k = Integer.parseInt(key);
+					x = Integer.parseInt(xp);
+					y = Integer.parseInt(yp);
+				} catch (Exception badInput) {
+					System.err.println("Error");
+					JOptionPane.showMessageDialog(node, "Error", "Error", 0);
+				}
+				if (x < -100 || x > 100 || y < -100 || y > 100){
+					System.out.println("Error - this node can't be added , you have exceeded the range");
+				}
+				g.addNode(k, x, y);
+				g.DrawGraph();
+				break;
+
+			case "remove Node":
+				JFrame reNode = new JFrame();
+				int k1 = 0;
+				String key1 = JOptionPane.showInputDialog(reNode, "Please enter key");
+				try {
+					k1 = Integer.parseInt(key1);
+				} catch (Exception badInput) {
+					System.err.println("The key is not exist");
+					JOptionPane.showMessageDialog(reNode, "Error: The key is not exist ", "Error", 0);
+				}
+				g.removeNode(k1);
+				g.DrawGraph();
+				break;
+			case "remove Edge":
+				JFrame reEdge = new JFrame();
+				String srcEdge = JOptionPane.showInputDialog(reEdge, "Please enter src");
+				String destEdge = JOptionPane.showInputDialog(reEdge, "Please enter dest");
+				int srcEdge1 = 0;
+				int destEdge1 = 0;
+				try {
+					srcEdge1 = Integer.parseInt(srcEdge);
+					destEdge1 = Integer.parseInt(destEdge);
+					g.removeEdge(srcEdge1, destEdge1);
+					g.DrawGraph();
+				} catch (Exception badInput) {
+					System.err.println("Please enter src and dest are not correct");
+					JOptionPane.showMessageDialog(reEdge, "Error: src and dest are not correct ", "Error", 0);
+
+				}
+				break;
+
+			case "isConnected":
+				JFrame connect = new JFrame();
+				boolean ans = g.isConnected();
+				System.out.println(ans);
+				if (ans == true) {
+					JOptionPane.showMessageDialog(connect, " is Connected.");
+				} else {
+					JOptionPane.showMessageDialog(connect, " is not Connected.");
+				}
+				break;
+			case "shortestPathDist":
+				JFrame Stpd = new JFrame();
+				String srcPath = JOptionPane.showInputDialog("Please enter src");
+				String destPath = JOptionPane.showInputDialog("Please enter dest");
+				int sp = 0;
+				int dp = 0;
+				double d = 0;
+				try {
+					sp = Integer.parseInt(srcPath);
+					dp = Integer.parseInt(destPath);
+					d = g.shortestPathDist(sp, dp);
+					g.DrawGraph();
+					JOptionPane.showMessageDialog(Stpd, "The Shortest path is :" + d);
+				} catch (Exception badInput) {
+					System.err.println("Please enter src and dest are not correct");
+					JOptionPane.showMessageDialog(Stpd, "Error: src and dest are not correct ", "Error", 0);
+				}
+
+				break;
+			case "shortestPath":
+				JFrame Stp = new JFrame();
+				String srcStp = JOptionPane.showInputDialog("Please enter src");
+				String destStp = JOptionPane.showInputDialog("Please enter dest");
+				int sStp = 0;
+				int dStp = 0;
+				try {
+					sStp = Integer.parseInt(srcStp);
+					dStp = Integer.parseInt(destStp);
+					g.DrawGraph();
+					List<node_data> list = g.shortestPath(sStp, dStp);
+					JOptionPane.showMessageDialog(Stp, "The list is :" + list);
+				} catch (Exception badInput) {
+					JOptionPane.showMessageDialog(Stp, "Error: ", "Error", 0);
+				}
+				break;
+
+			case "TSP":
+				JFrame Tsp = new JFrame();
+				try {
+					String target = JOptionPane.showInputDialog("Please enter nodes of targets");
+					List<Integer> list = new LinkedList<>();
+					int i=0;
+					String arr [] = target.split(",");
+					while (i< arr.length){
+						list.add(Integer.parseInt(arr[i]));
+						i++;
+					}
+					List<node_data> l = new LinkedList<>();
+					l=g.TSP(list);
+					JOptionPane.showMessageDialog(Tsp, "The list is :" + l.toString());
+				} catch (Exception badInput) {
+					System.err.println("Error");
+					JOptionPane.showMessageDialog(Tsp, "Error:  ", "Error", 0);
+				}
+				break;
 		}
-//		String s = e.getActionCommand();
-//		FileDialog chooser = new FileDialog(StdDraw.frame, "Use a .png or .jpg extension", FileDialog.SAVE);
-//		chooser.setVisible(true);
-//		String filename = chooser.getFile();
-//		if (filename != null) {
-//			StdDraw.save(chooser.getDirectory() + File.separator + chooser.getFile());
-//		}
+
+
+
+
 	}
 
 
-	/*************************
+
+	/***************************************************************************
 	 *  Mouse interactions.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Returns true if the mouse is being pressed.
@@ -1819,9 +1977,9 @@ public static void point(double x, double y) {
 	}
 
 
-	/*************************
+	/***************************************************************************
 	 *  Keyboard interactions.
-	 *************************/
+	 ***************************************************************************/
 
 	/**
 	 * Returns true if the user has typed a key (that has not yet been processed).

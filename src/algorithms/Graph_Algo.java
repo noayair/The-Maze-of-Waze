@@ -12,7 +12,7 @@ import dataStructure.*;
  * @author Noa Yair and Oriya Kronfeld
  *
  */
-public class Graph_Algo implements graph_algorithms {
+public class Graph_Algo implements graph_algorithms , Serializable {
 	private graph graph;
 
 	public Graph_Algo(graph g) {
@@ -23,46 +23,63 @@ public class Graph_Algo implements graph_algorithms {
 		this.graph = null;
 	}
 
+	public graph getGraph()
+	{
+		return graph;
+	}
+
 	@Override
 	public void init(graph g) {
 		this.graph = g;
 	}
 
 	@Override
-	public void init(String file_name) throws FileNotFoundException {
-		try {
+	public void init(String file_name) {
+		try
+		{
 			FileInputStream file = new FileInputStream(file_name);
 			ObjectInputStream in = new ObjectInputStream(file);
 
-			this.graph = (graph) in.readObject();
+			graph = (graph)in.readObject();
 
 			in.close();
 			file.close();
 
 			System.out.println("Object has been deserialized");
-		} catch (IOException ex) {
+
+		}
+
+		catch(IOException ex)
+		{
+			ex.printStackTrace();
 			System.out.println("IOException is caught");
-		} catch (ClassNotFoundException ex) {
+		}
+
+		catch(ClassNotFoundException ex)
+		{
 			System.out.println("ClassNotFoundException is caught");
 		}
 	}
 
 	@Override
 	public void save(String file_name) {
-		try {
+		try
+		{
 			FileOutputStream file = new FileOutputStream(file_name);
 			ObjectOutputStream out = new ObjectOutputStream(file);
 
-			out.writeObject(this.graph);
+			out.writeObject(graph);
 
 			out.close();
 			file.close();
 
 			System.out.println("Object has been serialized");
-			System.out.println(graph);
-		} catch (IOException ex) {
+		}
+		catch(IOException ex)
+		{
 			System.out.println("IOException is caught");
 		}
+
 	}
 
 	@Override
@@ -104,6 +121,9 @@ public class Graph_Algo implements graph_algorithms {
 		node_data node = new NodeData();
 		while (counter < graph.nodeSize()) {
 			node = find_min(graph);
+			if(node.getKey() == 0){ // if the way is not exist return infinity
+				return Double.POSITIVE_INFINITY;
+			}
 			node.setTag(1);
 			cost_way(node);
 			counter++;
@@ -148,7 +168,10 @@ public class Graph_Algo implements graph_algorithms {
 	public List<node_data> shortestPath(int src, int dest) {
 		LinkedList<node_data> list = new LinkedList<node_data>();
 		Stack<node_data> stack = new Stack<node_data>();
-		shortestPathDist(src, dest);
+		double d = shortestPathDist(src, dest);
+		if(d == Double.POSITIVE_INFINITY){
+			return null;
+		}
 		node_data node = graph.getNode(dest);
 		stack.push(node);
 		int key = 0;
@@ -175,6 +198,12 @@ public class Graph_Algo implements graph_algorithms {
 			return null;
 		}
 		while(!targets.isEmpty()){
+			if(targets.size() == 1){
+				if(!ans.contains(this.graph.getNode(targets.get(0))) || ans.indexOf(this.graph.getNode(targets.get(0))) != ans.size()-1) {
+					ans.add(this.graph.getNode(targets.get(0)));
+					break;
+				}
+			}
 			i = 0;
 			src = targets.get(0);
 			dest = targets.get(1);
@@ -184,8 +213,10 @@ public class Graph_Algo implements graph_algorithms {
 			targets.remove(i);
 			while(iter.hasNext()){
 				n = iter.next();
-				if(targets.contains(n.getKey())){
+				if(!ans.contains(n) || ans.indexOf(n) != ans.size()-1) {
 					ans.add(n);
+				}
+				if(targets.contains(n.getKey())){
 					i = targets.indexOf(n.getKey());
 					targets.remove(i);
 				}
@@ -201,6 +232,10 @@ public class Graph_Algo implements graph_algorithms {
 			ans.addNode(n);
 		}
 		return ans;
+	}
+
+	public String toString(){
+		return ((DGraph)graph).toString();
 	}
 
 	public static void main(String[] args) {
@@ -220,7 +255,7 @@ public class Graph_Algo implements graph_algorithms {
 		graph.addNode(n5);
 		graph.addNode(n6);
 		graph.addNode(n7);
-		graph.connect(2, 1, 4);
+//		graph.connect(2, 1, 4);
 		graph.connect(1, 3, 3);
 		graph.connect(1, 5, 20);
 		graph.connect(3, 2, 6);
@@ -231,31 +266,32 @@ public class Graph_Algo implements graph_algorithms {
 		graph.connect(3, 4, 11);
 		graph.connect(4, 5, 10);
 		graph.connect(5, 3, 8);
-		double d = g.shortestPathDist(1, 7);
+		double d = g.shortestPathDist(4, 1);
 		System.out.println(d);
-		LinkedList<node_data> list = new LinkedList<>();
-		list = (LinkedList<node_data>) g.shortestPath(1, 7);
-		System.out.println(list);
-		boolean b = g.isConnected();
-		System.out.println(b);
-		List<Integer> target = new LinkedList<>();
-		target.add(1);
-		target.add(2);
-		target.add(3);
-		target.add(4);
-		target.add(5);
-		LinkedList<node_data> list1 = new LinkedList<>();
-		list1 = (LinkedList<node_data>) g.TSP(target);
-		System.out.println(list1);
-		List<Integer> target1 = new LinkedList<>();
-		target1.add(6);
-		target1.add(2);
-		target1.add(4);
-		target1.add(1);
-		target1.add(7);
-		list1 = (LinkedList<node_data>) g.TSP(target1);
-		System.out.println(list1);
-		g.copy();
+//		LinkedList<node_data> list = new LinkedList<>();
+//		list = (LinkedList<node_data>) g.shortestPath(1, 7);
+//		System.out.println(list);
+//		boolean b = g.isConnected();
+//		System.out.println(b);
+//		List<Integer> target = new LinkedList<>();
+//		target.add(1);
+//		target.add(2);
+//		target.add(3);
+//		target.add(4);
+//		target.add(4);
+//		LinkedList<node_data> list1 = new LinkedList<>();
+//		list1 = (LinkedList<node_data>) g.TSP(target);
+//		System.out.println(list1);
+//		List<Integer> target1 = new LinkedList<>();
+//		target1.add(7);
+//		target1.add(2);
+//		target1.add(1);
+//		target1.add(4);
+//		target1.add(1);
+//		target1.add(7);
+//		list1 = (LinkedList<node_data>) g.TSP(target1);
+//		System.out.println(list1);
+//		g.copy();
 //		DGraph dg = new DGraph();
 //		Graph_Algo gr = new Graph_Algo(dg);
 //		NodeData node1 = new NodeData(1);

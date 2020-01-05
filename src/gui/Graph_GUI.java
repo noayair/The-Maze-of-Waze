@@ -1,45 +1,104 @@
 package gui;
 
 import algorithms.Graph_Algo;
-import dataStructure.DGraph;
-import dataStructure.NodeData;
-import dataStructure.edge_data;
-import dataStructure.node_data;
+import algorithms.graph_algorithms;
+import dataStructure.*;
 import utils.Point3D;
 import utils.StdDraw;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
+import java.util.List;
 
 public class Graph_GUI{
-    public static Graph_Algo g = new Graph_Algo();
-    public static DGraph graph = new DGraph();
+    public graph_algorithms algo = new Graph_Algo();
+    public graph dgraph = new DGraph();
 
+    //constructor
 
     public Graph_GUI(){
-        g = new Graph_Algo();
-        graph = new DGraph();
-//        StdDraw.g = this;
-        g.init(graph);
+        algo = new Graph_Algo();
+        dgraph = new DGraph();
+        StdDraw.g = this;
+        //     this.openCanvas();
     }
 
-    public void init_from(String file_name) {
-        try {
-            g.init(file_name);
-            graph = (DGraph) g.copy();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+    public Graph_GUI (graph d){
+        dgraph=d;
+        algo.init(d);
+        StdDraw.g=this;
+        this.openCanvas();
+    }
+
+    public void addNode(int key, double x, double y){
+        NodeData n = new NodeData(key);
+        n.setLocation(new Point3D(x,y));
+        dgraph.addNode(n);
+        StdDraw.g=this;
+    }
+
+    public void add_edge(int src, int dest, double w){
+        dgraph.connect(src, dest, w);
+        StdDraw.g=this;
+    }
+
+    public void removeNode(int key){
+        dgraph.removeNode(key);
+        StdDraw.g=this;
+    }
+
+    public void removeEdge(int src, int dest) {
+        dgraph.removeEdge(src,dest);
+        StdDraw.g=this;
     }
 
     public void save(String file_name){
-        g.init(graph);
-        g.save(file_name);
+        algo.init(dgraph);
+        algo.save(file_name );
     }
 
-    public static void DrawGraph(DGraph g) {
+    public graph up(String file_name) throws FileNotFoundException {
+        Graph_Algo g = new Graph_Algo();
+        g.init(file_name);
+        algo = g;
+        dgraph = ((Graph_Algo) algo).getGraph();
+        return dgraph;
+    }
+
+    public boolean isConnected(){
+        algo.init(dgraph);
+        return algo.isConnected();
+    }
+
+    public double shortestPathDist (int src, int dest){
+        algo.init(dgraph);
+        return algo.shortestPathDist(src,dest);
+    }
+
+    public List<node_data> shortestPath(int src, int dest) {
+        algo.init(dgraph);
+        return algo.shortestPath(src,dest);
+    }
+
+    public List<node_data> TSP(List<Integer> targets) {
+        algo.init(dgraph);
+        return algo.TSP(targets);
+    }
+
+    public void openCanvas(){
+//        StdDraw.setCanvasSize(600,600);
+//        StdDraw.setXscale(-100,100);
+//        StdDraw.setYscale(-100,100);
+        //DrawGraph();
+    }
+
+    //    public void DrawGraph()
+//    {
+//        DrawGraph(null);
+//    }
+    public void DrawGraph() {
+        graph g = this.dgraph;
+
         StdDraw.setCanvasSize(600, 600);
         StdDraw.setXscale(-100, 100);
         StdDraw.setYscale(-100, 100);
@@ -73,40 +132,61 @@ public class Graph_GUI{
     }
 
     public static void main(String[] args) {
-        DGraph graph = new DGraph();
-        Graph_Algo g = new Graph_Algo(graph);
-        NodeData n1 = new NodeData(1);
-        n1.setLocation(new Point3D(80,90));
-        NodeData n2 = new NodeData(2);
-        n2.setLocation(new Point3D(80,60));
-        NodeData n3 = new NodeData(3);
-        n3.setLocation(new Point3D(70,70));
-        NodeData n4 = new NodeData(4);
-        n4.setLocation(new Point3D(50,60));
-        NodeData n5 = new NodeData(5);
-        n5.setLocation(new Point3D(50,90));
-        NodeData n6 = new NodeData(6);
-        n6.setLocation(new Point3D(20,30));
-        NodeData n7 = new NodeData(7);
-        n7.setLocation(new Point3D(20,50));
-        graph.addNode(n1);
-        graph.addNode(n2);
-        graph.addNode(n3);
-        graph.addNode(n4);
-        graph.addNode(n5);
-        graph.addNode(n6);
-        graph.addNode(n7);
-        graph.connect(1, 2, 4);
-        graph.connect(1, 3, 3);
-        graph.connect(1, 5, 20);
-        graph.connect(3, 2, 6);
-        graph.connect(2, 4, 5);
-        graph.connect(4, 6, 2);
-        graph.connect(6, 7, 3);
-        graph.connect(7, 5, 5);
-        graph.connect(3, 4, 11);
-        graph.connect(4, 5, 10);
-        graph.connect(5, 3, 8);
-        DrawGraph(graph);
+        node_data[] node = new NodeData[10000];
+        DGraph dgraph = new DGraph();
+        for (int i = 0; i < node.length; i++) {
+            node[i] = new NodeData(i);
+            double x = ((Math.random()*201)-100);
+            double y = ((Math.random()*201)-100);
+            Point3D p = new Point3D(x , y);
+            node[i].setLocation(p);
+            dgraph.addNode(node[i]);
+            if(i > 1 && i < node.length-1) {
+                double w = ((Math.random()* 201)-100);
+                dgraph.connect(node[i-1].getKey(), node[i].getKey(), w);
+            }
+        }
+//        NodeData n1 = new NodeData(1);
+//        n1.setLocation(new Point3D(80,90));
+//        NodeData n2 = new NodeData(2);
+//        n2.setLocation(new Point3D(80,60));
+//        NodeData n3 = new NodeData(3);
+//        n3.setLocation(new Point3D(70,70));
+//        NodeData n4 = new NodeData(4);
+//        n4.setLocation(new Point3D(50,60));
+//        NodeData n5 = new NodeData(5);
+//        n5.setLocation(new Point3D(50,90));
+//        NodeData n6 = new NodeData(6);
+//        n6.setLocation(new Point3D(20,30));
+//        NodeData n7 = new NodeData(7);
+//        n7.setLocation(new Point3D(20,50));
+
+
+//        DGraph dgraph = new DGraph();
+//        dgraph.addNode(n1);
+//        dgraph.addNode(n2);
+//        dgraph.addNode(n3);
+//        dgraph.addNode(n4);
+//        dgraph.addNode(n5);
+//        dgraph.addNode(n6);
+//        dgraph.addNode(n7);
+//        dgraph.connect(2, 1, 4);
+//        dgraph.connect(1, 3, 3);
+//        dgraph.connect(1, 5, 20);
+//        dgraph.connect(3, 2, 6);
+//        dgraph.connect(2, 4, 5);
+//        dgraph.connect(4, 6, 2);
+//        dgraph.connect(6, 7, 3);
+//        dgraph.connect(7, 5, 5);
+//        dgraph.connect(3, 4, 11);
+//        dgraph.connect(4, 5, 10);
+//        dgraph.connect(5, 3, 8);
+//
+        Graph_GUI p = new Graph_GUI(dgraph);
+        p.algo.init(dgraph);
+
+        p.DrawGraph();
+//        Graph_GUI p = new Graph_GUI();
+//        p.DrawGraph();
     }
 }

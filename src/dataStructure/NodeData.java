@@ -3,6 +3,7 @@ package dataStructure;
 import org.w3c.dom.Node;
 import utils.Point3D;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -12,7 +13,7 @@ import java.util.HashMap;
  * @author Noa Yair and Oriya Kronfeld
  */
 
-public class NodeData implements node_data {
+public class NodeData implements node_data , Serializable {
     private int key; //the id of the node
     private double weight; //the weight of the node
     private Point3D location; //the location of the node
@@ -47,6 +48,15 @@ public class NodeData implements node_data {
         this.weight = Double.POSITIVE_INFINITY;
         this.edge_hash = new HashMap<Integer, edge_data>();
         this.location = null;
+    }
+
+    public NodeData(int key , Point3D p){
+        this.key = key;
+        this.tag = 0;
+        this.info = null;
+        this.weight = Double.POSITIVE_INFINITY;
+        this.edge_hash = new HashMap<Integer, edge_data>();
+        this.location = p;
     }
 
     //Getters and Setters
