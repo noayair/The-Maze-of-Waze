@@ -18,3 +18,6 @@ The project has 4 main packages:
 **gui** -  The package contains class named Graph_GUI. this class can show graph and algorithms actions on it and draw them on the screen.
 
 **utils** - Structured classes of Java. (Point3D, Range, StdDrow). We used StdDrow to draw graph on the screen.
+
+![גרף](https://user-images.githubusercontent.com/57597109/71783613-d0819b00-2ff1-11ea-9c29-b5c54e6b9586.jpeg)
+
