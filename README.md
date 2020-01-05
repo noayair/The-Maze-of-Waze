@@ -6,6 +6,8 @@ Noa Yair - 313431702
 Oriya Kronfeld - 314078585
 
 Our project enable the user to build Graph , and run algorithms (for example, check the short path from point to point, check if the graph is connected) ,and draw them on the screen.
+We defined it so that every node holds a hash-map of edge that coming out of it.
+
 
 The project has 4 main packages: 
 
