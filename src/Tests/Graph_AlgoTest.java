@@ -19,8 +19,6 @@ public class Graph_AlgoTest {
 
     public graph_algorithms create_graph() {
         graph graphs = new DGraph();
-//        g = new Graph_Algo(graphs);
-//        g.init(graphs);
         Graph_Algo g = new Graph_Algo(graphs);
         NodeData n1 = new NodeData(1);
         NodeData n2 = new NodeData(2);

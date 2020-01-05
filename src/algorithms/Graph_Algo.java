@@ -243,11 +243,11 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		while(!targets.isEmpty()){
 			if(targets.size() == 1){
 				if(!ans.contains(this.graph.getNode(targets.get(0)))) {
-						ans.add(this.graph.getNode(targets.get(0)));
-						break;
-					}else{
-						break;
-					}
+					ans.add(this.graph.getNode(targets.get(0)));
+					break;
+				}else{
+					break;
+				}
 			}
 			i = 0;
 			src = targets.get(0);
@@ -281,80 +281,5 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 
 	public String toString(){
 		return ((DGraph)graph).toString();
-	}
-
-	public static void main(String[] args) {
-		DGraph graph = new DGraph();
-		Graph_Algo g = new Graph_Algo(graph);
-		NodeData n1 = new NodeData(1);
-		NodeData n2 = new NodeData(2);
-		NodeData n3 = new NodeData(3);
-		NodeData n4 = new NodeData(4);
-		NodeData n5 = new NodeData(5);
-		NodeData n6 = new NodeData(6);
-		NodeData n7 = new NodeData(7);
-		graph.addNode(n1);
-		graph.addNode(n2);
-		graph.addNode(n3);
-		graph.addNode(n4);
-		graph.addNode(n5);
-		graph.addNode(n6);
-		graph.addNode(n7);
-		graph.connect(2, 1, 4);
-		graph.connect(1, 3, 3);
-		graph.connect(1, 5, 20);
-		graph.connect(3, 2, 6);
-		graph.connect(2, 4, 5);
-		graph.connect(4, 6, 2);
-		graph.connect(6, 7, 3);
-		graph.connect(7, 5, 5);
-		graph.connect(3, 4, 11);
-		graph.connect(4, 5, 10);
-		graph.connect(5, 3, 8);
-		double d = g.shortestPathDist(4, 1);
-		System.out.println(d);
-//		LinkedList<node_data> list = new LinkedList<>();
-//		list = (LinkedList<node_data>) g.shortestPath(1, 7);
-//		System.out.println(list);
-//		boolean b = g.isConnected();
-//		System.out.println(b);
-		List<Integer> target = new LinkedList<>();
-		target.add(1);
-		target.add(2);
-		target.add(3);
-		target.add(3);
-//		target.add(4);
-		LinkedList<node_data> list1 = new LinkedList<>();
-		list1 = (LinkedList<node_data>) g.TSP(target);
-		System.out.println(list1);
-//		List<Integer> target1 = new LinkedList<>();
-//		target1.add(7);
-//		target1.add(2);
-//		target1.add(1);
-//		target1.add(4);
-//		target1.add(1);
-//		target1.add(7);
-//		list1 = (LinkedList<node_data>) g.TSP(target1);
-//		System.out.println(list1);
-//		g.copy();
-//		DGraph dg = new DGraph();
-//		Graph_Algo gr = new Graph_Algo(dg);
-//		NodeData node1 = new NodeData(1);
-//		NodeData node2 = new NodeData(2);
-//		NodeData node3 = new NodeData(3);
-//		NodeData node4 = new NodeData(4);
-//		NodeData node5 = new NodeData(5);
-//		dg.addNode(node1);
-//		dg.addNode(node2);
-//		dg.addNode(node3);
-//		dg.addNode(node4);
-//		dg.addNode(node5);
-//		dg.connect(1,3,1);
-//		dg.connect(3,5,2);
-//		dg.connect(5,4,3);
-//		dg.connect(4,2,4);
-//		dg.connect(2,1,5);
-//		boolean bool = gr.isConnected();
-//		System.out.println(bool);
 	}
 }

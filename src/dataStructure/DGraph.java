@@ -164,36 +164,4 @@ public class DGraph implements graph , Serializable {
 		}
 		return s;
 	}
-
-	public static void main(String[] args) {
-		DGraph graph = new DGraph();
-		NodeData n1 = new NodeData(1);
-		NodeData n2 = new NodeData(2);
-		NodeData n3 = new NodeData(3);
-		NodeData n4 = new NodeData(4);
-		graph.addNode(n1);
-		graph.addNode(n2);
-		graph.addNode(n3);
-		graph.addNode(n4);
-//		graph.connect(2,2,4);
-		System.out.println("node size: " + graph.nodeSize());
-		graph.connect(1 ,2 , 10.4);
-		graph.connect(4 , 3 , 22);
-		System.out.println("edge from 1: " + graph.getE(1));
-		System.out.println("edge size: " + graph.edgeSize());
-		graph.connect(3 , 1 , 78.3);
-		graph.connect(1 , 4 , 20.2);
-		System.out.println("edge from 1: " + graph.getE(1));
-		System.out.println("edge size: " + graph.edgeSize());
-//		graph.removeNode(1);
-		System.out.println("node size: " + graph.nodeSize());
-		System.out.println("edge size: " + graph.edgeSize());
-//		graph.removeEdge(4 , 3);
-//		graph.removeEdge(9,2);
-		System.out.println(graph.toString());
-		System.out.println(graph.getMC());
-		System.out.println(n3.toString());
-		System.out.println(graph.getEdge(1,2).toString());
-	}
-
 }
