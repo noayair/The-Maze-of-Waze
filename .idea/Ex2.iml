@@ -39,5 +39,7 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="GameServer_v0.27" level="project" />
+    <orderEntry type="library" name="java-json" level="project" />
   </component>
 </module>
