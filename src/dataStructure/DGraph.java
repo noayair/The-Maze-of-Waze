@@ -1,5 +1,12 @@
 package dataStructure;
 
+import Server.Game_Server;
+import Server.game_service;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import utils.Point3D;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
@@ -163,5 +170,32 @@ public class DGraph implements graph , Serializable {
 			s += ((NodeData)n).toString() + " ";
 		}
 		return s;
+	}
+
+	public void init(String Jstr){ //help us to init the graph from the server
+		try {
+			JSONObject Dgraph = new JSONObject(Jstr);
+			JSONArray nodes = Dgraph.getJSONArray("Nodes");
+			JSONArray edges = Dgraph.getJSONArray("Edges");
+			int key , src , dest;
+			double weight;
+			String location_str;
+			Point3D location;
+			for(int i = 0; i < nodes.length(); i++){ // adds all the nodes from the json file to the graph
+				key = nodes.getJSONObject(i).getInt("id");
+				location_str = nodes.getJSONObject(i).getString("pos");
+				location = new Point3D(location_str);
+				node_data new_node = new NodeData(key , location);
+				this.addNode(new_node);
+			}
+			for (int i = 0; i < edges.length(); i++) {
+				src =  edges.getJSONObject(i).getInt("src");
+				weight = edges.getJSONObject(i).getDouble("w");
+				dest = edges.getJSONObject(i).getInt("dest");
+				this.connect(src , dest , weight);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 }
