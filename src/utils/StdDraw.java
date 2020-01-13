@@ -27,8 +27,11 @@ package utils;
  *
  ******************************************************************************/
 
+import Server.Game_Server;
+import Server.game_service;
 import algorithms.Graph_Algo;
 import dataStructure.*;
+import gameClient.MyGameGUI;
 import gui.Graph_GUI;
 //import org.graalvm.compiler.graph.Graph;
 
@@ -717,46 +720,46 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// create the menu bar (changed to private)
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("File");
-		JMenuItem menuItem1 = new JMenuItem("Save");
+		JMenu menu = new JMenu("Menu");
+		JMenuItem menuItem1 = new JMenuItem("Play");
 		menuItem1.addActionListener(std);
-		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
+//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.add(menuItem1);
 		menuBar.add(menu);
-		JMenuItem upload = new JMenuItem("upload");
-		upload.addActionListener(std);
-		menu.add(upload);
-		JMenu Graph = new JMenu("Graph");
-		menuBar.add(Graph);
-
-		JMenuItem Node = new JMenuItem("add Node");
-		Node.addActionListener(std);
-		Graph.add(Node);
-		JMenuItem Edge = new JMenuItem("add Edge");
-		Edge.addActionListener(std);
-		Graph.add(Edge);
-		JMenuItem removeNode = new JMenuItem("remove Node");
-		removeNode.addActionListener(std);
-		Graph.add(removeNode);
-		JMenuItem removeEdge = new JMenuItem("remove Edge");
-		removeEdge.addActionListener(std);
-		Graph.add(removeEdge);
-
-		JMenu Algo = new JMenu("Algorithems");
-		menuBar.add(Algo);
-		JMenuItem isConnect = new JMenuItem("isConnected");
-		isConnect.addActionListener(std);
-		Algo.add(isConnect);
-		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
-		shortestPathDist.addActionListener(std);
-		Algo.add(shortestPathDist);
-		JMenuItem shortestPath = new JMenuItem("shortestPath");
-		shortestPath.addActionListener(std);
-		Algo.add(shortestPath);
-		JMenuItem TSP = new JMenuItem("TSP");
-		TSP.addActionListener(std);
-		Algo.add(TSP);
+//		JMenuItem upload = new JMenuItem("upload");
+//		upload.addActionListener(std);
+//		menu.add(upload);
+//		JMenu Graph = new JMenu("Graph");
+//		menuBar.add(Graph);
+//
+//		JMenuItem Node = new JMenuItem("add Node");
+//		Node.addActionListener(std);
+//		Graph.add(Node);
+//		JMenuItem Edge = new JMenuItem("add Edge");
+//		Edge.addActionListener(std);
+//		Graph.add(Edge);
+//		JMenuItem removeNode = new JMenuItem("remove Node");
+//		removeNode.addActionListener(std);
+//		Graph.add(removeNode);
+//		JMenuItem removeEdge = new JMenuItem("remove Edge");
+//		removeEdge.addActionListener(std);
+//		Graph.add(removeEdge);
+//
+//		JMenu Algo = new JMenu("Algorithems");
+//		menuBar.add(Algo);
+//		JMenuItem isConnect = new JMenuItem("isConnected");
+//		isConnect.addActionListener(std);
+//		Algo.add(isConnect);
+//		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
+//		shortestPathDist.addActionListener(std);
+//		Algo.add(shortestPathDist);
+//		JMenuItem shortestPath = new JMenuItem("shortestPath");
+//		shortestPath.addActionListener(std);
+//		Algo.add(shortestPath);
+//		JMenuItem TSP = new JMenuItem("TSP");
+//		TSP.addActionListener(std);
+//		Algo.add(TSP);
 
 		return menuBar;
 	}
@@ -1691,159 +1694,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 		switch (s) {
-			case "Save":
-				FileDialog save_window = new FileDialog(StdDraw.frame, "Save Graph", FileDialog.SAVE);
-				save_window.setVisible(true);
-				String Save_name = save_window.getFile();
-				if (Save_name != null) {
-					g.save(save_window.getDirectory() + File.separator + save_window.getFile());
-				}
-				break;
-			case "upload":
-				FileDialog load_window = new FileDialog(StdDraw.frame, "upload", FileDialog.LOAD);
-				load_window.setVisible(true);
-				String load_name = load_window.getFile();
-				if (load_name != null) {
-					try {
-						graph loadedGraph = g.up(load_window.getDirectory() + File.separator + load_window.getFile());
-						g.dgraph = loadedGraph;
-						g.DrawGraph();
-					} catch (FileNotFoundException ex) {
-						ex.printStackTrace();
-					}
-
-				}
-				break;
-
-			case "add Edge":
-				JFrame edge = new JFrame();
-				String src = JOptionPane.showInputDialog("Please enter a src");
-				String dest = JOptionPane.showInputDialog("Please enter a dest");
-				String weight = JOptionPane.showInputDialog("Please enter a weight");
-				int src1 = 0;
-				int dest1 = 0;
-				double weight1 = 0;
+			case "Play":
+				JFrame play = new JFrame();
+				String level = JOptionPane.showInputDialog("Please Choose level between 0 to 23");
+				int l = 0;
 				try {
-					src1 = Integer.parseInt(src);
-					dest1 = Integer.parseInt(dest);
-					weight1 = Double.parseDouble(weight);
-					g.add_edge(src1, dest1, weight1);
-					g.DrawGraph();
+					l = Integer.parseInt(level);
+					game_service game = Game_Server.getServer(l);
+					MyGameGUI ga = new MyGameGUI();
+					ga.startGame(l);
 				}catch (Exception badInput){
-					JOptionPane.showMessageDialog(edge, "Error - src or dest are not exist or the weigh is not positive", "Error", 0);
-				}
-				break;
-
-			case "add Node":
-				JFrame node = new JFrame();
-				String key = JOptionPane.showInputDialog("Please enter key");
-				String xp = JOptionPane.showInputDialog("Please enter x");
-				String yp = JOptionPane.showInputDialog("Please enter y");
-				int k = 0;
-				int x = 0;
-				int y = 0;
-				try {
-					k = Integer.parseInt(key);
-					x = Integer.parseInt(xp);
-					y = Integer.parseInt(yp);
-					g.addNode(k, x, y);
-					g.DrawGraph();
-					if (x < -100 || x > 100 || y < -100 || y > 100){
-						JOptionPane.showMessageDialog(node, "Error - this node can't be added , you have exceeded the range", "Error", 0);
-					}
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(node, "Error - this key is already exists", "Error", 0);
-				}
-				break;
-
-			case "remove Node":
-				JFrame reNode = new JFrame();
-				int k1 = 0;
-				String key1 = JOptionPane.showInputDialog(reNode, "Please enter key");
-				try {
-					k1 = Integer.parseInt(key1);
-					g.removeNode(k1);
-					g.DrawGraph();
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(reNode, "Error: The key is not exist ", "Error", 0);
-				}
-				break;
-			case "remove Edge":
-				JFrame reEdge = new JFrame();
-				String srcEdge = JOptionPane.showInputDialog(reEdge, "Please enter src");
-				String destEdge = JOptionPane.showInputDialog(reEdge, "Please enter dest");
-				int srcEdge1 = 0;
-				int destEdge1 = 0;
-				try {
-					srcEdge1 = Integer.parseInt(srcEdge);
-					destEdge1 = Integer.parseInt(destEdge);
-					g.removeEdge(srcEdge1, destEdge1);
-					g.DrawGraph();
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(reEdge, "Error: src and dest are not correct ", "Error", 0);
-				}
-				break;
-
-			case "isConnected":
-				JFrame connect = new JFrame();
-				boolean ans = g.isConnected();
-				if (ans == true) {
-					JOptionPane.showMessageDialog(connect, " is Connected.");
-				} else {
-					JOptionPane.showMessageDialog(connect, " is not Connected.");
-				}
-				break;
-			case "shortestPathDist":
-				JFrame Stpd = new JFrame();
-				String srcPath = JOptionPane.showInputDialog("Please enter src");
-				String destPath = JOptionPane.showInputDialog("Please enter dest");
-				int sp = 0;
-				int dp = 0;
-				double d = 0;
-				try {
-					sp = Integer.parseInt(srcPath);
-					dp = Integer.parseInt(destPath);
-					d = g.shortestPathDist(sp, dp);
-					g.DrawGraph();
-					JOptionPane.showMessageDialog(Stpd, "The Shortest path is :" + d);
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(Stpd, "Error: src and dest are not correct ", "Error", 0);
-				}
-
-				break;
-			case "shortestPath":
-				JFrame Stp = new JFrame();
-				String srcStp = JOptionPane.showInputDialog("Please enter src");
-				String destStp = JOptionPane.showInputDialog("Please enter dest");
-				int sStp = 0;
-				int dStp = 0;
-				try {
-					sStp = Integer.parseInt(srcStp);
-					dStp = Integer.parseInt(destStp);
-					g.DrawGraph();
-					List<node_data> list = g.shortestPath(sStp, dStp);
-					JOptionPane.showMessageDialog(Stp, "The list is :" + list);
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(Stp, "Error: ", "Error", 0);
-				}
-				break;
-
-			case "TSP":
-				JFrame Tsp = new JFrame();
-				try {
-					String target = JOptionPane.showInputDialog("Please enter nodes of targets");
-					List<Integer> list = new LinkedList<>();
-					int i=0;
-					String arr [] = target.split(",");
-					while (i< arr.length){
-						list.add(Integer.parseInt(arr[i]));
-						i++;
-					}
-					List<node_data> l = new LinkedList<>();
-					l=g.TSP(list);
-					JOptionPane.showMessageDialog(Tsp, "The list is :" + l.toString());
-				} catch (Exception badInput) {
-					JOptionPane.showMessageDialog(Tsp, "Error: this graph is not connected", "Error", 0);
+					JOptionPane.showMessageDialog(play, "Error", "Error", 0);
 				}
 				break;
 		}

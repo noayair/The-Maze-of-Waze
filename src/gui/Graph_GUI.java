@@ -142,8 +142,8 @@ public class Graph_GUI{
         StdDraw.setCanvasSize(1000, 1000);
         Range x = Rangex();
         Range y = Rangey();
-        StdDraw.setXscale(x.get_min()-0.002, x.get_max()+0.002);
-        StdDraw.setYscale(y.get_min()-0.002, y.get_max()+0.002);
+        StdDraw.setXscale(x.get_min()-0.004, x.get_max()+0.004);
+        StdDraw.setYscale(y.get_min()-0.004, y.get_max()+0.004);
         StdDraw.setPenColor(Color.blue);
         StdDraw.setPenRadius(0.15);
         String s = "";
