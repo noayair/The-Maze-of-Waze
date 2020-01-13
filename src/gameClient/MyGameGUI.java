@@ -13,28 +13,28 @@ import gui.Graph_GUI;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MyGameGUI implements Runnable{
+public class MyGameGUI implements Runnable {
     private game_service game;
     private DGraph graph = new DGraph();
     private List<fruits> fruitsList = new ArrayList<>();
     private fruits f = new fruits();
 
     //constructor
-    public MyGameGUI(){
+    public MyGameGUI() {
 
     }
 
-    public List<fruits> getFruitsList(){
+    public List<fruits> getFruitsList() {
         return this.fruitsList;
     }
 
-    public void startGame(int level){
+    public void startGame(int level) {
         this.game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games
         this.graph.init(game.getGraph());
         Graph_GUI g1 = new Graph_GUI(graph);
         Fruits_I fruit = new fruits();
         List<String> list = this.game.getFruits();
-        for(String s : list){
+        for (String s : list) {
             f = new fruits();
             System.out.println(s);
             f.init(s);
