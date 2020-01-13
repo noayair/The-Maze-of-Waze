@@ -22,7 +22,8 @@ public class fruits implements Fruits_I {
     }
 
     /**
-     * init fruit from json file
+     * Init fruit from json file.
+     *
      * @param Jstr
      */
     public void init(String Jstr){
@@ -45,6 +46,7 @@ public class fruits implements Fruits_I {
 
     /**
      * draw all the fruits on the graph
+     *
      * @param fruitList
      */
     public void drawFruits(List<fruits> fruitList){
@@ -52,5 +54,4 @@ public class fruits implements Fruits_I {
             StdDraw.picture(f.pos.x() , f.pos.y() , f.image , 0.0007 , 0.0007);
         }
     }
-
 }
