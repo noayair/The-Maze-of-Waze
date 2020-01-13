@@ -3,7 +3,12 @@ package gui;
 import algorithms.Graph_Algo;
 import algorithms.graph_algorithms;
 import dataStructure.*;
+//import javafx.scene.transform.Scale;
+import elements.Fruits_I;
+import elements.fruits;
+import gameClient.MyGameGUI;
 import utils.Point3D;
+import utils.Range;
 import utils.StdDraw;
 
 import java.awt.*;
@@ -13,6 +18,9 @@ import java.util.List;
 public class Graph_GUI{
     public graph_algorithms algo = new Graph_Algo();
     public graph dgraph = new DGraph();
+    public Range Range_x;
+    public Range Range_y;
+    public MyGameGUI game;
 
     //constructor
 
@@ -83,20 +91,68 @@ public class Graph_GUI{
         return algo.TSP(targets);
     }
 
+    public Range Rangex(){
+        Range r;
+        if(dgraph.nodeSize() != 0){
+            double min = Double.MAX_VALUE;
+            double max = Double.MIN_VALUE;
+            for(node_data n : dgraph.getV()){
+                if(n.getLocation().x() < min){
+                    min = n.getLocation().x();
+                }
+                if(n.getLocation().x() > max){
+                    max = n.getLocation().x();
+                }
+            }
+            r = new Range(min , max);
+            this.Range_x = r;
+            return r;
+        }else{
+            r = new Range(-100 , 100);
+            this.Range_x = r;
+            return r;
+        }
+    }
+
+    public Range Rangey(){
+        Range r;
+        if(dgraph.nodeSize() != 0){
+            double min = Double.MAX_VALUE;
+            double max = Double.MIN_VALUE;
+            for(node_data n : dgraph.getV()){
+                if(n.getLocation().y() < min){
+                    min = n.getLocation().y();
+                }
+                if(n.getLocation().y() > max){
+                    max = n.getLocation().y();
+                }
+            }
+            r = new Range(min , max);
+            this.Range_y = r;
+            return r;
+        }else{
+            r = new Range(-100 , 100);
+            this.Range_y = r;
+            return r;
+        }
+    }
+
     public void DrawGraph() {
         graph g = this.dgraph;
-
-        StdDraw.setCanvasSize(600, 600);
-        StdDraw.setXscale(-100, 100);
-        StdDraw.setYscale(-100, 100);
+        StdDraw.setCanvasSize(1000, 1000);
+        Range x = Rangex();
+        Range y = Rangey();
+        StdDraw.setXscale(x.get_min()-0.002, x.get_max()+0.002);
+        StdDraw.setYscale(y.get_min()-0.002, y.get_max()+0.002);
         StdDraw.setPenColor(Color.blue);
-        StdDraw.setPenRadius(0.01);
+        StdDraw.setPenRadius(0.15);
         String s = "";
+        double ScaleX = ((Range_x.get_max()-Range_x.get_min())*0.04);
         for (node_data n : g.getV()) {
             Point3D p = n.getLocation();
-            StdDraw.filledCircle(p.x(), p.y(),1);
+            StdDraw.filledCircle(p.x(), p.y(),ScaleX*0.1);
             s += Integer.toString(n.getKey());
-            StdDraw.text(p.x() +2,p.y() +2,s);
+            StdDraw.text(p.x() , p.y()+ScaleX*0.3 , s);
             s = "";
         }
         for (node_data n : g.getV()) {
@@ -105,15 +161,15 @@ public class Graph_GUI{
                 double src_y = n.getLocation().y();
                 double dest_x = g.getNode(e.getDest()).getLocation().x();
                 double dest_y = g.getNode(e.getDest()).getLocation().y();
-                StdDraw.setPenColor(Color.RED);
-                StdDraw.setPenRadius(0.002);
+                StdDraw.setPenColor(Color.lightGray);
+                StdDraw.setPenRadius(0.003);
                 StdDraw.line(src_x , src_y , dest_x , dest_y);
-                String weight = Double.toString(e.getWeight());
-                StdDraw.text((src_x + dest_x)/2 , (src_y + dest_y)/2 , weight);
+                double w = Math.round(e.getWeight()*100.0)/100.0;
+                String weight = Double.toString(w);
+                StdDraw.text(src_x * 0.3 + dest_x * 0.7 , src_y * 0.3 + dest_y * 0.7 , weight);
                 StdDraw.setPenColor(Color.yellow);
-                StdDraw.setPenRadius(0.01);
-                StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, 1);
-
+                StdDraw.setPenRadius(0.15);
+                StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, ScaleX*0.1);
             }
         }
     }
