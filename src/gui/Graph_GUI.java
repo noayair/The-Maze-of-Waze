@@ -4,6 +4,9 @@ import algorithms.Graph_Algo;
 import algorithms.graph_algorithms;
 import dataStructure.*;
 //import javafx.scene.transform.Scale;
+import elements.Fruits_I;
+import elements.fruits;
+import gameClient.MyGameGUI;
 import utils.Point3D;
 import utils.Range;
 import utils.StdDraw;
@@ -17,6 +20,7 @@ public class Graph_GUI{
     public graph dgraph = new DGraph();
     public Range Range_x;
     public Range Range_y;
+    public MyGameGUI game;
 
     //constructor
 
@@ -148,7 +152,7 @@ public class Graph_GUI{
             Point3D p = n.getLocation();
             StdDraw.filledCircle(p.x(), p.y(),ScaleX*0.1);
             s += Integer.toString(n.getKey());
-            StdDraw.text(p.x() , p.y()+ScaleX*0.3 + 2 , s);
+            StdDraw.text(p.x() , p.y()+ScaleX*0.3 , s);
             s = "";
         }
         for (node_data n : g.getV()) {
@@ -166,7 +170,6 @@ public class Graph_GUI{
                 StdDraw.setPenColor(Color.yellow);
                 StdDraw.setPenRadius(0.15);
                 StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, ScaleX*0.1);
-
             }
         }
     }

@@ -24,32 +24,32 @@ public class fruits implements Fruits_I {
     /**
      * init fruit from json file
      * @param Jstr
-     * @return
      */
-    public Fruits_I init(String Jstr){
-        fruits fruit = new fruits();
+    public void init(String Jstr){
         try {
             JSONObject fruits = new JSONObject(Jstr);
-            JSONObject f = new JSONObject("Fruit");
-            fruit.value = f.getDouble("value");
-            fruit.type = f.getInt("type");
+            JSONObject f = fruits.getJSONObject("Fruit");
+            this.value = f.getDouble("value");
+            this.type = f.getInt("type");
             String location_str = f.getString("pos");
-            fruit.pos = new Point3D(location_str);
-            if(fruit.type == 1){
-                fruit.image = "apple.png";
+            this.pos = new Point3D(location_str);
+            if(this.type == 1){
+                this.image = "apple.png";
             }else{
-                fruit.image = "banana.png";
-                StdDraw.picture(fruit.pos.x() , fruit.pos.y() , "banana.png");
+                this.image = "banana.png";
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return fruit;
     }
 
+    /**
+     * draw all the fruits on the graph
+     * @param fruitList
+     */
     public void drawFruits(List<fruits> fruitList){
         for(fruits f : fruitList){
-            StdDraw.picture(f.pos.x() , f.pos.y() , f.image , 0.001 , 0.001);
+            StdDraw.picture(f.pos.x() , f.pos.y() , f.image , 0.0007 , 0.0007);
         }
     }
 
