@@ -25,6 +25,7 @@ public class Graph_GUI{
     //constructor
 
     public Graph_GUI(){
+        StdDraw.clear();
         algo = new Graph_Algo();
         dgraph = new DGraph();
         StdDraw.g = this;
@@ -137,9 +138,15 @@ public class Graph_GUI{
         }
     }
 
+    public void setCanvas(){
+        StdDraw.setCanvasSize(1000, 500);
+        StdDraw.setYscale(-51,50);
+        StdDraw.setXscale(-51,50);
+
+    }
     public void DrawGraph() {
+        StdDraw.clear();
         graph g = this.dgraph;
-        StdDraw.setCanvasSize(1000, 1000);
         Range x = Rangex();
         Range y = Rangey();
         StdDraw.setXscale(x.get_min()-0.004, x.get_max()+0.004);

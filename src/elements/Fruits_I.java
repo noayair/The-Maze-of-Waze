@@ -1,5 +1,8 @@
 package elements;
 
+import dataStructure.DGraph;
+import dataStructure.edge_data;
+
 import java.util.List;
 
 /**
@@ -16,4 +19,8 @@ public interface Fruits_I {
      * @param fruitList
      */
     public void drawFruits(List<fruits> fruitList);
+
+    public void update (String Jstr);
+
+    public edge_data fruitEdge(DGraph graph);
 }

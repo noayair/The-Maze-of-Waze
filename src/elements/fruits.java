@@ -112,8 +112,7 @@ public class fruits implements Fruits_I {
      * @param graph
      * @return
      */
-    public edge_data onEdge(DGraph graph){
-        double eps = 0.1;
+    public edge_data fruitEdge(DGraph graph){
         Collection<edge_data> edgeList = new ArrayList<>();
         double edgeDist , srcDist , destDist;
         for(node_data n : graph.getV()){

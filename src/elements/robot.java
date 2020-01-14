@@ -1,22 +1,25 @@
 package elements;
 
 import Server.game_service;
+import dataStructure.node_data;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Point3D;
 import utils.StdDraw;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class robot implements Robot_I {
     private game_service game;
     private int src , dest , id , value , speed;
     private Point3D pos;
+    private List<node_data> way = new LinkedList<>();
 
     public robot(){
         this.game = null;
         this.src = 0;
-        this.dest = 0;
+        this.dest = -1;
         this.id = 0;
         this.value = 0;
         this.speed = 0;
@@ -25,6 +28,10 @@ public class robot implements Robot_I {
 
     public robot(String Jstr){
         this.init(Jstr);
+    }
+
+    public void setWay(List<node_data> way) {
+        this.way = way;
     }
 
     public robot init(String Jstr) {
@@ -55,6 +62,18 @@ public class robot implements Robot_I {
 
     public void setDest(int dest) {
         this.dest = dest;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getDest() {
+        return dest;
+    }
+
+    public Point3D getPos() {
+        return pos;
     }
 
     public void drawRobots(List<robot> robotsList){

@@ -9,4 +9,6 @@ public interface Robot_I {
     public robot init(String Jstr);
 
     public void drawRobots(List<robot> robotsList);
+
+    public void update(String Jstr);
 }

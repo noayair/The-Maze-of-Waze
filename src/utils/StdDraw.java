@@ -484,6 +484,7 @@ import javax.swing.*;
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
 	public static Graph_GUI g;
+	public static MyGameGUI gui;
 
 	/**
 	 *  The color black.
@@ -1701,6 +1702,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				try {
 					l = Integer.parseInt(level);
 					game_service game = Game_Server.getServer(l);
+					g.setCanvas();
 					MyGameGUI ga = new MyGameGUI();
 					ga.startGame(l);
 				}catch (Exception badInput){
