@@ -29,6 +29,10 @@ public class fruits implements Fruits_I {
         this.image = null;
     }
 
+    public fruits(String Jstr){
+        this.init(Jstr);
+    }
+
     /**
      * Init fruit from a json file.
      * @param Jstr
@@ -99,13 +103,13 @@ public class fruits implements Fruits_I {
      * @param p2
      * @return
      */
-    public double distance(Point3D p1 , Point3D p2){
-        double ans = 0;
-        double pow_x = Math.pow((p1.x() - p2.x()) , 2);
-        double pow_y = Math.pow((p1.y() - p2.y()) , 2);
-        ans = Math.sqrt((pow_x) + (pow_y));
-        return ans;
-    }
+//    public double distance(Point3D p1 , Point3D p2){
+//        double ans = 0;
+//        double pow_x = Math.pow((p1.x() - p2.x()) , 2);
+//        double pow_y = Math.pow((p1.y() - p2.y()) , 2);
+//        ans = Math.sqrt((pow_x) + (pow_y));
+//        return ans;
+//    }
 
     /**
      * Checking on which edges are the fruits
@@ -117,9 +121,12 @@ public class fruits implements Fruits_I {
         double edgeDist , srcDist , destDist;
         for(node_data n : graph.getV()){
             for(edge_data e : graph.getE(n.getKey())){
-                edgeDist = distance(graph.getNode(e.getSrc()).getLocation(), graph.getNode(e.getDest()).getLocation());
-                srcDist = distance(graph.getNode(e.getSrc()).getLocation(), this.pos);
-                destDist = distance(graph.getNode(e.getDest()).getLocation(), this.pos);
+//                edgeDist = distance(graph.getNode(e.getSrc()).getLocation(), graph.getNode(e.getDest()).getLocation());
+                edgeDist = graph.getNode(e.getSrc()).getLocation().distance2D(graph.getNode(e.getDest()).getLocation());
+//                srcDist = distance(graph.getNode(e.getSrc()).getLocation(), this.pos);
+                srcDist = graph.getNode(e.getSrc()).getLocation().distance2D(this.pos);
+//                destDist = distance(graph.getNode(e.getDest()).getLocation(), this.pos);
+                destDist = graph.getNode(e.getDest()).getLocation().distance2D(this.pos);
                 if (edgeDist > (srcDist + destDist) - EPS2) {
                     return e;
                 }

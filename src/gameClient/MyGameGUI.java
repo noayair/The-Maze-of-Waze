@@ -58,19 +58,24 @@ public class MyGameGUI extends Thread {
     public void startGame(int level) {
         this.game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games
         this.graph.init(game.getGraph()); //build a graph for the game
-        List<String> fruitList = this.game.getFruits(); // list of all the fruits in this level
-        for (String s : fruitList) { // for that init all the fruits from json and adds it to the list
-            f = new fruits();
-            System.out.println(s);
-            f = f.init(s);
-            this.fruitsList.add(f);
-        }
+        initFruits();
         addRobots(); // adds robots to the game and to the list
         DrawGraph(); // draw the graph
         this.f.drawFruits(this.fruitsList); // draw the fruits on the graph
         this.r.drawRobots(this.robotsList); // draw the robots on the graph
         this.game.startGame();
         this.start();
+    }
+
+    public void initFruits(){
+        this.fruitsList.clear();
+        List<String> fruitList = this.game.getFruits(); // list of all the fruits in this level
+        for (String s : fruitList) { // for that init all the fruits from json and adds it to the list
+            f = new fruits();
+            f = f.init(s);
+            this.fruitsList.add(f);
+        }
+        this.fruitsList.sort((o1, o2) -> (int)(o2.getValue())-(int)(o1.getValue()));
     }
 
     /**
@@ -139,6 +144,7 @@ public class MyGameGUI extends Thread {
                                 shortest = this.robotsList.get(id).getWay();
                                 dest = shortest.get(0).getKey();
                                 gs.chooseNextEdge(id , dest);
+                                this.robotsList.get(id).checkNode(dest);
                                 this.robotsList.get(id).getWay().remove(shortest.get(0));
                             }else {
                                 int closestDest = closestFruit(this.graph.getNode(src).getKey());
@@ -147,6 +153,7 @@ public class MyGameGUI extends Thread {
                                     System.out.println(closestDest + " " + src);
                                 dest = shortest.get(0).getKey();
                                 gs.chooseNextEdge(id, dest);
+                                this.robotsList.get(id).checkNode(dest);
                                 shortest.remove(shortest.get(0));
                                 //     gs.chooseNextEdge(id,shortest.get(0).getKey());
                                 this.robotsList.get(id).setWay(shortest);
@@ -156,10 +163,20 @@ public class MyGameGUI extends Thread {
                         } else {
                             dest = nextNode(dg, src);
                             gs.chooseNextEdge(id, dest);
+                            this.robotsList.get(id).checkNode(dest);
                             System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
                             System.out.println(rob);
                         }
                     }
+//                    if(this.robotsList.get(id).getCheck().size() == 3){
+
+                        if(dest == this.robotsList.get(id).getCheck().peek()){
+                            System.out.println("random");
+                            dest = nextNodeRandom(dg , src);
+                            gs.chooseNextEdge(id, dest);
+                            this.robotsList.get(id).checkNode(dest);
+                        }
+//                    }
 
                 } catch (JSONException e) {
 
@@ -173,6 +190,19 @@ public class MyGameGUI extends Thread {
      * @param src
      * @return
      */
+    public int nextNodeRandom(DGraph g, int src) {
+        int ans = -1;
+        Collection<edge_data> ee = g.getE(src);
+        Iterator<edge_data> itr = ee.iterator();
+        int s = ee.size();
+        int r = (int)(Math.random()*s);
+        int i=0;
+        while(i<r) {itr.next();i++;}
+        ans = itr.next().getDest();
+        return ans;
+    }
+
+
     public int nextNode(DGraph dg, int src) {
         Collection<edge_data> edges = dg.getE(src);
         for (edge_data e : edges) {
@@ -333,6 +363,6 @@ public class MyGameGUI extends Thread {
 
     public static void main(String[] args) {
         MyGameGUI g = new MyGameGUI();
-        g.startGame(15);
+        g.startGame(9);
     }
 }

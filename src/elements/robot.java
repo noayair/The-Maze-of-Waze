@@ -10,12 +10,14 @@ import utils.StdDraw;
 import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 public class robot implements Robot_I {
     private game_service game;
     private int src , dest , id , value , speed;
     private Point3D pos;
     private List<node_data> way = new LinkedList<>();
+    private Queue<Integer> check = new LinkedList<>();
 
     public robot(){
         this.game = null;
@@ -25,6 +27,9 @@ public class robot implements Robot_I {
         this.value = 0;
         this.speed = 0;
         this.pos = null;
+        for (int i = 0; i < 3 ; i++) {
+            this.check.add(-2);
+        }
     }
 
     public robot(String Jstr){
@@ -81,6 +86,10 @@ public class robot implements Robot_I {
         return pos;
     }
 
+    public Queue<Integer> getCheck() {
+        return check;
+    }
+
     public void drawRobots(List<robot> robotsList){
         for(robot r : robotsList){
             StdDraw.picture(r.pos.x() , r.pos.y() , "robot.png" , 0.001 , 0.001);
@@ -100,6 +109,24 @@ public class robot implements Robot_I {
             this.speed = r.getInt("speed");
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * if the list size is <= 3 , add the node to the queue.
+     * else, remove the head and then add the node.
+     * this function help us to check if the robot is stuck on 1 edge.
+     * @param i
+     */
+    public void checkNode(int i){
+        if(this.check == null){
+            this.check.add(i);
+        }
+        if(this.check.size() <= 3){
+            this.check.add(i);
+        }else{
+            this.check.remove();
+            this.check.add(i);
         }
     }
 }
