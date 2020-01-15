@@ -143,6 +143,8 @@ public class MyGameGUI extends Thread {
                             }else {
                                 int closestDest = closestFruit(this.graph.getNode(src).getKey());
                                 shortest = shotestWay(src, closestDest);
+                                if (shortest==null)
+                                    System.out.println(closestDest + " " + src);
                                 dest = shortest.get(0).getKey();
                                 gs.chooseNextEdge(id, dest);
                                 shortest.remove(shortest.get(0));
@@ -184,7 +186,7 @@ public class MyGameGUI extends Thread {
     }
 
     public int closestFruit (int src){
-        double dest = Integer.MAX_VALUE;
+        double dest = Double.POSITIVE_INFINITY;
         int ans = -1;
         int fruitSrc;
         double shortest;
@@ -211,7 +213,7 @@ public class MyGameGUI extends Thread {
             updateFruits();
             updateRobots();
             moveRobots(this.game , this.graph);
-//            this.DrawGraph();
+            this.DrawGraph();
             this.f.drawFruits(this.fruitsList); // draw the fruits on the graph
             this.r.drawRobots(this.robotsList); // draw the robots on the graph
             StdDraw.show();
@@ -227,6 +229,7 @@ public class MyGameGUI extends Thread {
 
     public void setWin(){
         StdDraw.setCanvasSize(1000, 500);
+//        StdDraw.clear(Color.blue);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
 ////        StdDraw.picture(0,0,"Maze.png");
@@ -246,6 +249,7 @@ public class MyGameGUI extends Thread {
 
     public void DrawGraph() {
         StdDraw.clear();
+        StdDraw.enableDoubleBuffering();
         DGraph g = this.graph;
         Range x = Rangex();
         Range y = Rangey();

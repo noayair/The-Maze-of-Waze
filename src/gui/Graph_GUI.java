@@ -25,7 +25,7 @@ public class Graph_GUI{
     //constructor
 
     public Graph_GUI(){
-        StdDraw.clear();
+//        StdDraw.clear();
         algo = new Graph_Algo();
         dgraph = new DGraph();
         StdDraw.g = this;

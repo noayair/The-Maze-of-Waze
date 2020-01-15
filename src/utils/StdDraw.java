@@ -1693,19 +1693,22 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String action = e.getActionCommand();
-		switch(action){
-			case "Start Game":
-				gui.setWin();
+		String s = e.getActionCommand();
+		switch (s) {
+			case "Play":
+				JFrame play = new JFrame();
+				String level = JOptionPane.showInputDialog("Please Choose level between 0 to 23");
+				int l = 0;
+				try {
+					l = Integer.parseInt(level);
+					game_service game = Game_Server.getServer(l);
+					MyGameGUI ga = new MyGameGUI();
+					ga.startGame(l);
+				}catch (Exception badInput){
+					JOptionPane.showMessageDialog(play, "Error", "Error", 0);
+				}
 				break;
-
-//			case "Finish Game":
-//				gui.getGame1().stopGame();
-//				gui.finishGame();
-//				break;
-//		}
-
-	}
+		}
 
 
 

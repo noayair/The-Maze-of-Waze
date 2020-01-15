@@ -148,7 +148,7 @@ public class Graph_Algo implements graph_algorithms , Serializable {
 		node_data node = new NodeData();
 		while (counter < graph.nodeSize()) {
 			node = find_min(graph);
-			if(node.getKey() == 0){ // if the way is not exist return infinity
+			if(node.getKey() == -1){ // if the way is not exist return infinity
 				clear(this.graph);
 				return Double.POSITIVE_INFINITY;
 			}
