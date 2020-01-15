@@ -30,6 +30,10 @@ public class robot implements Robot_I {
         this.init(Jstr);
     }
 
+    public List<node_data> getWay() {
+        return way;
+    }
+
     public void setWay(List<node_data> way) {
         this.way = way;
     }

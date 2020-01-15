@@ -32,6 +32,7 @@ public class Graph_GUI{
     }
 
     public Graph_GUI (graph d){
+        StdDraw.clear();
         dgraph=d;
         algo.init(d);
         StdDraw.g=this;
