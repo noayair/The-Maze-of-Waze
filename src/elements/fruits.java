@@ -15,7 +15,7 @@ import java.util.List;
  * This class represents a fruit in the game.
  */
 public class fruits implements Fruits_I {
-    public static final double EPS1 = 0.001 , EPS2 = EPS1*EPS1 , EPS = EPS2;
+    public static final double EPS1 = 0.000001 , EPS2 = EPS1+EPS1 , EPS = EPS2;
     private double value;
     private int type;
     private Point3D pos;
@@ -128,7 +128,10 @@ public class fruits implements Fruits_I {
 //                destDist = distance(graph.getNode(e.getDest()).getLocation(), this.pos);
                 destDist = graph.getNode(e.getDest()).getLocation().distance2D(this.pos);
                 if (edgeDist > (srcDist + destDist) - EPS2) {
-                    return e;
+                    boolean a = e.getSrc() < e.getDest();
+                    boolean b = this.type > 0;
+                    if(a == b)
+                        return e;
                 }
             }
         }

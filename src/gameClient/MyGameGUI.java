@@ -53,7 +53,7 @@ public class MyGameGUI extends Thread {
 
     /**
      * gets level and draw the graph, the fruits and the robots for the game
-     * @param level
+//     * @param level
      */
     public void startGame(int level) {
         this.game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games
@@ -73,6 +73,7 @@ public class MyGameGUI extends Thread {
         for (String s : fruitList) { // for that init all the fruits from json and adds it to the list
             f = new fruits();
             f = f.init(s);
+            System.out.println(s);
             this.fruitsList.add(f);
         }
         this.fruitsList.sort((o1, o2) -> (int)(o2.getValue())-(int)(o1.getValue()));
@@ -101,6 +102,11 @@ public class MyGameGUI extends Thread {
                 this.game.addRobot(Math.min(e.getSrc() , e.getDest())); // ask from the server to add the robot on the src edge
             }
             rob = rob.init(this.game.getRobots().get(i));
+//            if(this.fruitsList.get(i).getType() == -1){
+//                rob.setDest(e.getSrc());
+//            }else if(this.fruitsList.get(i).getType() == 1){
+//                rob.setDest(e.getDest());
+//            }
             rob.setDest(e.getDest());
             this.robotsList.add(rob); // add the current robot to the robots list
             System.out.println(rob.getDest());
@@ -170,13 +176,23 @@ public class MyGameGUI extends Thread {
                     }
 //                    if(this.robotsList.get(id).getCheck().size() == 3){
 
-                        if(dest == this.robotsList.get(id).getCheck().peek()){
+//                    System.out.println(dest);
+//                    this.robotsList.get(id).getCheck().peek();
+                    if(dest == this.robotsList.get(id).getCheck().peek()){
                             System.out.println("random");
                             dest = nextNodeRandom(dg , src);
                             gs.chooseNextEdge(id, dest);
                             this.robotsList.get(id).checkNode(dest);
                         }
 //                    }
+
+                    if(this.robotsList.size() > 1){
+                        for (int j = 0; j < this.robotsList.size()-1; j++) { // check if tow or more robots go to the same fruit
+                            if(this.robotsList.get(j).getDest() == this.robotsList.get(j+1).getDest()){ // if they are, its send one of them to another random fruit
+                                this.robotsList.get(j+1).setDest(nextNodeRandom(dg , this.robotsList.get(j+1).getSrc()));
+                            }
+                        }
+                    }
 
                 } catch (JSONException e) {
 
@@ -207,7 +223,8 @@ public class MyGameGUI extends Thread {
         Collection<edge_data> edges = dg.getE(src);
         for (edge_data e : edges) {
             for (int i = 0; i < this.fruitsList.size(); i++) {
-                if (e.getDest() == this.fruitsList.get(i).fruitEdge(dg).getDest()) {
+                edge_data fruitEdge = this.fruitsList.get(i).fruitEdge(dg);
+                if (e.getDest() == fruitEdge.getDest() && e.getSrc() == fruitEdge.getSrc()) {
                     return e.getDest();
                 }
             }
@@ -361,8 +378,68 @@ public class MyGameGUI extends Thread {
         }
     }
 
+    public game_service getGame() {
+        return game;
+    }
+
+    public DGraph getGraph() {
+        return graph;
+    }
+
+    public Graph_GUI getGui() {
+        return gui;
+    }
+
+    public Graph_Algo getAlgo() {
+        return algo;
+    }
+
+    public List<robot> getRobotsList() {
+        return robotsList;
+    }
+
+    public fruits getF() {
+        return f;
+    }
+
+    public robot getR() {
+        return r;
+    }
+
+    public void setGame(game_service game) {
+        this.game = game;
+    }
+
+    public void setGraph(DGraph graph) {
+        this.graph = graph;
+    }
+
+    public void setGui(Graph_GUI gui) {
+        this.gui = gui;
+    }
+
+    public void setAlgo(Graph_Algo algo) {
+        this.algo = algo;
+    }
+
+    public void setFruitsList(List<fruits> fruitsList) {
+        this.fruitsList = fruitsList;
+    }
+
+    public void setRobotsList(List<robot> robotsList) {
+        this.robotsList = robotsList;
+    }
+
+    public void setF(fruits f) {
+        this.f = f;
+    }
+
+    public void setR(robot r) {
+        this.r = r;
+    }
+
     public static void main(String[] args) {
         MyGameGUI g = new MyGameGUI();
-        g.startGame(9);
+        g.startGame(11);
     }
 }

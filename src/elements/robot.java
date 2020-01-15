@@ -40,6 +40,10 @@ public class robot implements Robot_I {
         return way;
     }
 
+    public int getSrc() {
+        return src;
+    }
+
     public void setWay(List<node_data> way) {
         this.way = way;
     }
