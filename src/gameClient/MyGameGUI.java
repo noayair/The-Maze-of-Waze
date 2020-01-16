@@ -28,8 +28,9 @@ import static java.lang.Thread.sleep;
 public class MyGameGUI extends Thread {
     private game_service game;
     private DGraph graph = new DGraph();
-    private Graph_GUI gui = new Graph_GUI(graph);
+//    private Graph_GUI gui = new Graph_GUI(graph);
     private Graph_Algo algo = new Graph_Algo(graph);
+    private MyGameAlgo gameAlgo = new MyGameAlgo(this);
     private List<fruits> fruitsList = new ArrayList<>();
     private List<robot> robotsList = new ArrayList<>();
     private fruits f = new fruits();
@@ -59,7 +60,7 @@ public class MyGameGUI extends Thread {
         this.game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games
         this.graph.init(game.getGraph()); //build a graph for the game
         initFruits();
-        addRobots(); // adds robots to the game and to the list
+        gameAlgo.addRobots(); // adds robots to the game and to the list
         DrawGraph(); // draw the graph
         this.f.drawFruits(this.fruitsList); // draw the fruits on the graph
         this.r.drawRobots(this.robotsList); // draw the robots on the graph
@@ -82,37 +83,37 @@ public class MyGameGUI extends Thread {
     /**
      * adds the robot next to the fruits before the start
      */
-    public void addRobots(){
-        int robotsSize = 0;
-        robot rob = new robot();
-        try {
-            JSONObject ro = new JSONObject(this.game.toString()); // checks how many robots we need
-            JSONObject r = ro.getJSONObject("GameServer");
-            robotsSize = r.getInt("robots");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        edge_data e = new EdgeData();
-        for (int i = 0; i < robotsSize; i++){
-            rob = new robot(); // create empty robot
-            e = this.fruitsList.get(i).fruitEdge(this.graph); // checking on which edges the fruit is
-            if(this.fruitsList.get(i).getType() == -1){
-                this.game.addRobot(Math.max(e.getSrc() , e.getDest()));
-            }else if(this.fruitsList.get(i).getType() == 1){
-                this.game.addRobot(Math.min(e.getSrc() , e.getDest())); // ask from the server to add the robot on the src edge
-            }
-            rob = rob.init(this.game.getRobots().get(i));
+//    public void addRobots(){
+//        int robotsSize = 0;
+//        robot rob = new robot();
+//        try {
+//            JSONObject ro = new JSONObject(this.game.toString()); // checks how many robots we need
+//            JSONObject r = ro.getJSONObject("GameServer");
+//            robotsSize = r.getInt("robots");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        edge_data e = new EdgeData();
+//        for (int i = 0; i < robotsSize; i++){
+//            rob = new robot(); // create empty robot
+//            e = this.fruitsList.get(i).fruitEdge(this.graph); // checking on which edges the fruit is
 //            if(this.fruitsList.get(i).getType() == -1){
-//                rob.setDest(e.getSrc());
+//                this.game.addRobot(Math.max(e.getSrc() , e.getDest()));
 //            }else if(this.fruitsList.get(i).getType() == 1){
-//                rob.setDest(e.getDest());
+//                this.game.addRobot(Math.min(e.getSrc() , e.getDest())); // ask from the server to add the robot on the src edge
 //            }
-            rob.setDest(e.getDest());
-            this.robotsList.add(rob); // add the current robot to the robots list
-            System.out.println(rob.getDest());
-            System.out.println(this.game.getRobots());
-        }
-    }
+//            rob = rob.init(this.game.getRobots().get(i));
+////            if(this.fruitsList.get(i).getType() == -1){
+////                rob.setDest(e.getSrc());
+////            }else if(this.fruitsList.get(i).getType() == 1){
+////                rob.setDest(e.getDest());
+////            }
+//            rob.setDest(e.getDest());
+//            this.robotsList.add(rob); // add the current robot to the robots list
+//            System.out.println(rob.getDest());
+//            System.out.println(this.game.getRobots());
+//        }
+//    }
 
     public void updateFruits(){
         List<String> updateFruits = this.game.getFruits();
@@ -131,141 +132,141 @@ public class MyGameGUI extends Thread {
     }
 
 
-    public void moveRobots(game_service gs, DGraph dg) {
-        List<String> move = gs.move();
-        if (move != null) {
-            long time = gs.timeToEnd();
-            for (int i = 0; i < move.size(); i++) {
-                String robotJson = move.get(i);
-                try {
-                    JSONObject obj = new JSONObject(robotJson);
-                    JSONObject rob = obj.getJSONObject("Robot");
-                    int id = rob.getInt("id");
-                    int src = rob.getInt("src");
-                    int dest = rob.getInt("dest");
-                    if(dest == -1) {
-                        List<node_data> shortest = new LinkedList<>();
-                        if (nextNode(dg, src) == -1) {
-                            if(!this.robotsList.get(id).getWay().isEmpty()){
-                                shortest = this.robotsList.get(id).getWay();
-                                dest = shortest.get(0).getKey();
-                                gs.chooseNextEdge(id , dest);
-                                this.robotsList.get(id).checkNode(dest);
-                                this.robotsList.get(id).getWay().remove(shortest.get(0));
-                            }else {
-                                int closestDest = closestFruit(this.graph.getNode(src).getKey());
-                                shortest = shotestWay(src, closestDest);
-                                if (shortest==null)
-                                    System.out.println(closestDest + " " + src);
-                                dest = shortest.get(0).getKey();
-                                gs.chooseNextEdge(id, dest);
-                                this.robotsList.get(id).checkNode(dest);
-                                shortest.remove(shortest.get(0));
-                                //     gs.chooseNextEdge(id,shortest.get(0).getKey());
-                                this.robotsList.get(id).setWay(shortest);
-                            }
-                            System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
-                            System.out.println(rob);
-                        } else {
-                            dest = nextNode(dg, src);
-                            gs.chooseNextEdge(id, dest);
-                            this.robotsList.get(id).checkNode(dest);
-                            System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
-                            System.out.println(rob);
-                        }
-                    }
-//                    if(this.robotsList.get(id).getCheck().size() == 3){
-
-//                    System.out.println(dest);
-//                    this.robotsList.get(id).getCheck().peek();
-                    if(dest == this.robotsList.get(id).getCheck().peek()){
-                            System.out.println("random");
-                            dest = nextNodeRandom(dg , src);
-                            gs.chooseNextEdge(id, dest);
-                            this.robotsList.get(id).checkNode(dest);
-                        }
+//    public void moveRobots(game_service gs, DGraph dg) {
+//        List<String> move = gs.move();
+//        if (move != null) {
+//            long time = gs.timeToEnd();
+//            for (int i = 0; i < move.size(); i++) {
+//                String robotJson = move.get(i);
+//                try {
+//                    JSONObject obj = new JSONObject(robotJson);
+//                    JSONObject rob = obj.getJSONObject("Robot");
+//                    int id = rob.getInt("id");
+//                    int src = rob.getInt("src");
+//                    int dest = rob.getInt("dest");
+//                    if(dest == -1) {
+//                        List<node_data> shortest = new LinkedList<>();
+//                        if (nextNode(dg, src) == -1) {
+//                            if(!this.robotsList.get(id).getWay().isEmpty()){
+//                                shortest = this.robotsList.get(id).getWay();
+//                                dest = shortest.get(0).getKey();
+//                                gs.chooseNextEdge(id , dest);
+//                                this.robotsList.get(id).checkNode(dest);
+//                                this.robotsList.get(id).getWay().remove(shortest.get(0));
+//                            }else {
+//                                int closestDest = closestFruit(this.graph.getNode(src).getKey());
+//                                shortest = shotestWay(src, closestDest);
+//                                if (shortest==null)
+//                                    System.out.println(closestDest + " " + src);
+//                                dest = shortest.get(0).getKey();
+//                                gs.chooseNextEdge(id, dest);
+//                                this.robotsList.get(id).checkNode(dest);
+//                                shortest.remove(shortest.get(0));
+//                                //     gs.chooseNextEdge(id,shortest.get(0).getKey());
+//                                this.robotsList.get(id).setWay(shortest);
+//                            }
+//                            System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
+//                            System.out.println(rob);
+//                        } else {
+//                            dest = nextNode(dg, src);
+//                            gs.chooseNextEdge(id, dest);
+//                            this.robotsList.get(id).checkNode(dest);
+//                            System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
+//                            System.out.println(rob);
+//                        }
 //                    }
-
-                    if(this.robotsList.size() > 1){
-                        for (int j = 0; j < this.robotsList.size()-1; j++) { // check if tow or more robots go to the same fruit
-                            if(this.robotsList.get(j).getDest() == this.robotsList.get(j+1).getDest()){ // if they are, its send one of them to another random fruit
-                                this.robotsList.get(j+1).setDest(nextNodeRandom(dg , this.robotsList.get(j+1).getSrc()));
-                            }
-                        }
-                    }
-
-                } catch (JSONException e) {
-
-                }
-            }
-        }
-    }
-    /**
-     * a very simple random walk implementation!
-     * @param
-     * @param src
-     * @return
-     */
-    public int nextNodeRandom(DGraph g, int src) {
-        int ans = -1;
-        Collection<edge_data> ee = g.getE(src);
-        Iterator<edge_data> itr = ee.iterator();
-        int s = ee.size();
-        int r = (int)(Math.random()*s);
-        int i=0;
-        while(i<r) {itr.next();i++;}
-        ans = itr.next().getDest();
-        return ans;
-    }
-
-
-    public int nextNode(DGraph dg, int src) {
-        Collection<edge_data> edges = dg.getE(src);
-        for (edge_data e : edges) {
-            for (int i = 0; i < this.fruitsList.size(); i++) {
-                edge_data fruitEdge = this.fruitsList.get(i).fruitEdge(dg);
-                if (e.getDest() == fruitEdge.getDest() && e.getSrc() == fruitEdge.getSrc()) {
-                    return e.getDest();
-                }
-            }
-        }
-        return -1;
-    }
-
-    public int closestFruit (int src){
-        double dest = Double.POSITIVE_INFINITY;
-        int ans = -1;
-        int fruitSrc;
-        double shortest;
-//        Point3D fruitLocation;
-        for (int i = 0; i < this.fruitsList.size(); i++) {
-            fruitSrc = this.fruitsList.get(i).fruitEdge(this.graph).getSrc(); // find the src of the edge that the fruit is on it
-//            fruitLocation = this.graph.getNode(fruitsrc).getLocation();
-            shortest = this.algo.shortestPathDist(src , fruitSrc); // find the distance between the robot location to the src fruit
-            if(shortest < dest){
-                dest = shortest;
-                ans = fruitSrc;
-            }
-        }
-        return ans;
-    }
-
-    public List<node_data> shotestWay (int src, int dest){
-        return this.algo.shortestPath(src, dest);
-    }
+////                    if(this.robotsList.get(id).getCheck().size() == 3){
+//
+////                    System.out.println(dest);
+////                    this.robotsList.get(id).getCheck().peek();
+//                    if(dest == this.robotsList.get(id).getCheck().peek()){
+//                            System.out.println("random");
+//                            dest = nextNodeRandom(dg , src);
+//                            gs.chooseNextEdge(id, dest);
+//                            this.robotsList.get(id).checkNode(dest);
+//                        }
+////                    }
+//
+//                    if(this.robotsList.size() > 1){
+//                        for (int j = 0; j < this.robotsList.size()-1; j++) { // check if tow or more robots go to the same fruit
+//                            if(this.robotsList.get(j).getDest() == this.robotsList.get(j+1).getDest()){ // if they are, its send one of them to another random fruit
+//                                this.robotsList.get(j+1).setDest(nextNodeRandom(dg , this.robotsList.get(j+1).getSrc()));
+//                            }
+//                        }
+//                    }
+//
+//                } catch (JSONException e) {
+//
+//                }
+//            }
+//        }
+//    }
+//    /**
+//     * a very simple random walk implementation!
+//     * @param
+//     * @param src
+//     * @return
+//     */
+//    public int nextNodeRandom(DGraph g, int src) {
+//        int ans = -1;
+//        Collection<edge_data> ee = g.getE(src);
+//        Iterator<edge_data> itr = ee.iterator();
+//        int s = ee.size();
+//        int r = (int)(Math.random()*s);
+//        int i=0;
+//        while(i<r) {itr.next();i++;}
+//        ans = itr.next().getDest();
+//        return ans;
+//    }
+//
+//
+//    public int nextNode(DGraph dg, int src) {
+//        Collection<edge_data> edges = dg.getE(src);
+//        for (edge_data e : edges) {
+//            for (int i = 0; i < this.fruitsList.size(); i++) {
+//                edge_data fruitEdge = this.fruitsList.get(i).fruitEdge(dg);
+//                if (e.getDest() == fruitEdge.getDest() && e.getSrc() == fruitEdge.getSrc()) {
+//                    return e.getDest();
+//                }
+//            }
+//        }
+//        return -1;
+//    }
+//
+//    public int closestFruit (int src){
+//        double dest = Double.POSITIVE_INFINITY;
+//        int ans = -1;
+//        int fruitSrc;
+//        double shortest;
+////        Point3D fruitLocation;
+//        for (int i = 0; i < this.fruitsList.size(); i++) {
+//            fruitSrc = this.fruitsList.get(i).fruitEdge(this.graph).getSrc(); // find the src of the edge that the fruit is on it
+////            fruitLocation = this.graph.getNode(fruitsrc).getLocation();
+//            shortest = this.algo.shortestPathDist(src , fruitSrc); // find the distance between the robot location to the src fruit
+//            if(shortest < dest){
+//                dest = shortest;
+//                ans = fruitSrc;
+//            }
+//        }
+//        return ans;
+//    }
+//
+//    public List<node_data> shotestWay (int src, int dest){
+//        return this.algo.shortestPath(src, dest);
+//    }
 
     @Override
     public void run() {
         while(this.game.isRunning()){
             updateFruits();
             updateRobots();
-            moveRobots(this.game , this.graph);
-            this.DrawGraph();
+            gameAlgo.moveRobots(this.game , this.graph);
+            DrawGraph();
             this.f.drawFruits(this.fruitsList); // draw the fruits on the graph
             this.r.drawRobots(this.robotsList); // draw the robots on the graph
             StdDraw.show();
             try {
-                sleep(10);
+                sleep(30);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -279,19 +280,19 @@ public class MyGameGUI extends Thread {
 //        StdDraw.clear(Color.blue);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
-////        StdDraw.picture(0,0,"Maze.png");
-//        int senario=0;
-//        String senarioString = JOptionPane.showInputDialog(null,"Please choose a Game Senario");
-//        try{
-//            senario=Integer.parseInt(senarioString);
-//        }catch(Exception e1){e1.printStackTrace();}
-//        String[] chooseGame = {"Manually Game","Auto Game"};
-//        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
-//        if(selctedGame=="Manually Game") {
-//            StdDraw.clear();
-//            StdDraw.enableDoubleBuffering();
-//            startGame(senario);
-//        }
+//        StdDraw.picture(0,0,"Maze.png");
+        int level=0;
+        String levelString = JOptionPane.showInputDialog(null,"Please level");
+        try{
+            level=Integer.parseInt(levelString);
+        }catch(Exception e1){e1.printStackTrace();}
+        String[] chooseGame = {"Manually Game","Auto Game"};
+        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
+        if(selctedGame=="Manually Game") {
+            StdDraw.clear();
+            StdDraw.enableDoubleBuffering();
+            startGame(level);
+        }
     }
 
     public void DrawGraph() {
@@ -324,7 +325,7 @@ public class MyGameGUI extends Thread {
                 StdDraw.line(src_x , src_y , dest_x , dest_y);
                 double w = Math.round(e.getWeight()*100.0)/100.0;
                 String weight = Double.toString(w);
-                StdDraw.text(src_x * 0.3 + dest_x * 0.7 , src_y * 0.3 + dest_y * 0.7 , weight);
+//                StdDraw.text(src_x * 0.3 + dest_x * 0.7 , src_y * 0.3 + dest_y * 0.7 , weight);
                 StdDraw.setPenColor(Color.yellow);
                 StdDraw.setPenRadius(0.15);
                 StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, ScaleX*0.1);
@@ -386,9 +387,9 @@ public class MyGameGUI extends Thread {
         return graph;
     }
 
-    public Graph_GUI getGui() {
-        return gui;
-    }
+//    public Graph_GUI getGui() {
+//        return gui;
+//    }
 
     public Graph_Algo getAlgo() {
         return algo;
@@ -414,9 +415,9 @@ public class MyGameGUI extends Thread {
         this.graph = graph;
     }
 
-    public void setGui(Graph_GUI gui) {
-        this.gui = gui;
-    }
+//    public void setGui(Graph_GUI gui) {
+//        this.gui = gui;
+//    }
 
     public void setAlgo(Graph_Algo algo) {
         this.algo = algo;
