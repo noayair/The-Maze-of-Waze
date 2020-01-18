@@ -113,7 +113,7 @@ public class MyGameAlgo extends Thread {
                                 gameGUI.getRobotsList().get(id).getWay().remove(shortest.get(0)); // remove the dest from the list
                             }else { // if the robot has reached its final destination and needs a new target
                                 int closestDest = closestFruit(gameGUI.getGraph().getNode(src).getKey()); // search the closest fruit to the robot and update 'closestDest' to be thr src of the edge that the fruit is on
-                                shortest = shotestWay(src, closestDest); // update the shortest list to be the way to the closest fruit
+                                shortest = shortestWay(src, closestDest); // update the shortest list to be the way to the closest fruit
 //                                if (shortest==null)
 //                                    System.out.println(closestDest + " " + src);
                                 dest = shortest.get(0).getKey(); // update the dest to be the first object in the shortest list
@@ -159,9 +159,10 @@ public class MyGameAlgo extends Thread {
             }
         }
     }
+
     /**
-     * a very simple random walk implementation!
-     * @param
+     * a random walk implementation.
+     * @param g
      * @param src
      * @return
      */
@@ -177,7 +178,14 @@ public class MyGameAlgo extends Thread {
         return ans;
     }
 
-
+    /**
+     * Goes over all the edges that come out of the given node(by key) and checks to see if one has fruit.
+     * If so, returns the dest of that edge.
+     * If not, returns -1.
+     * @param dg
+     * @param src
+     * @return the dest of the edge, if it has on it a fruit, -1 if not.
+     */
     public int nextNode(DGraph dg, int src) {
         Collection<edge_data> edges = dg.getE(src);
         for (edge_data e : edges) {
@@ -191,6 +199,11 @@ public class MyGameAlgo extends Thread {
         return -1;
     }
 
+    /**
+     * finds the closest fruit to the robot.
+     * @param src
+     * @return the src of the edge that the closest fruit is on.
+     */
     public int closestFruit (int src){
         double dest = Double.POSITIVE_INFINITY;
         int ans = -1;
@@ -209,7 +222,12 @@ public class MyGameAlgo extends Thread {
         return ans;
     }
 
-    public List<node_data> shotestWay (int src, int dest){
+    /**
+     * @param src
+     * @param dest
+     * @return list of the way to the closest fruit.
+     */
+    public List<node_data> shortestWay (int src, int dest){
         return gameGUI.getAlgo().shortestPath(src, dest);
     }
 

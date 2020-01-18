@@ -722,11 +722,11 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
-		JMenuItem menuItem1 = new JMenuItem("New Manual Game");
+		JMenuItem menuItem1 = new JMenuItem("Play by Click");
 		menuItem1.addActionListener(std);
 		menu.add(menuItem1);
 		menuBar.add(menu);
-		JMenuItem menuItem2 = new JMenuItem("New Automatic Game");
+		JMenuItem menuItem2 = new JMenuItem("Play automatic game");
 		menuItem2.addActionListener(std);
 		menu.add(menuItem2);
 		menuBar.add(menu);
@@ -1664,19 +1664,25 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 		switch (s) {
-			case "New Manual Game":
-				String levelString = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
-				int level;
+			case "Play by Click":
+				int level = 0;
+//				StdDraw.clear();
+//				gameGUI.getGame().stopGame();
+				//	mgg.finishGame();
+				MyGameGUI g = new MyGameGUI();
+				String LString = JOptionPane.showInputDialog(null, "Please choose a Game level");
 				try {
-					level = Integer.parseInt(levelString);
-					gameGUI = new MyGameGUI();
+					level = Integer.parseInt(LString);
+					StdDraw.clear();
+					StdDraw.enableDoubleBuffering();
+					StdDraw.show();
+
 					gameGUI.startGameManual(level);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 				break;
-
-			case "New Automatic Game":
+			case "Play automatic game":
 				String level1String = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
 				int level1 = -1;
 				try {
@@ -1687,7 +1693,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				gameGUI = new MyGameGUI(1);
 				gameGUI.getGameAlgo().startGameAutomatic(level1);
 				break;
-		}
+	}
 
 
 //	public void actionPerformed(ActionEvent e) {

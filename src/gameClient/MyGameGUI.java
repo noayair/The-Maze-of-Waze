@@ -3,15 +3,9 @@ package gameClient;
 import Server.Game_Server;
 import Server.game_service;
 import algorithms.Graph_Algo;
-import algorithms.graph_algorithms;
 import dataStructure.*;
-import elements.Fruits_I;
-import elements.Robot_I;
 import elements.fruits;
 import elements.robot;
-import gui.Graph_GUI;
-import oop_dataStructure.oop_edge_data;
-import oop_dataStructure.oop_graph;
 import org.json.JSONException;
 import org.json.JSONObject;
 import utils.Point3D;
@@ -46,6 +40,7 @@ public class MyGameGUI extends Thread {
         //   setWin();
     }
 
+    //constructor for the automatic game
     public MyGameGUI (int x){
         StdDraw.gameGUI=this;
         this.gameAlgo = new MyGameAlgo(this);
@@ -80,6 +75,9 @@ public class MyGameGUI extends Thread {
 
     }
 
+    /**
+     * prints a clock and the score on the screen.
+     */
     private void clock() {
         try {
             String gameInfo = game.toString();
@@ -106,22 +104,85 @@ public class MyGameGUI extends Thread {
 
 
     //getters ans setter
+
     public List<fruits> getFruitsList() {
         return this.fruitsList;
     }
+
+    public game_service getGame() {
+        return game;
+    }
+
+    public DGraph getGraph() {
+        return graph;
+    }
+
+//    public Graph_GUI getGui() {
+//        return gui;
+//    }
+
+    public Graph_Algo getAlgo() {
+        return algo;
+    }
+
+    public List<robot> getRobotsList() {
+        return robotsList;
+    }
+
+    public fruits getF() {
+        return f;
+    }
+
+    public robot getR() {
+        return r;
+    }
+
+    public MyGameAlgo getGameAlgo() {
+        return gameAlgo;
+    }
+
+    public void setGame(game_service game) {
+        this.game = game;
+    }
+
+    public void setGraph(DGraph graph) {
+        this.graph = graph;
+    }
+
+//    public void setGui(Graph_GUI gui) {
+//        this.gui = gui;
+//    }
+
+    public void setAlgo(Graph_Algo algo) {
+        this.algo = algo;
+    }
+
+    public void setFruitsList(List<fruits> fruitsList) {
+        this.fruitsList = fruitsList;
+    }
+
+    public void setRobotsList(List<robot> robotsList) {
+        this.robotsList = robotsList;
+    }
+
+    public void setF(fruits f) {
+        this.f = f;
+    }
+
+    public void setR(robot r) {
+        this.r = r;
+    }
+
 
     //functions
 
     /**
      * gets level and draw the graph, the fruits and the robots for the game
-     //     * @param level
+     * @param level
      */
-
-
-
     public void startGameManual(int level) {
-        this.game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games)
-//        this.game = game;
+        game_service game = Game_Server.getServer(level); // you have [0,23] games
+        this.game = game;
         String g = game.getGraph();
         DGraph d = new DGraph();
         d.init(g);
@@ -132,44 +193,48 @@ public class MyGameGUI extends Thread {
         DrawGraph();
         this.f.drawFruits(this.fruitsList);
         StdDraw.show();
-        String StringRob = JOptionPane.showInputDialog(null,"Please enter " + numberRobot + "node keys for Robots.","Shape of x,y,z,w",1);
+        String StringRob = JOptionPane.showInputDialog(null, "Please enter " + numberRobot + "node keys for Robots.", "Shape of x,y,z,w", 1);
         int[] robotArr = new int[numberRobot];
-//        System.out.println("num of robs:" + numberRobot);
-//        System.out.println(StringRob);
-        String[] arr=new String[numberRobot];
-        if(numberRobot==1){
-            robotArr[0]=Integer.parseInt(StringRob);
-        }
-        else {
+        String[] arr = new String[numberRobot];
+        if (numberRobot == 1) {
+            robotArr[0] = Integer.parseInt(StringRob);
+        } else {
             arr = StringRob.split(",");
             for (int i = 0; i < numberRobot; i++) {
                 robotArr[i] = Integer.parseInt(arr[i]);
             }
         }
-        // we placed robots in the server
-        MikumRobot(robotArr);
-
+        game.startGame();
+        MikumRobot(robotArr); // we placed robots in the server
         List<String> robotList = game.getRobots();
         this.robotsList = r.fillRobotList(robotList);
-        r.drawRobots(this.robotsList);
-        StdDraw.show();
+        for (robot r : robotsList) {
+            r.drawRobots(this.robotsList);
+            StdDraw.show();
+        }
         this.game.startGame();
-        run();
+        this.start();
     }
 
+    /**
+     * gets the fruits from the server.
+     */
     public void initFruits(){
         this.fruitsList.clear();
         List<String> fruitList = this.game.getFruits(); // list of all the fruits in this level
         for (String s : fruitList) { // for that init all the fruits from json and adds it to the list
             f = new fruits();
             f = f.init(s);
-            //        System.out.println(s);
             this.fruitsList.add(f);
         }
         this.fruitsList.sort((o1, o2) -> (int)(o2.getValue())-(int)(o1.getValue()));
     }
 
-
+    /**
+     * gets from the server the number of the robots in the given level.
+     * @param s
+     * @return robots number.
+     */
     public int numRobots(String s){  //get the number of robots from server.
         int num=0;
         try {
@@ -182,6 +247,10 @@ public class MyGameGUI extends Thread {
         return num;
     }
 
+    /**
+     *
+     * @param arr
+     */
     public void MikumRobot(int[] arr) {
         for (int i = 0; i <arr.length ; i++) {
             this.game.addRobot(arr[i]);
@@ -242,6 +311,13 @@ public class MyGameGUI extends Thread {
             }
         }
     }
+
+    /**
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public int GoToRobot (double x, double y){
         Point3D p = new Point3D(x,y);
         Collection<node_data> node = this.graph.getV();
@@ -254,6 +330,9 @@ public class MyGameGUI extends Thread {
     }
 
 
+    /**
+     * update the fruits from the server while the game is running.
+     */
     public void updateFruits(){
         List<String> updateFruits = this.game.getFruits();
         if(updateFruits != null){
@@ -263,6 +342,9 @@ public class MyGameGUI extends Thread {
         }
     }
 
+    /**
+     * update the robots from the server while the game is running.
+     */
     public void updateRobots(){
         List<String> updateRobots = this.game.getRobots();
         for (int i = 0; i < this.robotsList.size(); i++) {
@@ -287,11 +369,8 @@ public class MyGameGUI extends Thread {
                 e.printStackTrace();
             }
         }
-        //      System.out.println( this.game.timeToEnd()/1000);
-
-//                if(game.timeToEnd() == 0)
-//                System.out.println("game is over" + this.game.toString());
-
+            finishGame();
+            System.out.println("game is over" + this.game.toString());
     }
 
     public void finishGame(){
@@ -299,38 +378,41 @@ public class MyGameGUI extends Thread {
         StdDraw.clear(Color.BLACK);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
-        StdDraw.picture(0,0,"gameOver.png");
+        StdDraw.picture(Range_x.get_max()-1,Range_y.get_max()-1,"game over.png" , 0.001 , 0.001);
         StdDraw.show();
     }
 
 
 
-    public void setWin(){
-        StdDraw.setCanvasSize(1000, 500);
-//        StdDraw.clear(Color.blue);
-        StdDraw.setYscale(-51,50);
-        StdDraw.setXscale(-51,50);
-        int level=-1;
-        String level1 = JOptionPane.showInputDialog(null,"Please choose a Game level (1-23)");
-        try{
-            level=Integer.parseInt(level1);
+//    public void setWin(){
+//        StdDraw.setCanvasSize(1000, 500);
+////        StdDraw.clear(Color.blue);
+//        StdDraw.setYscale(-51,50);
+//        StdDraw.setXscale(-51,50);
+//        int level=-1;
+//        String level1 = JOptionPane.showInputDialog(null,"Please choose a Game level (1-23)");
+//        try{
+//            level=Integer.parseInt(level1);
+//
+//        }catch(Exception e1){e1.printStackTrace();}
+//        String[] chooseGame = {"Manually Game","Auto Game"};
+//        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
+//        if(selctedGame =="Auto Game") {
+//            StdDraw.clear();
+//            StdDraw.enableDoubleBuffering();
+//            this.gameAlgo.startGameAutomatic(level);
+//        }
+//        else{
+//        StdDraw.clear();
+//        StdDraw.enableDoubleBuffering();
+//        startGameManual(level);
+//
+//        }
+//    }
 
-        }catch(Exception e1){e1.printStackTrace();}
-        String[] chooseGame = {"Manually Game","Auto Game"};
-        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
-        if(selctedGame =="Auto Game") {
-            StdDraw.clear();
-            StdDraw.enableDoubleBuffering();
-            this.gameAlgo.startGameAutomatic(level);
-        }
-        else{
-        StdDraw.clear();
-        StdDraw.enableDoubleBuffering();
-        startGameManual(level);
-
-        }
-    }
-
+    /**
+     * draw the graph that the server give.
+     */
     public void DrawGraph() {
         StdDraw.clear();
         StdDraw.enableDoubleBuffering();
@@ -416,69 +498,6 @@ public class MyGameGUI extends Thread {
         }
     }
 
-    public game_service getGame() {
-        return game;
-    }
-
-    public DGraph getGraph() {
-        return graph;
-    }
-
-//    public Graph_GUI getGui() {
-//        return gui;
-//    }
-
-    public Graph_Algo getAlgo() {
-        return algo;
-    }
-
-    public List<robot> getRobotsList() {
-        return robotsList;
-    }
-
-    public fruits getF() {
-        return f;
-    }
-
-    public robot getR() {
-        return r;
-    }
-
-    public MyGameAlgo getGameAlgo() {
-        return gameAlgo;
-    }
-
-    public void setGame(game_service game) {
-        this.game = game;
-    }
-
-    public void setGraph(DGraph graph) {
-        this.graph = graph;
-    }
-
-//    public void setGui(Graph_GUI gui) {
-//        this.gui = gui;
-//    }
-
-    public void setAlgo(Graph_Algo algo) {
-        this.algo = algo;
-    }
-
-    public void setFruitsList(List<fruits> fruitsList) {
-        this.fruitsList = fruitsList;
-    }
-
-    public void setRobotsList(List<robot> robotsList) {
-        this.robotsList = robotsList;
-    }
-
-    public void setF(fruits f) {
-        this.f = f;
-    }
-
-    public void setR(robot r) {
-        this.r = r;
-    }
 
     public static void main(String[] args) {
         MyGameGUI p = new MyGameGUI();

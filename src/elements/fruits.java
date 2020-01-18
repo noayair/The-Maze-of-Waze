@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * This class represents a fruit in the game.
  */
-public class fruits implements Fruits_I {
+public class fruits{
     public static final double EPS1 = 0.000001 , EPS2 = EPS1+EPS1 , EPS = EPS2;
     private double value;
     private int type;

@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class robot implements Robot_I {
+public class robot{
     private game_service game;
     private int src , dest , id , value , speed;
     private Point3D pos;

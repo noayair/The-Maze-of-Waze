@@ -4,8 +4,6 @@ import algorithms.Graph_Algo;
 import algorithms.graph_algorithms;
 import dataStructure.*;
 //import javafx.scene.transform.Scale;
-import elements.Fruits_I;
-import elements.fruits;
 import gameClient.MyGameGUI;
 import utils.Point3D;
 import utils.Range;
