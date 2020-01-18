@@ -133,4 +133,13 @@ public class robot implements Robot_I {
             this.check.add(i);
         }
     }
+
+    public List<robot> fillRobotList(List<String> arr){
+        List<robot> temp = new LinkedList<>();
+        for (String rob:arr) {
+            robot r = init(rob);
+            temp.add(r);
+        }
+        return temp;
+    }
 }

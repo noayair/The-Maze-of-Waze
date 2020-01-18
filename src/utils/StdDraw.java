@@ -484,7 +484,7 @@ import javax.swing.*;
  */
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
 	public static Graph_GUI g;
-	public static MyGameGUI gui;
+	public static MyGameGUI gameGUI;
 
 	/**
 	 *  The color black.
@@ -722,45 +722,14 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Menu");
-		JMenuItem menuItem1 = new JMenuItem("Play");
+		JMenuItem menuItem1 = new JMenuItem("New Manual Game");
 		menuItem1.addActionListener(std);
-//		menuItem1.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S,
-//				Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		menu.add(menuItem1);
 		menuBar.add(menu);
-//		JMenuItem upload = new JMenuItem("upload");
-//		upload.addActionListener(std);
-//		menu.add(upload);
-//		JMenu Graph = new JMenu("Graph");
-//		menuBar.add(Graph);
-//
-//		JMenuItem Node = new JMenuItem("add Node");
-//		Node.addActionListener(std);
-//		Graph.add(Node);
-//		JMenuItem Edge = new JMenuItem("add Edge");
-//		Edge.addActionListener(std);
-//		Graph.add(Edge);
-//		JMenuItem removeNode = new JMenuItem("remove Node");
-//		removeNode.addActionListener(std);
-//		Graph.add(removeNode);
-//		JMenuItem removeEdge = new JMenuItem("remove Edge");
-//		removeEdge.addActionListener(std);
-//		Graph.add(removeEdge);
-//
-//		JMenu Algo = new JMenu("Algorithems");
-//		menuBar.add(Algo);
-//		JMenuItem isConnect = new JMenuItem("isConnected");
-//		isConnect.addActionListener(std);
-//		Algo.add(isConnect);
-//		JMenuItem shortestPathDist = new JMenuItem("shortestPathDist");
-//		shortestPathDist.addActionListener(std);
-//		Algo.add(shortestPathDist);
-//		JMenuItem shortestPath = new JMenuItem("shortestPath");
-//		shortestPath.addActionListener(std);
-//		Algo.add(shortestPath);
-//		JMenuItem TSP = new JMenuItem("TSP");
-//		TSP.addActionListener(std);
-//		Algo.add(TSP);
+		JMenuItem menuItem2 = new JMenuItem("New Automatic Game");
+		menuItem2.addActionListener(std);
+		menu.add(menuItem2);
+		menuBar.add(menu);
 
 		return menuBar;
 	}
@@ -1695,17 +1664,75 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 		switch (s) {
-			case "Play":
-				MyGameGUI ga = new MyGameGUI();
-				ga.setWin();
+			case "New Manual Game":
+				String levelString = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
+				int level;
+				try {
+					level = Integer.parseInt(levelString);
+					gameGUI = new MyGameGUI();
+					gameGUI.startGameManual(level);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				break;
+
+			case "New Automatic Game":
+				String level1String = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
+				int level1 = -1;
+				try {
+					level1 = Integer.parseInt(level1String);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+				gameGUI = new MyGameGUI(1);
+				gameGUI.getGameAlgo().startGameAutomatic(level1);
 				break;
 		}
 
 
-
+//	public void actionPerformed(ActionEvent e) {
+//		String action = e.getActionCommand();
+//		switch(action){
+//			case "New Game":
+//				StdDraw.clear();
+////				gameGUI.getGame().stopGame();
+////				gameGUI.finishGame();
+//				gameGUI = new MyGameGUI(1);
+//				int level = -1;
+////				while(level == -1) {
+//				String senarioString = JOptionPane.showInputDialog(null, "Please choose a Game Senario");
+//				try {
+//					level = Integer.parseInt(senarioString);
+//				} catch (Exception e1) {
+//					e1.printStackTrace();
+//				}
+////				}
+//				int check=-1;
+//				Object selctedGame= null;
+//				String[] chooseGame = {"Manually Game","Auto Game"};
+////				while(check ==-1) {
+////					try {
+////						selctedGame = JOptionPane.showInputDialog(null, "Choose a Game mode", "Message", JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
+////						check = 0;
+////					}catch(Exception ee) {check =-1;}
+////				}
+//				if(selctedGame=="Manually Game") {
+//					gameGUI.startGameManual(level);
+//
+//				}
+//				else {
+//					gameGUI.getGameAlgo().startGameAutomatic(level);
+//				}
+//				break;
+//
+//			case "Finish Game":
+//				gameGUI.getGame().stopGame();
+//				gameGUI.finishGame();
+////				System.out.println(saveToKML);
+//				break;
+//		}
 
 	}
-
 
 
 	/***************************************************************************
