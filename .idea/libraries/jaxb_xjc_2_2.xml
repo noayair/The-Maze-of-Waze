@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="jaxb-xjc-2.2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-xjc-2.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jaxb-xjc-2.2.jar!/1.0" />
+    </SOURCES>
+  </library>
+</component>

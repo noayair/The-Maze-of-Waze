@@ -31,6 +31,7 @@ import Server.Game_Server;
 import Server.game_service;
 import algorithms.Graph_Algo;
 import dataStructure.*;
+import gameClient.KML_Logger;
 import gameClient.MyGameGUI;
 import gui.Graph_GUI;
 //import org.graalvm.compiler.graph.Graph;
@@ -485,6 +486,7 @@ import javax.swing.*;
 public final class StdDraw implements ActionListener, MouseListener, MouseMotionListener, KeyListener {
 	public static Graph_GUI g;
 	public static MyGameGUI gameGUI;
+    public static boolean saveToKML = false;
 
 	/**
 	 *  The color black.
@@ -721,7 +723,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	// create the menu bar (changed to private)
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
-		JMenu menu = new JMenu("Menu");
+		JMenu menu = new JMenu("Game");
 		JMenuItem menuItem1 = new JMenuItem("Play by Click");
 		menuItem1.addActionListener(std);
 		menu.add(menuItem1);
@@ -730,7 +732,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		menuItem2.addActionListener(std);
 		menu.add(menuItem2);
 		menuBar.add(menu);
-
+        JMenuItem menuItem3 = new JMenuItem("Finish game");
+        menuItem3.addActionListener(std);
+        menu.add(menuItem3);
+        menuBar.add(menu);
 		return menuBar;
 	}
 
@@ -1666,17 +1671,17 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		switch (s) {
 			case "Play by Click":
 				int level = 0;
-//				StdDraw.clear();
-//				gameGUI.getGame().stopGame();
-				//	mgg.finishGame();
-				MyGameGUI g = new MyGameGUI();
+				try {
+					MyGameGUI g = new MyGameGUI();
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 				String LString = JOptionPane.showInputDialog(null, "Please choose a Game level");
 				try {
 					level = Integer.parseInt(LString);
 					StdDraw.clear();
 					StdDraw.enableDoubleBuffering();
 					StdDraw.show();
-
 					gameGUI.startGameManual(level);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -1690,54 +1695,19 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
-				gameGUI = new MyGameGUI(1);
+				try {
+					gameGUI = new MyGameGUI(1);
+				} catch (IOException ex) {
+					ex.printStackTrace();
+				}
 				gameGUI.getGameAlgo().startGameAutomatic(level1);
 				break;
-	}
-
-
-//	public void actionPerformed(ActionEvent e) {
-//		String action = e.getActionCommand();
-//		switch(action){
-//			case "New Game":
-//				StdDraw.clear();
-////				gameGUI.getGame().stopGame();
-////				gameGUI.finishGame();
-//				gameGUI = new MyGameGUI(1);
-//				int level = -1;
-////				while(level == -1) {
-//				String senarioString = JOptionPane.showInputDialog(null, "Please choose a Game Senario");
-//				try {
-//					level = Integer.parseInt(senarioString);
-//				} catch (Exception e1) {
-//					e1.printStackTrace();
-//				}
-////				}
-//				int check=-1;
-//				Object selctedGame= null;
-//				String[] chooseGame = {"Manually Game","Auto Game"};
-////				while(check ==-1) {
-////					try {
-////						selctedGame = JOptionPane.showInputDialog(null, "Choose a Game mode", "Message", JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
-////						check = 0;
-////					}catch(Exception ee) {check =-1;}
-////				}
-//				if(selctedGame=="Manually Game") {
-//					gameGUI.startGameManual(level);
-//
-//				}
-//				else {
-//					gameGUI.getGameAlgo().startGameAutomatic(level);
-//				}
-//				break;
-//
-//			case "Finish Game":
-//				gameGUI.getGame().stopGame();
-//				gameGUI.finishGame();
-////				System.out.println(saveToKML);
-//				break;
-//		}
-
+            case "Finish game":
+                gameGUI.getGame().stopGame();
+                gameGUI.finishGame();
+                System.out.println(saveToKML);
+                break;
+		}
 	}
 
 

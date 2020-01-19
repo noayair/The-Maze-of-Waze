@@ -14,6 +14,8 @@ import utils.StdDraw;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
@@ -22,7 +24,6 @@ import static java.lang.Thread.sleep;
 public class MyGameGUI extends Thread {
     private game_service game;
     private DGraph graph = new DGraph();
-    //private Graph_GUI gui = new Graph_GUI(graph);
     private Graph_Algo algo = new Graph_Algo(graph);
     private MyGameAlgo gameAlgo = new MyGameAlgo(this);
     private List<fruits> fruitsList = new ArrayList<>();
@@ -31,20 +32,20 @@ public class MyGameGUI extends Thread {
     private robot r = new robot();
     public Range Range_x;
     public Range Range_y;
+    private KML_Logger kml = new KML_Logger();
+    public int level;
 
 
     //constructor
-    public MyGameGUI() {
+    public MyGameGUI() throws IOException {
         StdDraw.gameGUI = this;
         openWindow();
-        //   setWin();
     }
 
     //constructor for the automatic game
-    public MyGameGUI (int x){
+    public MyGameGUI (int x) throws IOException {
         StdDraw.gameGUI=this;
         this.gameAlgo = new MyGameAlgo(this);
-
     }
 
     public void openWindow(){
@@ -52,27 +53,8 @@ public class MyGameGUI extends Thread {
         StdDraw.clear(Color.white);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
-        //   StdDraw.picture(0,0,"openingScreen.png");
-//        int senario=0;
-//        String senarioString = JOptionPane.showInputDialog(null,"Please choose a Game Senario");
-//        try{
-//            senario=Integer.parseInt(senarioString);
-//        }catch(Exception e1){e1.printStackTrace();}
-//        String[] chooseGame = {"Manually Game","Auto Game"};
-//        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
-//        if(selctedGame =="Auto Game") {
-//            StdDraw.clear();
-//            StdDraw.enableDoubleBuffering();
-//      //      algoGame.startGame(senario);
-//        }
-//        else{
         StdDraw.clear();
         StdDraw.enableDoubleBuffering();
-
-//
-//
-//        }
-
     }
 
     /**
@@ -92,10 +74,6 @@ public class MyGameGUI extends Thread {
             StdDraw.setPenColor(Color.red);
             StdDraw.setPenRadius(0.4);
             StdDraw.text(Range_x.get_max()-0.0002, Range_y.get_max() ,"Time to end : " +game.timeToEnd() / 1000);
-//            StdDraw.setPenRadius(0.015);
-//            StdDraw.setPenColor(new Color(142,17,17));
-//            StdDraw.rectangle(Range_x.get_max()-0.0009,Range_y.get_max()-0.00009,0.0014,0.0004);
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -116,10 +94,6 @@ public class MyGameGUI extends Thread {
     public DGraph getGraph() {
         return graph;
     }
-
-//    public Graph_GUI getGui() {
-//        return gui;
-//    }
 
     public Graph_Algo getAlgo() {
         return algo;
@@ -149,10 +123,6 @@ public class MyGameGUI extends Thread {
         this.graph = graph;
     }
 
-//    public void setGui(Graph_GUI gui) {
-//        this.gui = gui;
-//    }
-
     public void setAlgo(Graph_Algo algo) {
         this.algo = algo;
     }
@@ -173,14 +143,16 @@ public class MyGameGUI extends Thread {
         this.r = r;
     }
 
-
     //functions
 
     /**
      * gets level and draw the graph, the fruits and the robots for the game
-     * @param level
+     * The user has to enter the nodes he wants to put the robots into.
+     * If there are several robots on the user enter the numbers of the nodes in this way- **number, number..".
+     * To move the robot to the next node, the user must click one of the nodes adjacent to it. Only so the robot can move.
      */
     public void startGameManual(int level) {
+        this.level = level;
         game_service game = Game_Server.getServer(level); // you have [0,23] games
         this.game = game;
         String g = game.getGraph();
@@ -202,6 +174,9 @@ public class MyGameGUI extends Thread {
             arr = StringRob.split(",");
             for (int i = 0; i < numberRobot; i++) {
                 robotArr[i] = Integer.parseInt(arr[i]);
+                if(robotArr[i] == robotArr[i+1]){ // If the user entered 2 numbers the same, we will get an error
+                    throw new NullPointerException("Err");
+                }
             }
         }
         game.startGame();
@@ -231,9 +206,8 @@ public class MyGameGUI extends Thread {
     }
 
     /**
-     * gets from the server the number of the robots in the given level.
-     * @param s
-     * @return robots number.
+     * get the number of robots from server.
+     * @return number of robots
      */
     public int numRobots(String s){  //get the number of robots from server.
         int num=0;
@@ -247,8 +221,14 @@ public class MyGameGUI extends Thread {
         return num;
     }
 
+    public int numRobots(){
+        String robNum = game.toString();
+        int ans = numRobots(robNum);
+        return ans;
+    }
+
     /**
-     *
+     * add robots to the game
      * @param arr
      */
     public void MikumRobot(int[] arr) {
@@ -262,9 +242,10 @@ public class MyGameGUI extends Thread {
      */
 
     /**
-     * this function move robots manuaaly.
+     * this function move robots manually.
+     * in help STD and function GoToRobot.
+     * Searches for the point the user clicks from the neighboring nodes and the robot goes to it
      */
-
     public void moveRobotsByClick(game_service game, DGraph g) {
         List<String> log = game.move();
         if (log != null) {
@@ -275,32 +256,10 @@ public class MyGameGUI extends Thread {
                     JSONObject line = new JSONObject(robotjson);
                     JSONObject obj = line.getJSONObject("Robot");
                     int rid = obj.getInt("id");
-                    //       System.out.println("rob id: " + rid);
                     int src = obj.getInt("src");
                     int dest = obj.getInt("dest");
-
-                    // which robot to move
-//                    if (StdDraw.isMousePressed()) {
-//                        x = StdDraw.mouseX();
-//                        y = StdDraw.mouseY();
-//                       node_data n = (NodeData) findNode(x, y);
-//                        while(n==null) {
-//                            x=StdDraw.mouseX();
-//                            y=StdDraw.mouseY();
-//                            n=(NodeData)findNode(x,y);
-//                        }
-//                        for (robot r : robotsList) {
-//                            if (r.getSrc() == n.getKey())
-//                                RobotId = r.getId();
-//                            System.out.println("robot id: " + RobotId);
-//                        }
-//                    }
-
-                    //   System.out.println("robot id second: " + RobotId);
-                    // move robot to where
                     if (StdDraw.isMousePressed()) {
                         NodeData n = new NodeData(GoToRobot(StdDraw.mouseX(), StdDraw.mouseY()));
-                        //                    System.out.println(n.getKey()+" the key");
                         if (dest == -1) {
                             this.game.chooseNextEdge(rid, n.getKey());
                         }
@@ -313,9 +272,7 @@ public class MyGameGUI extends Thread {
     }
 
     /**
-     *
-     * @param x
-     * @param y
+     *Takes the point of clicking a mouse and find the node closest to it.
      * @return
      */
     public int GoToRobot (double x, double y){
@@ -338,6 +295,13 @@ public class MyGameGUI extends Thread {
         if(updateFruits != null){
             for (int i = 0; i < this.fruitsList.size(); i++) {
                 this.fruitsList.get(i).update(updateFruits.get(i));
+                if(this.kml != null){
+                    if(this.fruitsList.get(i).getType() == 1){
+                        this.kml.addPlaceMark("apple" , this.fruitsList.get(i).getPos().toString());
+                    }else{
+                        this.kml.addPlaceMark("http://cafe.themarker.com/media/t/204/675/8/file_0.jpg" , this.fruitsList.get(i).getPos().toString());
+                    }
+                }
             }
         }
     }
@@ -349,11 +313,15 @@ public class MyGameGUI extends Thread {
         List<String> updateRobots = this.game.getRobots();
         for (int i = 0; i < this.robotsList.size(); i++) {
             this.robotsList.get(i).update(updateRobots.get(i));
+            if (this.kml != null){
+                this.kml.addPlaceMark("https://banner2.cleanpng.com/20180219/hvw/kisspng-robot-cartoon-clip-art-robot-5a8b8347f17e33.1624179315190925519892.jpg" , this.robotsList.get(i).getPos().toString());
+            }
         }
     }
 
     @Override
     public void run() {
+        int i = 0;
         while (this.game.isRunning()) {
             System.out.println(this.game.timeToEnd() / 1000);
             updateFruits();
@@ -364,13 +332,18 @@ public class MyGameGUI extends Thread {
             this.f.drawFruits(this.fruitsList);
             StdDraw.show();
             try {
-                sleep(10);
+                sleep(70);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
             finishGame();
             System.out.println("game is over" + this.game.toString());
+        try {
+            KML();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void finishGame(){
@@ -378,37 +351,19 @@ public class MyGameGUI extends Thread {
         StdDraw.clear(Color.BLACK);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
-        StdDraw.picture(Range_x.get_max()-1,Range_y.get_max()-1,"game over.png" , 0.001 , 0.001);
+        StdDraw.picture(0,0,"game over.jpg" , 50 , 50);
         StdDraw.show();
     }
 
-
-
-//    public void setWin(){
-//        StdDraw.setCanvasSize(1000, 500);
-////        StdDraw.clear(Color.blue);
-//        StdDraw.setYscale(-51,50);
-//        StdDraw.setXscale(-51,50);
-//        int level=-1;
-//        String level1 = JOptionPane.showInputDialog(null,"Please choose a Game level (1-23)");
-//        try{
-//            level=Integer.parseInt(level1);
-//
-//        }catch(Exception e1){e1.printStackTrace();}
-//        String[] chooseGame = {"Manually Game","Auto Game"};
-//        Object selctedGame = JOptionPane.showInputDialog(null,"Choose a Game mode","Message",JOptionPane.INFORMATION_MESSAGE,null,chooseGame,chooseGame[0]);
-//        if(selctedGame =="Auto Game") {
-//            StdDraw.clear();
-//            StdDraw.enableDoubleBuffering();
-//            this.gameAlgo.startGameAutomatic(level);
-//        }
-//        else{
-//        StdDraw.clear();
-//        StdDraw.enableDoubleBuffering();
-//        startGameManual(level);
-//
-//        }
-//    }
+    public void KML() throws IOException {
+        int s = JOptionPane.showConfirmDialog(null,"Do you want to save the game to KML?","Please choose Yes/No",JOptionPane.YES_NO_OPTION);
+        if(s == 1) StdDraw.saveToKML = false;
+        else StdDraw.saveToKML = true;
+        System.out.println(StdDraw.saveToKML + " at KML");
+        if(StdDraw.saveToKML){
+            kml.endKML();
+        }
+    }
 
     /**
      * draw the graph that the server give.
@@ -443,7 +398,6 @@ public class MyGameGUI extends Thread {
                 StdDraw.line(src_x , src_y , dest_x , dest_y);
                 double w = Math.round(e.getWeight()*100.0)/100.0;
                 String weight = Double.toString(w);
-//                StdDraw.text(src_x * 0.3 + dest_x * 0.7 , src_y * 0.3 + dest_y * 0.7 , weight);
                 StdDraw.setPenColor(Color.yellow);
                 StdDraw.setPenRadius(0.15);
                 StdDraw.filledCircle(src_x * 0.2 + dest_x * 0.8, src_y * 0.2 + dest_y * 0.8, ScaleX*0.1);
@@ -498,9 +452,11 @@ public class MyGameGUI extends Thread {
         }
     }
 
+    public void setKml(KML_Logger kml) {
+        this.kml = kml;
+    }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         MyGameGUI p = new MyGameGUI();
-//        p.startGame(8);
     }
 }

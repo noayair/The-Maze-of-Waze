@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import utils.StdDraw;
 
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -19,14 +21,14 @@ import java.util.List;
 
 public class MyGameAlgo extends Thread {
     private MyGameGUI gameGUI;
+    private KML_Logger kml = new KML_Logger();
 
     //constructor
-    public MyGameAlgo(MyGameGUI gameGUI) {
+    public MyGameAlgo(MyGameGUI gameGUI) throws IOException {
         this.gameGUI = gameGUI;
     }
 
     //functions
-
     /**
      * Starts the game according to the selected level,
      * and updates the fruits, robots and graph accordingly.
@@ -78,7 +80,6 @@ public class MyGameAlgo extends Thread {
             }else if(fruit.getType() == 1){
                 rob.setDest(edge.getDest());
             }
-//            rob.setDest(edge.getDest());
             robotList.add(rob); // add the current robot to the robots list
             System.out.println(rob.getDest());
             System.out.println(gameGUI.getGame().getRobots());
@@ -114,13 +115,10 @@ public class MyGameAlgo extends Thread {
                             }else { // if the robot has reached its final destination and needs a new target
                                 int closestDest = closestFruit(gameGUI.getGraph().getNode(src).getKey()); // search the closest fruit to the robot and update 'closestDest' to be thr src of the edge that the fruit is on
                                 shortest = shortestWay(src, closestDest); // update the shortest list to be the way to the closest fruit
-//                                if (shortest==null)
-//                                    System.out.println(closestDest + " " + src);
                                 dest = shortest.get(0).getKey(); // update the dest to be the first object in the shortest list
                                 gs.chooseNextEdge(id, dest); // update the dest in the server
                                 gameGUI.getRobotsList().get(id).checkNode(dest); // add the dest to the check list
                                 shortest.remove(shortest.get(0)); // remove the dest from the list
-                                //     gs.chooseNextEdge(id,shortest.get(0).getKey());
                                 gameGUI.getRobotsList().get(id).setWay(shortest);
                             }
                             System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
@@ -133,18 +131,12 @@ public class MyGameAlgo extends Thread {
                             System.out.println(rob);
                         }
                     }
-//                    if(this.robotsList.get(id).getCheck().size() == 3){
-
-//                    System.out.println(dest);
-//                    this.robotsList.get(id).getCheck().peek();
                     if(dest == gameGUI.getRobotsList().get(id).getCheck().peek()){ // if the robot return to the same node more then 2 times
                         System.out.println("random");
                         dest = nextNodeRandom(dg , src); // update the dest of the robot to be another
                         gs.chooseNextEdge(id, dest);
                         gameGUI.getRobotsList().get(id).checkNode(dest);
                     }
-//                    }
-
                     if(gameGUI.getRobotsList().size() > 1){
                         for (int j = 0; j < gameGUI.getRobotsList().size()-1; j++) { // check if tow or more robots go to the same fruit
                             if(gameGUI.getRobotsList().get(j).getDest() == gameGUI.getRobotsList().get(j+1).getDest()){ // if they are, its send one of them to another random fruit
@@ -209,10 +201,8 @@ public class MyGameAlgo extends Thread {
         int ans = -1;
         int fruitSrc;
         double shortest;
-//        Point3D fruitLocation;
         for (int i = 0; i < gameGUI.getFruitsList().size(); i++) {
             fruitSrc = gameGUI.getFruitsList().get(i).fruitEdge(gameGUI.getGraph()).getSrc(); // find the src of the edge that the fruit is on it
-//            fruitLocation = this.graph.getNode(fruitsrc).getLocation();
             shortest = gameGUI.getAlgo().shortestPathDist(src , fruitSrc); // find the distance between the robot location to the src fruit
             if(shortest < dest){
                 dest = shortest;
@@ -233,6 +223,7 @@ public class MyGameAlgo extends Thread {
 
     @Override
     public void run() {
+        int i = 0;
         while(gameGUI.getGame().isRunning()){
             gameGUI.updateFruits();
             gameGUI.updateRobots();
@@ -242,11 +233,17 @@ public class MyGameAlgo extends Thread {
             gameGUI.getR().drawRobots(gameGUI.getRobotsList()); // draw the robots on the graph
             StdDraw.show();
             try {
-                sleep(30);
+                sleep(70);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        System.out.println("Game over " + gameGUI.getGame().toString());
+        gameGUI.finishGame();
+        System.out.println("game is over" + gameGUI.getGame().toString());
+        try {
+            gameGUI.KML();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -21,7 +21,7 @@ public class fruits{
     private Point3D pos;
     private String image;
 
-    // constructor
+    // constructors
     public fruits(){
         this.value = 0;
         this.type = 0;
@@ -29,9 +29,17 @@ public class fruits{
         this.image = null;
     }
 
+    public fruits (double v, int t, Point3D p){
+        this.value = v;
+        this.type= t;
+        this.pos = p;
+    }
+
     public fruits(String Jstr){
         this.init(Jstr);
     }
+
+    //functions
 
     /**
      * Init fruit from a json file.
@@ -97,21 +105,6 @@ public class fruits{
     }
 
     /**
-     * return the distance between 2 points.
-     * help us in 'onEdge' function.
-     * @param p1
-     * @param p2
-     * @return
-     */
-//    public double distance(Point3D p1 , Point3D p2){
-//        double ans = 0;
-//        double pow_x = Math.pow((p1.x() - p2.x()) , 2);
-//        double pow_y = Math.pow((p1.y() - p2.y()) , 2);
-//        ans = Math.sqrt((pow_x) + (pow_y));
-//        return ans;
-//    }
-
-    /**
      * Checking on which edges are the fruits
      * @param graph
      * @return
@@ -121,11 +114,8 @@ public class fruits{
         double edgeDist , srcDist , destDist;
         for(node_data n : graph.getV()){
             for(edge_data e : graph.getE(n.getKey())){
-//                edgeDist = distance(graph.getNode(e.getSrc()).getLocation(), graph.getNode(e.getDest()).getLocation());
                 edgeDist = graph.getNode(e.getSrc()).getLocation().distance2D(graph.getNode(e.getDest()).getLocation());
-//                srcDist = distance(graph.getNode(e.getSrc()).getLocation(), this.pos);
                 srcDist = graph.getNode(e.getSrc()).getLocation().distance2D(this.pos);
-//                destDist = distance(graph.getNode(e.getDest()).getLocation(), this.pos);
                 destDist = graph.getNode(e.getDest()).getLocation().distance2D(this.pos);
                 if (edgeDist > (srcDist + destDist) - EPS2) {
                     boolean a = e.getSrc() < e.getDest();

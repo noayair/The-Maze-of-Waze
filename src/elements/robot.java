@@ -19,6 +19,8 @@ public class robot{
     private List<node_data> way = new LinkedList<>();
     private Queue<Integer> check = new LinkedList<>();
 
+    // constructors
+
     public robot(){
         this.game = null;
         this.src = 0;
@@ -31,6 +33,17 @@ public class robot{
             this.check.add(-2);
         }
     }
+
+    public robot(int id, int s, int d, int v, int speed, Point3D p){
+        this.id = id;
+        this.pos= p;
+        this.value=v;
+        this.speed= speed;
+        this.dest=d;
+        this.src=s;
+    }
+
+    //functions
 
     public robot(String Jstr){
         this.init(Jstr);

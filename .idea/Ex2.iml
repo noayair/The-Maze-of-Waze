@@ -41,5 +41,11 @@
     </orderEntry>
     <orderEntry type="library" name="GameServer_v0.27" level="project" />
     <orderEntry type="library" name="java-json" level="project" />
+    <orderEntry type="library" name="activation-1.1" level="project" />
+    <orderEntry type="library" name="jaxb-api-2.1" level="project" />
+    <orderEntry type="library" name="JavaAPIforKml-2.2.0" level="project" />
+    <orderEntry type="library" name="jaxb-impl-2.1.17" level="project" />
+    <orderEntry type="library" name="jaxb-xjc-2.2" level="project" />
+    <orderEntry type="library" name="stax-api-1.0-2" level="project" />
   </component>
 </module>
