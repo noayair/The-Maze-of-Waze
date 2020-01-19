@@ -11,6 +11,9 @@ There are two options for the game-
  One by server is an automatic game.
  Two by a manual game where the user can move the robot to fruit and get points.
 
+**the progress of the game** - The user opens the game and chooses a manual game type or automatic game with the server. Then he chooses a level, and the game begins. He also manually selects the location of the robots and then starts playing. To move the robot to the next vertex, the user must click one of the vertices adjacent to it. Only so the robot can move Each game has a set time that appears on screen. At the end of the game the user sees the number of points he has received.
+
+**KML**- KML file defines various properties like location, image, polygon, 3D model, texture, description, etc. Mark. The position must have latitude and longitude coordinates. Other parameters determine the camera display, including tilt, orientation and height. Because this is a XML file type, so here's the case, the parameter IDs can be entered exactly. The user can create KML files to point locations, we make an option to make that file from the game, and locate the game in Google Earth.
 
 The project has 6 main packages:
 
