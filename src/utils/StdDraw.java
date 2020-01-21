@@ -724,17 +724,21 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Game");
-		JMenuItem menuItem1 = new JMenuItem("Play by Click");
+		JMenuItem menuItem1 = new JMenuItem("Log In");
 		menuItem1.addActionListener(std);
 		menu.add(menuItem1);
 		menuBar.add(menu);
-		JMenuItem menuItem2 = new JMenuItem("Play automatic game");
+		JMenuItem menuItem2 = new JMenuItem("Play by Click");
 		menuItem2.addActionListener(std);
 		menu.add(menuItem2);
 		menuBar.add(menu);
-        JMenuItem menuItem3 = new JMenuItem("Finish game");
-        menuItem3.addActionListener(std);
-        menu.add(menuItem3);
+		JMenuItem menuItem3 = new JMenuItem("Play automatic game");
+		menuItem3.addActionListener(std);
+		menu.add(menuItem3);
+		menuBar.add(menu);
+        JMenuItem menuItem4 = new JMenuItem("Finish game");
+        menuItem4.addActionListener(std);
+        menu.add(menuItem4);
         menuBar.add(menu);
 		return menuBar;
 	}
@@ -1670,6 +1674,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 		String s = e.getActionCommand();
 		switch (s) {
 			case "Play by Click":
+				gameGUI.newGame();
 				int level = 0;
 				try {
 					MyGameGUI g = new MyGameGUI();
@@ -1688,6 +1693,10 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				}
 				break;
 			case "Play automatic game":
+				gameGUI.newGame();
+//				StdDraw.clear();
+//				gameGUI.getGame().stopGame();
+//				gameGUI.finishGame();
 				String level1String = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
 				int level1 = -1;
 				try {
@@ -1707,6 +1716,16 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
                 gameGUI.finishGame();
                 System.out.println(saveToKML);
                 break;
+			case "Log In":
+				String toLog = JOptionPane.showInputDialog(null, "please enter your id number");
+				int id_num = -1;
+				try {
+					id_num = Integer.parseInt(toLog);
+				} catch (Exception e2) {
+					JOptionPane.showMessageDialog(null , "Error , you can enter only numbers. please try again");
+				}
+				Game_Server.login(id_num);
+				break;
 		}
 	}
 

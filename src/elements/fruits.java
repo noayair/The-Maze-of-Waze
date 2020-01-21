@@ -20,6 +20,7 @@ public class fruits{
     private int type;
     private Point3D pos;
     private String image;
+    private int tag;
 
     // constructors
     public fruits(){
@@ -27,12 +28,14 @@ public class fruits{
         this.type = 0;
         this.pos = null;
         this.image = null;
+        this.tag = 0;
     }
 
     public fruits (double v, int t, Point3D p){
         this.value = v;
         this.type= t;
         this.pos = p;
+        this.tag = 0;
     }
 
     public fruits(String Jstr){
@@ -62,7 +65,12 @@ public class fruits{
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        ans.tag = 0;
         return ans;
+    }
+
+    public int getTag() {
+        return tag;
     }
 
     public double getValue() {
@@ -79,6 +87,10 @@ public class fruits{
 
     public String getImage() {
         return image;
+    }
+
+    public void setTag(int tag) {
+        this.tag = tag;
     }
 
     /**
@@ -117,7 +129,7 @@ public class fruits{
                 edgeDist = graph.getNode(e.getSrc()).getLocation().distance2D(graph.getNode(e.getDest()).getLocation());
                 srcDist = graph.getNode(e.getSrc()).getLocation().distance2D(this.pos);
                 destDist = graph.getNode(e.getDest()).getLocation().distance2D(this.pos);
-                if (edgeDist > (srcDist + destDist) - EPS2) {
+                if (edgeDist > (srcDist + destDist) - EPS2) { // if the fruit is on this edge
                     boolean a = e.getSrc() < e.getDest();
                     boolean b = this.type > 0;
                     if(a == b)

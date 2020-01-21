@@ -49,6 +49,10 @@ public class robot{
         this.init(Jstr);
     }
 
+    public int getSpeed() {
+        return speed;
+    }
+
     public List<node_data> getWay() {
         return way;
     }

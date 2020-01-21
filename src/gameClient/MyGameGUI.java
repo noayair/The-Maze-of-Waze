@@ -53,8 +53,38 @@ public class MyGameGUI extends Thread {
         StdDraw.clear(Color.white);
         StdDraw.setYscale(-51,50);
         StdDraw.setXscale(-51,50);
-        StdDraw.clear();
-        StdDraw.enableDoubleBuffering();
+        int level=-1;
+        while(level == -1) {
+            String l = JOptionPane.showInputDialog(null, "Choose a level 0-23");
+            try {
+                level = Integer.parseInt(l);
+//                if(level < 0 || level > 23)
+//                    level =-1;
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+        int temp =-1;
+        Object ob= null;
+        String[] s = {"Play by Click","Play automatic game"};
+        while(temp ==-1) {
+            try {
+                ob = JOptionPane.showInputDialog(null, "How do you want to play?", "Message", JOptionPane.INFORMATION_MESSAGE, null, s, s[0]);
+                temp =0;
+            }catch (Exception ee){
+                temp=-1;}
+        }
+        if(ob =="Play automatic game") {
+            StdDraw.clear();
+            StdDraw.enableDoubleBuffering();
+            gameAlgo.startGameAutomatic(level);
+        }
+        else{
+            StdDraw.clear();
+            StdDraw.enableDoubleBuffering();
+            startGameManual(level);
+        }
+
     }
 
     /**
@@ -191,6 +221,14 @@ public class MyGameGUI extends Thread {
         this.start();
     }
 
+    public void newGame(){ // not working!!
+//        StdDraw.clear();
+        if(game.isRunning()){
+            game.stopGame();
+            finishGame();
+        }
+    }
+
     /**
      * gets the fruits from the server.
      */
@@ -297,9 +335,9 @@ public class MyGameGUI extends Thread {
                 this.fruitsList.get(i).update(updateFruits.get(i));
                 if(this.kml != null){
                     if(this.fruitsList.get(i).getType() == 1){
-                        this.kml.addPlaceMark("apple" , this.fruitsList.get(i).getPos().toString());
+                        this.kml.addPlaceMark("http://maps.google.com/mapfiles/kml/shapes/convenience.png" , this.fruitsList.get(i).getPos().toString());
                     }else{
-                        this.kml.addPlaceMark("http://cafe.themarker.com/media/t/204/675/8/file_0.jpg" , this.fruitsList.get(i).getPos().toString());
+                        this.kml.addPlaceMark("http://maps.google.com/mapfiles/kml/shapes/snack_bar.png" , this.fruitsList.get(i).getPos().toString());
                     }
                 }
             }
@@ -314,7 +352,7 @@ public class MyGameGUI extends Thread {
         for (int i = 0; i < this.robotsList.size(); i++) {
             this.robotsList.get(i).update(updateRobots.get(i));
             if (this.kml != null){
-                this.kml.addPlaceMark("https://banner2.cleanpng.com/20180219/hvw/kisspng-robot-cartoon-clip-art-robot-5a8b8347f17e33.1624179315190925519892.jpg" , this.robotsList.get(i).getPos().toString());
+                this.kml.addPlaceMark("http://maps.google.com/mapfiles/kml/shapes/horsebackriding.png" , this.robotsList.get(i).getPos().toString());
             }
         }
     }
