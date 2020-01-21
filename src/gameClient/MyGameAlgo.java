@@ -36,8 +36,8 @@ public class MyGameAlgo extends Thread {
      * @param level
      */
     public void startGameAutomatic(int level) {
-        int id = 313431702;
-        Game_Server.login(id);
+//        int id = 313431702;
+//        Game_Server.login(id);
         game_service game = Game_Server.getServer(level); // ask from the server the requested stage (you have [0,23] games)
         gameGUI.setGame(game); // set this game to the MyGameGUI
         gameGUI.getGraph().init(game.getGraph()); //build a graph for the game
@@ -137,12 +137,12 @@ public class MyGameAlgo extends Thread {
 //                            System.out.println(rob);
 //                        }
 //                    }
-////                    if(dest == gameGUI.getRobotsList().get(id).getCheck().peek()){ // if the robot return to the same node more then 2 times
-////                        System.out.println("random");
-////                        dest = nextNodeRandom(dg , src); // update the dest of the robot to be another
-////                        gs.chooseNextEdge(id, dest);
-////                        gameGUI.getRobotsList().get(id).checkNode(dest);
-////                    }
+//                    if(dest == gameGUI.getRobotsList().get(id).getCheck().peek()){ // if the robot return to the same node more then 2 times
+//                        System.out.println("random");
+//                        dest = nextNodeRandom(dg , src); // update the dest of the robot to be another
+//                        gs.chooseNextEdge(id, dest);
+//                        gameGUI.getRobotsList().get(id).checkNode(dest);
+//                    }
 //                    if(gameGUI.getRobotsList().size() > 1){
 //                        for (int j = 0; j < gameGUI.getRobotsList().size()-1; j++) { // check if tow or more robots go to the same fruit
 //                            if(gameGUI.getRobotsList().get(j).getDest() == gameGUI.getRobotsList().get(j+1).getDest()){ // if they are, its send one of them to another random fruit
@@ -177,13 +177,14 @@ public class MyGameAlgo extends Thread {
                             shortest = shortestWay(src, closestDest); // update the shortest list to be the way to the closest fruit
                             dest = shortest.get(1).getKey(); // update the dest to be the first object in the shortest list
                             gameGUI.getRobotsList().get(id).setDest(dest);
+                            gameGUI.getRobotsList().get(id).checkNode(dest);
 //                            gs.chooseNextEdge(id, dest); // update the dest in the server
                             System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
                             System.out.println(rob);
                         }else { // if there is a fruit on one of the edges that exits from the node which the robot is on
                             dest = nextNode(dg, src); // update the dest to be the dest of the edge that the fruit is on
 //                            gs.chooseNextEdge(id, dest); // update the dest in the server
-//                            gameGUI.getRobotsList().get(id).checkNode(dest); // add the dest to the check list
+                            gameGUI.getRobotsList().get(id).checkNode(dest); // add the dest to the check list
                             System.out.println("Turn to node: " + dest + "  time to end:" + (time / 1000));
                             System.out.println(rob);
                         }
@@ -198,6 +199,7 @@ public class MyGameAlgo extends Thread {
                         }
                     }
                     gs.chooseNextEdge(id, dest); // update the dest in the server
+                    gameGUI.getEdgesWithFruits().clear();
                 } catch (JSONException e) {
 
                 }
@@ -239,18 +241,33 @@ public class MyGameAlgo extends Thread {
      */
     public int nextNode(DGraph dg, int src) {
         Collection<edge_data> edges = dg.getE(src); // list of all the edges that exits from the node that the robot is on
+        int closest1 = -1;
+        int closest2 = -1;
+        edge_data close1 = new EdgeData();
         for (edge_data e : edges) {
             for (int i = 0; i < gameGUI.getFruitsList().size(); i++) { // go through the fruitsList
 //                if (gameGUI.getFruitsList().get(i).getTag() == 0) { // if no robot is designed to go for this fruit
                     edge_data fruitEdge = gameGUI.getFruitsList().get(i).fruitEdge(dg); // find the edge that the fruit is on
                     if (e.getDest() == fruitEdge.getDest() && e.getSrc() == fruitEdge.getSrc()) { // if it is the same edge that the robot is on
-                        gameGUI.getFruitsList().get(i).setTag(1); // change fruit tag to 1
-                        return e.getDest(); // return the dest of the edge
+                        if(closest1 == -1){ // there is no edge yet
+                            close1 = e;
+                            closest1 = 0;
+                        }else if(closest1 == 0 && closest2 == -1){ // there is 1 edge but not 2
+                            gameGUI.getEdgesWithFruits().add(e);
+                            closest2 = 0;
+                        }else if(closest1 == 0 && closest2 == 0){
+                            break;
+                        }
                     }
 //                }
             }
+        }if(closest1 == 0){
+//            gameGUI.getFruitsList().get(i).setTag(1); // change fruit tag to 1
+            gameGUI.getEdgesWithFruits().add(close1);
+            return close1.getDest(); // return the dest of the edge
+        }else{
+            return -1; // if we didn't find edge with fruit return -1
         }
-        return -1; // if we didn't find edge with fruit return -1
     }
 
     /**
@@ -261,6 +278,7 @@ public class MyGameAlgo extends Thread {
     public int closestFruit (int src){
         double dest = Double.POSITIVE_INFINITY;
         int ans = -1;
+        edge_data edgeFruit = new EdgeData();
         int fruitSrc;
         double shortest;
         for (int i = 0; i < gameGUI.getFruitsList().size(); i++) {
@@ -269,8 +287,10 @@ public class MyGameAlgo extends Thread {
             if(shortest < dest){
                 dest = shortest;
                 ans = fruitSrc;
+                edgeFruit = gameGUI.getFruitsList().get(i).fruitEdge(gameGUI.getGraph());
             }
         }
+        gameGUI.getEdgesWithFruits().add(edgeFruit);
         return ans;
     }
 
@@ -283,29 +303,48 @@ public class MyGameAlgo extends Thread {
         return gameGUI.getAlgo().shortestPath(src, dest);
     }
 
-    public long timeToSleep(DGraph dg){
-//        Point3D srcLocation = dg.getNode(edge.getSrc()).getLocation();
-//        Point3D destLocation = dg.getNode(edge.getDest()).getLocation();
-//        double edgeWeight = edge.getWeight();
-//        int robSpeed = rob.getSpeed();
-//        double src_fruit_dist = srcLocation.distance2D(fruitLocation);
-//        double src_dest_dist = srcLocation.distance2D(destLocation);
-//        double n = src_fruit_dist / src_dest_dist;
-//        double ans = (edgeWeight * n) / robSpeed;
-//        return ans;
-
-        int ans = 130;
+    public int timeToSleep(DGraph dg){
+        int ans = 170;
+        if(gameGUI.getRobotsList().size() < gameGUI.getFruitsList().size()/3){
+            ans = 130;
+        }else if((gameGUI.getRobotsList().size() == gameGUI.getFruitsList().size()) && (gameGUI.getRobotsList().size() >1)){
+            ans = 83;
+        }
         edge_data edge = new EdgeData();
         for (robot rob : gameGUI.getRobotsList()) {
             for (fruits fruit : gameGUI.getFruitsList()){
                 edge = fruit.fruitEdge(gameGUI.getGraph());
+//                if(rob.getDest() == rob.getCheck().peek()){ // if the robot return to the same node more then 2 times
+//                        System.out.println("random");
+//                        ans = 10;
+//                        return ans;
+//                    }
                 if(edge.getSrc() == rob.getSrc() && edge.getDest() == rob.getDest()){
-                        ans = 50;
-                        return ans;
+                    ans = 50;
+//                    System.out.println(ans);
+                    return ans;
                 }
             }
         }
         return ans;
+//                    Point3D srcLocation = dg.getNode(rob.getSrc()).getLocation();
+//                    Point3D destLocation = dg.getNode(rob.getDest()).getLocation();
+//                    double edgeWeight = dg.getEdge(rob.getSrc() , rob.getDest()).getWeight();
+//                    int robSpeed = rob.getSpeed();
+//                    double dest_fruit_dist = destLocation.distance2D(fruit.getPos());
+//                    double src_dest_dist = srcLocation.distance2D(destLocation);
+//                    double n = dest_fruit_dist / src_dest_dist;
+//                    ans = ((edgeWeight * n) / robSpeed);
+
+
+
+//        return ans;
+    }
+
+    public void checkSleep(){
+        for(robot rob : gameGUI.getRobotsList()){
+
+        }
     }
 
     @Override
@@ -321,6 +360,7 @@ public class MyGameAlgo extends Thread {
             StdDraw.show();
             try {
                 sleep(timeToSleep(gameGUI.getGraph()));
+                System.out.println(timeToSleep(gameGUI.getGraph()));
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

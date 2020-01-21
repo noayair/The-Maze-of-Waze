@@ -121,7 +121,7 @@ public class fruits{
      * @param graph
      * @return
      */
-    public edge_data fruitEdge(DGraph graph){
+    public edge_data fruitEdge(DGraph graph){ // return the edge that the fruit is on
         Collection<edge_data> edgeList = new ArrayList<>();
         double edgeDist , srcDist , destDist;
         for(node_data n : graph.getV()){
