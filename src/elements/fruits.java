@@ -15,7 +15,7 @@ import java.util.List;
  * This class represents a fruit in the game.
  */
 public class fruits{
-    public static final double EPS1 = 0.000001 , EPS2 = EPS1+EPS1 , EPS = EPS2;
+    public static final double EPS1 = 0.0000009 , EPS2 = EPS1+EPS1 , EPS = EPS2;
     private double value;
     private int type;
     private Point3D pos;
@@ -111,6 +111,7 @@ public class fruits{
             this.type = f.getInt("type");
             String location_str = f.getString("pos");
             this.pos = new Point3D(location_str);
+            this.tag = 0;
         } catch (JSONException e) {
             e.printStackTrace();
         }

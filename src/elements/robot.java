@@ -29,7 +29,7 @@ public class robot{
         this.value = 0;
         this.speed = 0;
         this.pos = null;
-        for (int i = 0; i < 3 ; i++) {
+        for (int j = 0; j < 3 ; j++) {
             this.check.add(-2);
         }
     }
@@ -140,15 +140,15 @@ public class robot{
      * @param i
      */
     public void checkNode(int i){
-        if(this.check == null){
-            this.check.add(i);
-        }
-        if(this.check.size() <= 3){
-            this.check.add(i);
-        }else{
+//        if(this.check == null){
+//            this.check.add(i);
+//        }
+//        if(this.check.size() < 3){
+//            this.check.add(i);
+//        }else{
             this.check.remove();
             this.check.add(i);
-        }
+//        }
     }
 
     public List<robot> fillRobotList(List<String> arr){

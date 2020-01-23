@@ -35,12 +35,22 @@ public class MyGameGUI extends Thread {
     private KML_Logger kml = new KML_Logger();
     public int level;
     private List<edge_data> edgesWithFruits = new ArrayList<>();
+    private int closestFruit1;
     private int closestFruit2;
 
     //constructor
     public MyGameGUI() throws IOException {
         StdDraw.gameGUI = this;
-        openWindow();
+          openWindow();
+        //StartWindow();
+    }
+
+    public void StartWindow(){
+        StdDraw.setCanvasSize(1024,512);
+        StdDraw.clear(Color.white);
+        StdDraw.setYscale(-51,50);
+        StdDraw.setXscale(-51,50);
+        StdDraw.show();
     }
 
     //constructor for the automatic game
@@ -48,6 +58,7 @@ public class MyGameGUI extends Thread {
         StdDraw.gameGUI=this;
         this.gameAlgo = new MyGameAlgo(this);
     }
+
 
     public void openWindow(){
         StdDraw.setCanvasSize(1024,512);
@@ -186,6 +197,22 @@ public class MyGameGUI extends Thread {
         this.edgesWithFruits = edgesWithFruits;
     }
 
+    public void setClosestFruit1(int closestFruit1) {
+        this.closestFruit1 = closestFruit1;
+    }
+
+    public int getClosestFruit1() {
+        return closestFruit1;
+    }
+
+    public int getClosestFruit2() {
+        return closestFruit2;
+    }
+
+    public void setClosestFruit2(int closestFruit2) {
+        this.closestFruit2 = closestFruit2;
+    }
+
     public List<fruits> getFruitsList() {
         return this.fruitsList;
     }
@@ -294,13 +321,6 @@ public class MyGameGUI extends Thread {
         this.start();
     }
 
-    public void newGame(){ // not working!!
-//        StdDraw.clear();
-        if(game.isRunning()){
-            game.stopGame();
-            finishGame();
-        }
-    }
 
     /**
      * gets the fruits from the server.
@@ -413,6 +433,7 @@ public class MyGameGUI extends Thread {
                         this.kml.addPlaceMark("http://maps.google.com/mapfiles/kml/shapes/snack_bar.png" , this.fruitsList.get(i).getPos().toString());
                     }
                 }
+                this.fruitsList.get(i).setTag(0);// set all the tags of the fruit to be 0
             }
         }
     }
@@ -566,6 +587,9 @@ public class MyGameGUI extends Thread {
     public void setKml(KML_Logger kml) {
         this.kml = kml;
     }
+
+    public game_service getGame1(){return this.game; }
+
 
     public static void main(String[] args) throws IOException {
         MyGameGUI p = new MyGameGUI();

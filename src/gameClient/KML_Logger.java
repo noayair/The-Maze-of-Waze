@@ -63,31 +63,31 @@ public class KML_Logger {
     public void addPlaceMark(String id, String position)
     {
         LocalDateTime time = LocalDateTime.now();
-        string.append("    <Placemark>\r\n" );
-        string.append("       <open>1<open>\r\n");
-//        string.append("         <description>Mac:\r\n");
-//        string.append("             </description>\r\n");
-        string.append("       <TimeSpan>\r\n" );
-        string.append("        <when>" + time+ "</when>\r\n" );
-        string.append("       </TimeStamp>\r\n" );
-        string.append("       <Style>");
-        string.append("            <IconStyle>");
-        string.append("                  <color>ff007db3</color>");
-        string.append("                  <scale>1.0</scale>");
-        string.append("                  <heading>1.0</heading>");
-        string.append("                  <Icon>");
-        string.append("                       <href>" + id + "</href>");
-        string.append("                       <refreshInterval>1.0</refreshInterval>");
-        string.append("                       <viewRefreshTime>1.0</viewRefreshTime");
-        string.append("                       <viewBoundScale>1.0</viewBoundScale>");
-        string.append("                  </Icon>");
-        string.append("             </IconStyle>");
-        string.append("        </Style>");
-//        string.append(       "      <styleUrl>#" + id + "</styleUrl>\r\n" );
-        string.append("        <Point>\r\n" );
-        string.append("            <coordinates>" + position + "</coordinates>\r\n" );
-        string.append("        </Point>\r\n" );
-        string.append("   </Placemark>\r\n");
+        string.append("        <Placemark>\n" +
+                "            <open>1</open>\n" +
+                "            <description>Mac: \n" +
+                "           </description>\n" +
+                "            <TimeSpan>\n" +
+                "                <begin>" + time + "</begin>\n" +
+                "                <end>" + time + "</end>\n" +
+                "            </TimeSpan>\n" +
+                "            <Style>\n" +
+                "                <IconStyle>\n" +
+                "                    <color>ff007db3</color>\n" +
+                "                    <scale>1.0</scale>\n" +
+                "                    <heading>1.0</heading>\n" +
+                "                    <Icon>\n" +
+                "                        <href>" + id + "</href>\n" +
+                "                        <refreshInterval>1.0</refreshInterval>\n" +
+                "                        <viewRefreshTime>1.0</viewRefreshTime>\n" +
+                "                        <viewBoundScale>1.0</viewBoundScale>\n" +
+                "                    </Icon>\n" +
+                "                </IconStyle>\n" +
+                "            </Style>\n" +
+                "            <Point>\n" +
+                "                <coordinates>" + position + "</coordinates>\n" +
+                "            </Point>\n" +
+                "        </Placemark>");
     }
 
     public void endKML() throws IOException {

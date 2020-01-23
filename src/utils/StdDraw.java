@@ -72,6 +72,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
@@ -79,6 +80,8 @@ import java.util.NoSuchElementException;
 import javax.imageio.ImageIO;
 
 import javax.swing.*;
+
+import static gameClient.SimpleDB.*;
 
 /**
  *  The {@code StdDraw} class provides a basic capability for
@@ -724,22 +727,22 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	private static JMenuBar createMenuBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu menu = new JMenu("Game");
-		JMenuItem menuItem1 = new JMenuItem("Log In");
-		menuItem1.addActionListener(std);
-		menu.add(menuItem1);
-		menuBar.add(menu);
-		JMenuItem menuItem2 = new JMenuItem("Play by Click");
+		JMenuItem menuItem2 = new JMenuItem("Play");
 		menuItem2.addActionListener(std);
 		menu.add(menuItem2);
 		menuBar.add(menu);
-		JMenuItem menuItem3 = new JMenuItem("Play automatic game");
+		JMenuItem menuItem3 = new JMenuItem("Finish game");
 		menuItem3.addActionListener(std);
 		menu.add(menuItem3);
 		menuBar.add(menu);
-        JMenuItem menuItem4 = new JMenuItem("Finish game");
-        menuItem4.addActionListener(std);
-        menu.add(menuItem4);
-        menuBar.add(menu);
+		JMenuItem menuItem1 = new JMenuItem("MyGrade");
+		menuItem1.addActionListener(std);
+		menu.add(menuItem1);
+		menuBar.add(menu);
+		JMenuItem menuItem4 = new JMenuItem("All Grade");
+		menuItem4.addActionListener(std);
+		menu.add(menuItem4);
+		menuBar.add(menu);
 		return menuBar;
 	}
 
@@ -1673,58 +1676,145 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 	public void actionPerformed(ActionEvent e) {
 		String s = e.getActionCommand();
 		switch (s) {
-			case "Play by Click":
-				gameGUI.newGame();
-				int level = 0;
+			case "MyGrade":
+				String jid = "";
+				int id;
+				jid = JOptionPane.showInputDialog(null, "Please enter your ID number");
 				try {
-					MyGameGUI g = new MyGameGUI();
-				} catch (IOException ex) {
-					ex.printStackTrace();
+					id = Integer.parseInt(jid);
+					String acq = "";
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+					Statement statement = connection.createStatement();
+					String allCustomersQuery = "SELECT * FROM Logs WHERE UserID =" + id + " ORDER BY levelID , moves;";
+					//String allCustomersQuery = "SELECT * FROM Logs;";
+					ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+
+					while (resultSet.next()) {
+						acq += "Id:" + resultSet.getInt("UserID") + "," + resultSet.getInt("levelID") + "," + resultSet.getInt("moves") + "," + resultSet.getDate("time") + "," + resultSet.getInt("score") + "^";
+					}
+					System.out.println(acq);
+					String sgrade = "";
+					String[] arr;
+					int sumGame = 0;
+					int start = 3;
+					int level = 0;
+					int moves = -1;
+					int grade = 0;
+					int moveTemp = Integer.MAX_VALUE;
+					int gradeTemp = 0;
+					String date = "";
+					for (int i = 0; i < acq.length(); i++) {
+						if (acq.charAt(i) == '^') {
+							sumGame++;
+							String temp = acq.substring(start, i);
+							start = i;
+							arr = temp.split(",");
+							if (level != Integer.parseInt(arr[1])) {
+								level = Integer.parseInt(arr[1]);
+								moves = Integer.parseInt(arr[2]);
+								date = arr[3];
+								grade = Integer.parseInt(arr[4]);
+								sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+
+							}
+							if (grade > gradeTemp && moves <= moveTemp) {
+								moveTemp = moves;
+								gradeTemp = grade;
+								if (grade != -1) {
+									sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+								}
+							}
+							level = Integer.parseInt(arr[1]);
+							moves = Integer.parseInt(arr[2]);
+							date = arr[3];
+							grade = Integer.parseInt(arr[4]);
+						}
+
+					}
+					sgrade += " you are on level " + level;
+					JOptionPane.showMessageDialog(null, sgrade);
+
+					resultSet.close();
+					statement.close();
+					connection.close();
+				} catch (SQLException sqle) {
+					System.out.println("SQLException: " + sqle.getMessage());
+					System.out.println("Vendor Error: " + sqle.getErrorCode());
+				} catch (ClassNotFoundException error) {
+					error.printStackTrace();
 				}
-				String LString = JOptionPane.showInputDialog(null, "Please choose a Game level");
+				break;
+			case "All Grade":
+				String acq = "";
 				try {
-					level = Integer.parseInt(LString);
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection connection =
+							DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+					String allCustomersQuery = "SELECT * FROM logs ORDER BY levelID , score;";
+					Statement statement = connection.createStatement();
+					ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+					while (resultSet.next()) {
+						acq += ("Id: " + resultSet.getInt("UserID") + "," + resultSet.getInt("levelID") + "," + resultSet.getInt("score") + "," + resultSet.getDate("time"));
+						//System.out.println("Id: " + resultSet.getInt("UserID"));
+					}
+					acq += ("Id: " + "0" + "," + "25" + "," + "0" + "," + "0" + "\n");
+					System.out.println(acq);
+//					resultSet.close();
+//					statement.close();
+//					connection.close();
+				} catch (SQLException sqle) {
+					System.out.println("SQLException: " + sqle.getMessage());
+					System.out.println("Vendor Error: " + sqle.getErrorCode());
+				} catch (ClassNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+
+				break;
+
+			case "Play":
+				if(gameGUI.getGame().isRunning()) {
 					StdDraw.clear();
-					StdDraw.enableDoubleBuffering();
-					StdDraw.show();
-					gameGUI.startGameManual(level);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+					gameGUI.getGame1().stopGame();
+					gameGUI.finishGame();
+					try {
+						gameGUI = new MyGameGUI(1);
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+					int senario = -1;
+					while (senario == -1) {
+						String senarioString = JOptionPane.showInputDialog(null, "Please choose a Game Senario 0-23");
+						try {
+							senario = Integer.parseInt(senarioString);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+					int check = -1;
+					Object selctedGame = null;
+					String[] chooseGame = {"Manually Game", "Auto Game"};
+					while (check == -1) {
+						try {
+							selctedGame = JOptionPane.showInputDialog(null, "Choose a Game mode", "Message", JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
+							check = 0;
+						} catch (Exception ee) {
+							check = -1;
+						}
+					}
+					if (selctedGame == "Manually Game") {
+						gameGUI.startGameManual(senario);
+
+					} else {
+						gameGUI.getGameAlgo().startGameAutomatic(senario);
+					}
 				}
 				break;
-			case "Play automatic game":
-				gameGUI.newGame();
-//				StdDraw.clear();
-//				gameGUI.getGame().stopGame();
-//				gameGUI.finishGame();
-				String level1String = JOptionPane.showInputDialog(null, "Please choose a Game level between 0-23");
-				int level1 = -1;
-				try {
-					level1 = Integer.parseInt(level1String);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				try {
-					gameGUI = new MyGameGUI(1);
-				} catch (IOException ex) {
-					ex.printStackTrace();
-				}
-				gameGUI.getGameAlgo().startGameAutomatic(level1);
-				break;
-            case "Finish game":
-                gameGUI.getGame().stopGame();
-                gameGUI.finishGame();
-                System.out.println(saveToKML);
-                break;
-			case "Log In":
-				String toLog = JOptionPane.showInputDialog(null, "please enter your id number");
-				int id_num = -1;
-				try {
-					id_num = Integer.parseInt(toLog);
-				} catch (Exception e2) {
-					JOptionPane.showMessageDialog(null , "Error , you can enter only numbers. please try again");
-				}
-				Game_Server.login(id_num);
+			case "Finish game":
+				gameGUI.getGame().stopGame();
+				gameGUI.finishGame();
+				System.out.println(saveToKML);
 				break;
 		}
 	}
