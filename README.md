@@ -1,4 +1,4 @@
-# Ex3
+# The Maze of Waze
 The project written by:
 
 Noa Yair - 313431702
