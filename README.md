@@ -5,7 +5,7 @@ Noa Yair - 313431702
 
 Oriya Kronfeld - 314078585
 
-we will create a game in which a group of robots (with a size of 1-5 robots) has to perform fruit picking tasks on a graph. Given a weighted graph on its sides there is a collection of fruits. We want to place them, and plan their movement in real time so that at the end of the mission (30 or 60 seconds) the total points that all robots collect together will be maximum. The more fruits you eat, the more points you get.
+in this project we will create a game in which a group of robots (with a size of 1-5 robots) has to perform fruit picking tasks on a graph. Given a weighted graph on its sides there is a collection of fruits. We want to place them, and plan their movement in real time so that at the end of the mission (30 or 60 seconds) the total points that all robots collect together will be maximum. The more fruits you eat, the more points you get.
 
 There are several options for the game -
 One to play in server of other players. Succeed in levels and make a comparison against their results.
@@ -60,3 +60,7 @@ If the user chooses a manual game, he or she must choose which robot to place at
 At the end of the game the user can save the game to the KML files.
 
 ![6](https://user-images.githubusercontent.com/57597109/72929744-16b15b00-3d63-11ea-88eb-a61fd598ec1c.png)
+
+If the user choose to save the game to KML file, google earth will show:
+
+![kml](https://user-images.githubusercontent.com/58184656/72981339-38532680-3de5-11ea-9299-27532559a611.png)
