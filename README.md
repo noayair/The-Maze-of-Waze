@@ -63,4 +63,4 @@ At the end of the game the user can save the game to the KML files.
 
 If the user choose to save the game to KML file, google earth will show:
 
-![kml](https://user-images.githubusercontent.com/58184656/72981339-38532680-3de5-11ea-9299-27532559a611.png)
+![kml1](https://user-images.githubusercontent.com/58184656/72981549-b57e9b80-3de5-11ea-8185-cdcca5aa26a7.png)
