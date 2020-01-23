@@ -1,4 +1,4 @@
-**The Maze of Waze
+**The Maze of Waze**
 
 The project was written by:
 
