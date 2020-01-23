@@ -1,9 +1,9 @@
 # The Maze of Waze
 The project written by:
 
-Noa Yair - 313431702
+Noa Yair
 
-Oriya Kronfeld - 314078585
+Oriya Kronfeld
 
 in this project we will create a game in which a group of robots (with a size of 1-5 robots) has to perform fruit picking tasks on a graph. Given a weighted graph on its sides there is a collection of fruits. We want to place them, and plan their movement in real time so that at the end of the mission (30 or 60 seconds) the total points that all robots collect together will be maximum. The more fruits you eat, the more points you get.
 
