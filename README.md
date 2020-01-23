@@ -1,5 +1,4 @@
-# The Maze of Waze
-The project written by:
+The project was written by:
 
 Noa Yair
 
@@ -34,7 +33,19 @@ How to use them, and the algorithms that run it.
 
 **How to play?**
 
-In the first stage, the user chooses if to connect to the server and compare his results with other players.
+In the first stage, the user needs to choose if he wants to play, to see his grades or to see his grades relative to the other participants.
+
+![פתיחת חלון](https://user-images.githubusercontent.com/58184656/73009834-f395b280-3e19-11ea-9115-76468141153c.png)
+
+If the user chooses 'My Grade', he can see his best grades at every level, how many moves he did and when he played this game.
+
+![my grade](https://user-images.githubusercontent.com/58184656/73010225-ae25b500-3e1a-11ea-85d8-717717e05e8f.png)
+
+If the user chooses 'All Grades', he can see where his score is at each level relative to the other participants.
+
+![all grades](https://user-images.githubusercontent.com/58184656/73010391-052b8a00-3e1b-11ea-9aa3-a4ec0df86b13.png)
+
+If the user chooses 'Game', he needs to choose if to connect to the server and compare his results with other players.
 
 ![1](https://user-images.githubusercontent.com/57597109/72924708-106ab100-3d5a-11ea-9601-bcf57be95bc5.png)
 
