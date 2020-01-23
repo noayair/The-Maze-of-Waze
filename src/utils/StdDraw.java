@@ -1682,6 +1682,7 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				jid = JOptionPane.showInputDialog(null, "Please enter your ID number");
 				try {
 					id = Integer.parseInt(jid);
+
 					String acq = "";
 					Class.forName("com.mysql.jdbc.Driver");
 					Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
@@ -1711,14 +1712,37 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 							start = i;
 							arr = temp.split(",");
 							if (level != Integer.parseInt(arr[1])) {
+								moveTemp = Integer.MAX_VALUE;
+								gradeTemp = 0;
 								level = Integer.parseInt(arr[1]);
 								moves = Integer.parseInt(arr[2]);
 								date = arr[3];
 								grade = Integer.parseInt(arr[4]);
-								sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+								//	sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
 
 							}
-							if (grade > gradeTemp && moves <= moveTemp) {
+							if (level == 16) {
+								if (grade >= 235 && moves <= 290) {
+									if (grade != -1) {
+										sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+									}
+								}
+							}
+							if (level == 13) {
+								if (grade >= 310 && moves <= 580) {
+									if (grade != -1) {
+										sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+									}
+								}
+							}
+							if (level == 1) {
+								if (grade >= 450 && moves <= 580) {
+									if (grade != -1) {
+										sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+									}
+								}
+							}
+							if (level != 1 && level != 13 && level != 16 && grade > gradeTemp && moves <= moveTemp) {
 								moveTemp = moves;
 								gradeTemp = grade;
 								if (grade != -1) {
@@ -1727,14 +1751,15 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 							}
 							level = Integer.parseInt(arr[1]);
 							moves = Integer.parseInt(arr[2]);
+							System.out.println(moves);
 							date = arr[3];
 							grade = Integer.parseInt(arr[4]);
+							System.out.println(grade);
 						}
 
 					}
-					sgrade += " you are on level " + level;
+					sgrade += " you are on level " + level + "\n you play- " + sumGame + " Games";
 					JOptionPane.showMessageDialog(null, sgrade);
-
 					resultSet.close();
 					statement.close();
 					connection.close();
@@ -1744,77 +1769,6 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 				} catch (ClassNotFoundException error) {
 					error.printStackTrace();
 				}
-				break;
-			case "All Grade":
-				String acq = "";
-				try {
-					Class.forName("com.mysql.jdbc.Driver");
-					Connection connection =
-							DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
-					String allCustomersQuery = "SELECT * FROM logs ORDER BY levelID , score;";
-					Statement statement = connection.createStatement();
-					ResultSet resultSet = statement.executeQuery(allCustomersQuery);
-					while (resultSet.next()) {
-						acq += ("Id: " + resultSet.getInt("UserID") + "," + resultSet.getInt("levelID") + "," + resultSet.getInt("score") + "," + resultSet.getDate("time"));
-						//System.out.println("Id: " + resultSet.getInt("UserID"));
-					}
-					acq += ("Id: " + "0" + "," + "25" + "," + "0" + "," + "0" + "\n");
-					System.out.println(acq);
-//					resultSet.close();
-//					statement.close();
-//					connection.close();
-				} catch (SQLException sqle) {
-					System.out.println("SQLException: " + sqle.getMessage());
-					System.out.println("Vendor Error: " + sqle.getErrorCode());
-				} catch (ClassNotFoundException e1) {
-					e1.printStackTrace();
-				}
-
-
-				break;
-
-			case "Play":
-				if(gameGUI.getGame().isRunning()) {
-					StdDraw.clear();
-					gameGUI.getGame1().stopGame();
-					gameGUI.finishGame();
-					try {
-						gameGUI = new MyGameGUI(1);
-					} catch (IOException ex) {
-						ex.printStackTrace();
-					}
-					int senario = -1;
-					while (senario == -1) {
-						String senarioString = JOptionPane.showInputDialog(null, "Please choose a Game Senario 0-23");
-						try {
-							senario = Integer.parseInt(senarioString);
-						} catch (Exception e1) {
-							e1.printStackTrace();
-						}
-					}
-					int check = -1;
-					Object selctedGame = null;
-					String[] chooseGame = {"Manually Game", "Auto Game"};
-					while (check == -1) {
-						try {
-							selctedGame = JOptionPane.showInputDialog(null, "Choose a Game mode", "Message", JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
-							check = 0;
-						} catch (Exception ee) {
-							check = -1;
-						}
-					}
-					if (selctedGame == "Manually Game") {
-						gameGUI.startGameManual(senario);
-
-					} else {
-						gameGUI.getGameAlgo().startGameAutomatic(senario);
-					}
-				}
-				break;
-			case "Finish game":
-				gameGUI.getGame().stopGame();
-				gameGUI.finishGame();
-				System.out.println(saveToKML);
 				break;
 		}
 	}

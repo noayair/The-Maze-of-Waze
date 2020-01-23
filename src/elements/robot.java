@@ -49,20 +49,8 @@ public class robot{
         this.init(Jstr);
     }
 
-    public int getSpeed() {
-        return speed;
-    }
-
-    public List<node_data> getWay() {
-        return way;
-    }
-
     public int getSrc() {
         return src;
-    }
-
-    public void setWay(List<node_data> way) {
-        this.way = way;
     }
 
     public robot init(String Jstr) {
@@ -107,9 +95,9 @@ public class robot{
         return pos;
     }
 
-    public Queue<Integer> getCheck() {
-        return check;
-    }
+//    public Queue<Integer> getCheck() {
+//        return check;
+//    }
 
     public void drawRobots(List<robot> robotsList){
         for(robot r : robotsList){
@@ -140,15 +128,8 @@ public class robot{
      * @param i
      */
     public void checkNode(int i){
-//        if(this.check == null){
-//            this.check.add(i);
-//        }
-//        if(this.check.size() < 3){
-//            this.check.add(i);
-//        }else{
             this.check.remove();
             this.check.add(i);
-//        }
     }
 
     public List<robot> fillRobotList(List<String> arr){

@@ -15,10 +15,12 @@ import utils.StdDraw;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.sql.*;
 import java.text.ParseException;
 import java.util.*;
 import java.util.List;
 
+import static gameClient.SimpleDB.*;
 import static java.lang.Thread.sleep;
 
 public class MyGameGUI extends Thread {
@@ -34,9 +36,6 @@ public class MyGameGUI extends Thread {
     public Range Range_y;
     private KML_Logger kml = new KML_Logger();
     public int level;
-    private List<edge_data> edgesWithFruits = new ArrayList<>();
-    private int closestFruit1;
-    private int closestFruit2;
 
     //constructor
     public MyGameGUI() throws IOException {
@@ -67,95 +66,200 @@ public class MyGameGUI extends Thread {
         StdDraw.setXscale(-51,50);
         int num =-1;
         Object Oserver= null;
+        Object obj = null;
         String[] os = {"YES","NO" };
+        String[] sob = {"Game" , "My Grade" , "All Grade"};
         while(num == -1) {
             try {
-                Oserver = JOptionPane.showInputDialog(null, "Do you want to connect?", "Message", JOptionPane.INFORMATION_MESSAGE, null, os, os[0]);
-            } catch (Exception eer) {
-                num = -1;
+                obj = JOptionPane.showInputDialog(null, "What do you want to do?", "Message", JOptionPane.INFORMATION_MESSAGE, null, sob, sob[0]);
+            } catch (Exception e2) {
+                num =0;
             }
-            if (Oserver == "YES") {
-                String toLog = JOptionPane.showInputDialog(null, "please enter your id number");
-                int id_num = -1;
+            if (obj == "Game") {
                 try {
-                    id_num = Integer.parseInt(toLog);
-                    num = 1;
-                } catch (Exception e2) {
-                    JOptionPane.showMessageDialog(null, "Error , you can enter only numbers. please try again");
+                    Oserver = JOptionPane.showInputDialog(null, "Do you want to connect?", "Message", JOptionPane.INFORMATION_MESSAGE, null, os, os[0]);
+                    num =-1;
+                } catch (Exception eer) {
+                    num = -1;
                 }
-                Game_Server.login(id_num);
-                int level = -1;
-                int templevel = -1;
-                while (level == -1 ) {
-                    String l = JOptionPane.showInputDialog(null, "Choose a level 0-23");
+                if (Oserver == "YES") {
+                    String toLog = JOptionPane.showInputDialog(null, "please enter your id number");
+                    int id_num = -1;
                     try {
-                        level = Integer.parseInt(l);
-                        templevel = 0;
+                        id_num = Integer.parseInt(toLog);
+                        num = 1;
+                    } catch (Exception e2) {
+                        JOptionPane.showMessageDialog(null, "Error , you can enter only numbers. please try again");
+                    }
+                    Game_Server.login(id_num);
+                    int level = -1;
+                    int templevel = -1;
+                    while (level == -1) {
+                        String l = JOptionPane.showInputDialog(null, "Choose a level 0-23");
+                        try {
+                            level = Integer.parseInt(l);
+                            templevel = 0;
 //                if(level < 0 || level > 23)
 //                    level =-1;
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
-                    }
-                    int temp = -1;
-                    Object ob = null;
-                    String[] s = {"Play by Click", "Play automatic game"};
-                    while (temp == -1) {
-                        try {
-                            ob = JOptionPane.showInputDialog(null, "How do you want to play?", "Message", JOptionPane.INFORMATION_MESSAGE, null, s, s[0]);
-                            temp = 0;
-                        } catch (Exception ee) {
-                            temp = -1;
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                        int temp = -1;
+                        Object ob = null;
+                        String[] s = {"Play by Click", "Play automatic game"};
+                        while (temp == -1) {
+                            try {
+                                ob = JOptionPane.showInputDialog(null, "How do you want to play?", "Message", JOptionPane.INFORMATION_MESSAGE, null, s, s[0]);
+                                temp = 0;
+                            } catch (Exception ee) {
+                                temp = -1;
+                            }
+                        }
+                        if (ob == "Play automatic game") {
+                            StdDraw.clear();
+                            StdDraw.enableDoubleBuffering();
+                            gameAlgo.startGameAutomatic(level);
+                            num = 0;
+                        } else if (ob == "Play by Click") {
+                            StdDraw.clear();
+                            StdDraw.enableDoubleBuffering();
+                            startGameManual(level);
+                            num = 0;
                         }
                     }
-                    if (ob == "Play automatic game") {
-                        StdDraw.clear();
-                        StdDraw.enableDoubleBuffering();
-                        gameAlgo.startGameAutomatic(level);
-                        num=0;
-                    } else if (ob == "Play by Click") {
-                        StdDraw.clear();
-                        StdDraw.enableDoubleBuffering();
-                        startGameManual(level);
-                        num=0;
+                }
+
+                if (Oserver == "NO") {
+                    int level = -1;
+                    int templevel = -1;
+                    while (level == -1 && num == -1) {
+                        String l = JOptionPane.showInputDialog(null, "Choose a level 0-23");
+                        try {
+                            level = Integer.parseInt(l);
+                            templevel = 0;
+//                if(level < 0 || level > 23)
+//                    level =-1;
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
+                        int temp = -1;
+                        Object ob = null;
+                        String[] s = {"Play by Click", "Play automatic game"};
+                        while (temp == -1 && num == -1) {
+                            try {
+                                ob = JOptionPane.showInputDialog(null, "How do you want to play?", "Message", JOptionPane.INFORMATION_MESSAGE, null, s, s[0]);
+                                temp = 0;
+                            } catch (Exception ee) {
+                                temp = -1;
+                            }
+                        }
+                        if (ob == "Play automatic game") {
+                            StdDraw.clear();
+                            StdDraw.enableDoubleBuffering();
+                            gameAlgo.startGameAutomatic(level);
+                            num = 0;
+                        } else if (ob == "Play by Click") {
+                            StdDraw.clear();
+                            StdDraw.enableDoubleBuffering();
+                            startGameManual(level);
+                            num = 0;
+                        }
                     }
                 }
             }
+            if(obj == "My Grade"){
+                num=0;
+                String jid = "";
+                int id;
+                jid = JOptionPane.showInputDialog(null, "Please enter your ID number");
+                try {
+                    id = Integer.parseInt(jid);
 
-            if (Oserver == "NO") {
-                int level = -1;
-                int templevel = -1;
-                while (level == -1 && num == -1) {
-                    String l = JOptionPane.showInputDialog(null, "Choose a level 0-23");
-                    try {
-                        level = Integer.parseInt(l);
-                        templevel = 0;
-//                if(level < 0 || level > 23)
-//                    level =-1;
-                    } catch (Exception e1) {
-                        e1.printStackTrace();
+                    String acq = "";
+                    Class.forName("com.mysql.jdbc.Driver");
+                    Connection connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+                    Statement statement = connection.createStatement();
+                    String allCustomersQuery = "SELECT * FROM Logs WHERE UserID =" + id + " ORDER BY levelID , moves;";
+                    //String allCustomersQuery = "SELECT * FROM Logs;";
+                    ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+
+                    while (resultSet.next()) {
+                        acq += "Id:" + resultSet.getInt("UserID") + "," + resultSet.getInt("levelID") + "," + resultSet.getInt("moves") + "," + resultSet.getDate("time") + "," + resultSet.getInt("score") + "^";
                     }
-                    int temp = -1;
-                    Object ob = null;
-                    String[] s = {"Play by Click", "Play automatic game"};
-                    while (temp == -1 && num == -1) {
-                        try {
-                            ob = JOptionPane.showInputDialog(null, "How do you want to play?", "Message", JOptionPane.INFORMATION_MESSAGE, null, s, s[0]);
-                            temp = 0;
-                        } catch (Exception ee) {
-                            temp = -1;
+                    System.out.println(acq);
+                    String sgrade = "";
+                    String[] arr;
+                    int sumGame = 0;
+                    int start = 3;
+                    int level = 0;
+                    int moves = -1;
+                    int grade = 0;
+                    int moveTemp = Integer.MAX_VALUE;
+                    int gradeTemp = 0;
+                    String date = "";
+                    for (int i = 0; i < acq.length(); i++) {
+                        if (acq.charAt(i) == '^') {
+                            sumGame++;
+                            String temp = acq.substring(start, i);
+                            start = i;
+                            arr = temp.split(",");
+                            if (level != Integer.parseInt(arr[1])) {
+                                moveTemp = Integer.MAX_VALUE;
+                                gradeTemp = 0;
+                                level = Integer.parseInt(arr[1]);
+                                moves = Integer.parseInt(arr[2]);
+                                date = arr[3];
+                                grade = Integer.parseInt(arr[4]);
+                                //	sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+
+                            }
+                            if (level == 16) {
+                                if (grade >= 235 && moves <= 290) {
+                                    if (grade != -1) {
+                                        sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+                                    }
+                                }
+                            }
+                            if (level == 13) {
+                                if (grade >= 310 && moves <= 580) {
+                                    if (grade != -1) {
+                                        sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+                                    }
+                                }
+                            }
+                            if (level == 1) {
+                                if (grade >= 450 && moves <= 580) {
+                                    if (grade != -1) {
+                                        sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+                                    }
+                                }
+                            }
+                            if (level != 1 && level != 13 && level != 16 && grade > gradeTemp && moves <= moveTemp) {
+                                moveTemp = moves;
+                                gradeTemp = grade;
+                                if (grade != -1) {
+                                    sgrade += "Level: " + level + " moves: " + moves + "  Grade: " + grade + " Date: " + date + "\n";
+                                }
+                            }
+                            level = Integer.parseInt(arr[1]);
+                            moves = Integer.parseInt(arr[2]);
+                            System.out.println(moves);
+                            date = arr[3];
+                            grade = Integer.parseInt(arr[4]);
+                            System.out.println(grade);
                         }
+
                     }
-                    if (ob == "Play automatic game") {
-                        StdDraw.clear();
-                        StdDraw.enableDoubleBuffering();
-                        gameAlgo.startGameAutomatic(level);
-                        num=0;
-                    } else if (ob == "Play by Click") {
-                        StdDraw.clear();
-                        StdDraw.enableDoubleBuffering();
-                        startGameManual(level);
-                        num=0;
-                    }
+                    sgrade += " you are on level " + level + "\n you play- " + sumGame + " Games";
+                    JOptionPane.showMessageDialog(null, sgrade);
+                    resultSet.close();
+                    statement.close();
+                    connection.close();
+                } catch (SQLException sqle) {
+                    System.out.println("SQLException: " + sqle.getMessage());
+                    System.out.println("Vendor Error: " + sqle.getErrorCode());
+                } catch (ClassNotFoundException error) {
+                    error.printStackTrace();
                 }
             }
         }
@@ -187,31 +291,6 @@ public class MyGameGUI extends Thread {
 
 
     //getters ans setter
-
-
-    public List<edge_data> getEdgesWithFruits() {
-        return edgesWithFruits;
-    }
-
-    public void setEdgesWithFruits(List<edge_data> edgesWithFruits) {
-        this.edgesWithFruits = edgesWithFruits;
-    }
-
-    public void setClosestFruit1(int closestFruit1) {
-        this.closestFruit1 = closestFruit1;
-    }
-
-    public int getClosestFruit1() {
-        return closestFruit1;
-    }
-
-    public int getClosestFruit2() {
-        return closestFruit2;
-    }
-
-    public void setClosestFruit2(int closestFruit2) {
-        this.closestFruit2 = closestFruit2;
-    }
 
     public List<fruits> getFruitsList() {
         return this.fruitsList;
@@ -251,26 +330,6 @@ public class MyGameGUI extends Thread {
 
     public void setGraph(DGraph graph) {
         this.graph = graph;
-    }
-
-    public void setAlgo(Graph_Algo algo) {
-        this.algo = algo;
-    }
-
-    public void setFruitsList(List<fruits> fruitsList) {
-        this.fruitsList = fruitsList;
-    }
-
-    public void setRobotsList(List<robot> robotsList) {
-        this.robotsList = robotsList;
-    }
-
-    public void setF(fruits f) {
-        this.f = f;
-    }
-
-    public void setR(robot r) {
-        this.r = r;
     }
 
     //functions
@@ -476,6 +535,11 @@ public class MyGameGUI extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        KML_Logger kml = new KML_Logger();
+        String res = game.toString();
+        String remark = kml.getString();
+        game.sendKML(remark);
+        System.out.println(res);
     }
 
     public void finishGame(){

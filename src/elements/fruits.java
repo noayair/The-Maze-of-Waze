@@ -85,10 +85,6 @@ public class fruits{
         return pos;
     }
 
-    public String getImage() {
-        return image;
-    }
-
     public void setTag(int tag) {
         this.tag = tag;
     }
