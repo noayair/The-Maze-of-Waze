@@ -1770,6 +1770,127 @@ public final class StdDraw implements ActionListener, MouseListener, MouseMotion
 					error.printStackTrace();
 				}
 				break;
+			case "All Grade":
+				String acq = "";
+				int id1;
+				String Sid = JOptionPane.showInputDialog(null, "Please enter your ID number");
+				try {
+					id1=Integer.parseInt(Sid);
+					Class.forName("com.mysql.jdbc.Driver");
+					Connection connection =
+							DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcUserPassword);
+					Statement statement = connection.createStatement();
+					String allCustomersQuery = "SELECT * FROM Logs ORDER BY levelID , score;";
+					ResultSet resultSet = statement.executeQuery(allCustomersQuery);
+					int start = 0;
+					int countV = 1;
+					int templ = 0;
+					int grade = -1;
+					String date = "";
+					boolean flag1 = false;
+					boolean flagForAdd = true;
+					int index = 1;
+					String str = "Your ID : " + id1 + "\n";
+					List<String> List = new LinkedList<>();
+					while (resultSet.next()) {
+						acq += ("Id: " + resultSet.getInt("UserID") + "," + resultSet.getInt("levelID") + "," + resultSet.getInt("score") + "," + resultSet.getDate("time") + "^");
+					}
+					acq += ("Id: " + "0" + "," + "25" + "," + "0" + "," + "0" + "^");
+					System.out.println(acq);
+					for (int i = 0; i < acq.length(); i++) {
+						if (acq.charAt(i) == '^') {
+							flagForAdd = true;
+							String temp = acq.substring(start, i);
+							start = i;
+							String[] arr = temp.split(",");
+							for (int j = 0; j < List.size(); j++) {
+								if (List.get(j).equals(arr[0])) {
+									flagForAdd = false;
+									break;
+								}
+							}
+							if (flagForAdd == true) {
+								List.add(arr[0]);
+								countV++;
+								flagForAdd = true;
+							}
+							if (grade != -1 && Integer.parseInt(arr[1]) != templ &&  flag1) {
+								str += "Level: " + templ + " Grade: " + grade  + "  My Place:" + countV + "  Date: " + date + "\n";
+								countV = 1;
+								templ = Integer.parseInt(arr[1]);
+								flag1 = false;
+								List.clear();
+							}
+							if (Integer.parseInt(arr[1]) != templ) {
+								countV = 1;
+							}
+							if (arr[0].contains("" + id1)) {
+								templ = Integer.parseInt(arr[1]);
+								flag1 = true;
+								grade = Integer.parseInt(arr[2]);
+								date = arr[3];
+								countV = 1;
+								List.clear();
+							}
+
+						}
+
+					}
+
+					JOptionPane.showMessageDialog(null, str);
+
+				} catch (SQLException sqle) {
+					System.out.println("SQLException: " + sqle.getMessage());
+					System.out.println("Vendor Error: " + sqle.getErrorCode());
+				} catch (ClassNotFoundException q) {
+					q.printStackTrace();
+				}
+				break;
+
+			case "Play":
+				if(gameGUI.getGame().isRunning()) {
+					StdDraw.clear();
+					gameGUI.getGame1().stopGame();
+					gameGUI.finishGame();
+					try {
+						gameGUI = new MyGameGUI();
+					} catch (IOException ex) {
+						ex.printStackTrace();
+					}
+					int level = -1;
+					while (level == -1) {
+						String senarioString = JOptionPane.showInputDialog(null, "Please choose a Game Senario 0-23");
+						try {
+							level = Integer.parseInt(senarioString);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					}
+					int check = -1;
+					Object selctedGame = null;
+					String[] chooseGame = {"Manually Game", "Auto Game"};
+					while (check == -1) {
+						try {
+							selctedGame = JOptionPane.showInputDialog(null, "Choose a Game mode", "Message", JOptionPane.INFORMATION_MESSAGE, null, chooseGame, chooseGame[0]);
+							check = 0;
+						} catch (Exception ee) {
+							check = -1;
+						}
+					}
+					if (selctedGame == "Manually Game") {
+						gameGUI.startGameManual(level);
+
+					} else {
+						gameGUI.getGameAlgo().startGameAutomatic(level);
+					}
+				}
+
+				break;
+			case "Finish game":
+				gameGUI.getGame().stopGame();
+				gameGUI.finishGame();
+				System.out.println(saveToKML);
+				break;
 		}
 	}
 

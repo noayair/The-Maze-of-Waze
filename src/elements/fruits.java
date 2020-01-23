@@ -11,11 +11,12 @@ import utils.StdDraw;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 /**
  * This class represents a fruit in the game.
  */
-public class fruits{
-    public static final double EPS1 = 0.0000009 , EPS2 = EPS1+EPS1 , EPS = EPS2;
+public class fruits {
+    public static final double EPS1 = 0.0000009, EPS2 = EPS1 + EPS1, EPS = EPS2;
     private double value;
     private int type;
     private Point3D pos;
@@ -23,7 +24,7 @@ public class fruits{
     private int tag;
 
     // constructors
-    public fruits(){
+    public fruits() {
         this.value = 0;
         this.type = 0;
         this.pos = null;
@@ -31,14 +32,14 @@ public class fruits{
         this.tag = 0;
     }
 
-    public fruits (double v, int t, Point3D p){
+    public fruits(double v, int t, Point3D p) {
         this.value = v;
-        this.type= t;
+        this.type = t;
         this.pos = p;
         this.tag = 0;
     }
 
-    public fruits(String Jstr){
+    public fruits(String Jstr) {
         this.init(Jstr);
     }
 
@@ -46,9 +47,10 @@ public class fruits{
 
     /**
      * Init fruit from a json file.
+     *
      * @param Jstr
      */
-    public fruits init(String Jstr){
+    public fruits init(String Jstr) {
         fruits ans = new fruits();
         try {
             JSONObject fruits = new JSONObject(Jstr);
@@ -57,9 +59,9 @@ public class fruits{
             ans.type = f.getInt("type");
             String location_str = f.getString("pos");
             ans.pos = new Point3D(location_str);
-            if(ans.type == 1){
+            if (ans.type == 1) {
                 ans.image = "apple.png";
-            }else{
+            } else {
                 ans.image = "banana.png";
             }
         } catch (JSONException e) {
@@ -91,15 +93,21 @@ public class fruits{
 
     /**
      * Get a list of fruits and prints them on the graph.
+     *
      * @param fruitList
      */
-    public void drawFruits(List<fruits> fruitList){
-        for(fruits f : fruitList){
-            StdDraw.picture(f.pos.x() , f.pos.y() , f.image , 0.0009 , 0.0009);
+    public void drawFruits(List<fruits> fruitList) {
+        for (fruits f : fruitList) {
+            StdDraw.picture(f.pos.x(), f.pos.y(), f.image, 0.0009, 0.0009);
         }
     }
 
-    public void update (String Jstr){
+    /**
+     * Gets from the server the update information about the fruits and updates the fruit accordingly.
+     *
+     * @param Jstr
+     */
+    public void update(String Jstr) {
         try {
             JSONObject fruits = new JSONObject(Jstr);
             JSONObject f = fruits.getJSONObject("Fruit");
@@ -115,21 +123,22 @@ public class fruits{
 
     /**
      * Checking on which edges are the fruits
+     *
      * @param graph
      * @return
      */
-    public edge_data fruitEdge(DGraph graph){ // return the edge that the fruit is on
+    public edge_data fruitEdge(DGraph graph) { // return the edge that the fruit is on
         Collection<edge_data> edgeList = new ArrayList<>();
-        double edgeDist , srcDist , destDist;
-        for(node_data n : graph.getV()){
-            for(edge_data e : graph.getE(n.getKey())){
+        double edgeDist, srcDist, destDist;
+        for (node_data n : graph.getV()) {
+            for (edge_data e : graph.getE(n.getKey())) {
                 edgeDist = graph.getNode(e.getSrc()).getLocation().distance2D(graph.getNode(e.getDest()).getLocation());
                 srcDist = graph.getNode(e.getSrc()).getLocation().distance2D(this.pos);
                 destDist = graph.getNode(e.getDest()).getLocation().distance2D(this.pos);
                 if (edgeDist > (srcDist + destDist) - EPS2) { // if the fruit is on this edge
                     boolean a = e.getSrc() < e.getDest();
                     boolean b = this.type > 0;
-                    if(a == b)
+                    if (a == b)
                         return e;
                 }
             }

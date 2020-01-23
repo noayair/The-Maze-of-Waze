@@ -9,7 +9,7 @@ public class KML_Logger {
     private int level_num;
 
 
-    public  KML_Logger(){
+    public KML_Logger() {
         string = new StringBuilder();
         startKML();
     }
@@ -18,50 +18,57 @@ public class KML_Logger {
         return string.toString();
     }
 
-    public void startKML()
-    {
-        string.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n" );
-        string.append(               "<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n" );
-        string.append(     "  <Document>\r\n" );
-        string.append("  <name>" + "Game stage :" + this.level_num + "</name>" +"\r\n");
+    /**
+     * The function brings up the specific KML file start format.
+     */
+    public void startKML() {
+        string.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n");
+        string.append("<kml xmlns=\"http://earth.google.com/kml/2.2\">\r\n");
+        string.append("  <Document>\r\n");
+        string.append("  <name>" + "Game stage :" + this.level_num + "</name>" + "\r\n");
         string.append(" <Style id=\"node\">\r\n");
-        string.append(   "      <IconStyle>\r\n" );
-        string.append(    "        <Icon>\r\n" );
-        string.append(    "          <href>http://maps.google.com/mapfiles/kml/pal3/icon35.png</href>\r\n");
-        string.append(    "        </Icon>\r\n" );
-        string.append( "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n");
-        string.append(  "      </IconStyle>\r\n");
-        string.append( "    </Style>" );
-        string.append(     " <Style id=\"banana\">\r\n" );
-        string.append(    "      <IconStyle>\r\n" );
-        string.append(    "        <Icon>\r\n" );
-        string.append(    "          <href>http://maps.google.com/mapfiles/kml/pal5/icon49.png</href>\r\n" );
-        string.append("        </Icon>\r\n" );
-        string.append( "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" );
-        string.append(  "      </IconStyle>\r\n" );
-        string.append(  "    </Style>" );
-        string.append(" <Style id=\"apple\">\r\n" );
-        string.append( "      <IconStyle>\r\n" );
-        string.append( "        <Icon>\r\n" );
-        string.append( "          <href>http://maps.google.com/mapfiles/kml/pal5/icon56.png</href>\r\n" );
-        string.append( "        </Icon>\r\n" );
-        string.append(  "        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" );
-        string.append("      </IconStyle>\r\n" );
-        string.append( "    </Style>" );
-        string.append(" <Style id=\"robot\">\r\n" );
-        string.append( "      <IconStyle>\r\n" );
-        string.append("        <Icon>\r\n" );
-        string.append( "          <href>http://maps.google.com/mapfiles/kml/pal4/icon26.png></href>\r\n" );
-        string.append( "        </Icon>\r\n" );
-        string.append("        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n" );
-        string.append( "      </IconStyle>\r\n");
-        string.append(  "    </Style>\r\n");
+        string.append("      <IconStyle>\r\n");
+        string.append("        <Icon>\r\n");
+        string.append("          <href>http://maps.google.com/mapfiles/kml/pal3/icon35.png</href>\r\n");
+        string.append("        </Icon>\r\n");
+        string.append("        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n");
+        string.append("      </IconStyle>\r\n");
+        string.append("    </Style>");
+        string.append(" <Style id=\"banana\">\r\n");
+        string.append("      <IconStyle>\r\n");
+        string.append("        <Icon>\r\n");
+        string.append("          <href>http://maps.google.com/mapfiles/kml/pal5/icon49.png</href>\r\n");
+        string.append("        </Icon>\r\n");
+        string.append("        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n");
+        string.append("      </IconStyle>\r\n");
+        string.append("    </Style>");
+        string.append(" <Style id=\"apple\">\r\n");
+        string.append("      <IconStyle>\r\n");
+        string.append("        <Icon>\r\n");
+        string.append("          <href>http://maps.google.com/mapfiles/kml/pal5/icon56.png</href>\r\n");
+        string.append("        </Icon>\r\n");
+        string.append("        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n");
+        string.append("      </IconStyle>\r\n");
+        string.append("    </Style>");
+        string.append(" <Style id=\"robot\">\r\n");
+        string.append("      <IconStyle>\r\n");
+        string.append("        <Icon>\r\n");
+        string.append("          <href>http://maps.google.com/mapfiles/kml/pal4/icon26.png></href>\r\n");
+        string.append("        </Icon>\r\n");
+        string.append("        <hotSpot x=\"32\" y=\"1\" xunits=\"pixels\" yunits=\"pixels\"/>\r\n");
+        string.append("      </IconStyle>\r\n");
+        string.append("    </Style>\r\n");
     }
 
-
-
-    public void addPlaceMark(String id, String position)
-    {
+    /**
+     * The function gets an update from fruits and Robots
+     * and to anyone writes the created time and its location
+     * and with that you can see it on the map
+     *
+     * @param id
+     * @param position
+     */
+    public void addPlaceMark(String id, String position) {
         LocalDateTime time = LocalDateTime.now();
         string.append("        <Placemark>\n" +
                 "            <open>1</open>\n" +
@@ -90,6 +97,11 @@ public class KML_Logger {
                 "        </Placemark>");
     }
 
+    /**
+     * The function brings up the specific KML file end format.
+     *
+     * @throws IOException
+     */
     public void endKML() throws IOException {
         string.append("  </Document>\r\n");
         string.append("</kml>");

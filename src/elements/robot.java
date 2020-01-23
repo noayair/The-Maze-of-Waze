@@ -12,16 +12,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class robot{
+public class robot {
     private game_service game;
-    private int src , dest , id , value , speed;
+    private int src, dest, id, value, speed;
     private Point3D pos;
     private List<node_data> way = new LinkedList<>();
     private Queue<Integer> check = new LinkedList<>();
 
     // constructors
 
-    public robot(){
+    public robot() {
         this.game = null;
         this.src = 0;
         this.dest = -1;
@@ -29,47 +29,25 @@ public class robot{
         this.value = 0;
         this.speed = 0;
         this.pos = null;
-        for (int j = 0; j < 3 ; j++) {
+        for (int j = 0; j < 3; j++) {
             this.check.add(-2);
         }
     }
 
-    public robot(int id, int s, int d, int v, int speed, Point3D p){
+    public robot(int id, int s, int d, int v, int speed, Point3D p) {
         this.id = id;
-        this.pos= p;
-        this.value=v;
-        this.speed= speed;
-        this.dest=d;
-        this.src=s;
+        this.pos = p;
+        this.value = v;
+        this.speed = speed;
+        this.dest = d;
+        this.src = s;
     }
 
-    //functions
-
-    public robot(String Jstr){
+    public robot(String Jstr) {
         this.init(Jstr);
     }
 
-    public int getSrc() {
-        return src;
-    }
-
-    public robot init(String Jstr) {
-        robot robots = new robot();
-        try {
-            JSONObject rob = new JSONObject(Jstr);
-            JSONObject r = rob.getJSONObject("Robot");
-            robots.src = r.getInt("src");
-            String location_str = r.getString("pos");
-            robots.pos = new Point3D(location_str);
-            robots.id = r.getInt("id");
-            robots.dest = r.getInt("dest");
-            robots.value = r.getInt("value");
-            robots.speed = r.getInt("speed");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return robots;
-    }
+    //Getters and setters
 
     public void setPos(Point3D pos) {
         this.pos = pos;
@@ -95,17 +73,54 @@ public class robot{
         return pos;
     }
 
-//    public Queue<Integer> getCheck() {
-//        return check;
-//    }
+    public int getSrc() {
+        return src;
+    }
 
-    public void drawRobots(List<robot> robotsList){
-        for(robot r : robotsList){
-            StdDraw.picture(r.pos.x() , r.pos.y() , "robot.png" , 0.001 , 0.001);
+    //functions
+
+
+    /**
+     * Init robots from a json file
+     *
+     * @param Jstr
+     * @return
+     */
+    public robot init(String Jstr) {
+        robot robots = new robot();
+        try {
+            JSONObject rob = new JSONObject(Jstr);
+            JSONObject r = rob.getJSONObject("Robot");
+            robots.src = r.getInt("src");
+            String location_str = r.getString("pos");
+            robots.pos = new Point3D(location_str);
+            robots.id = r.getInt("id");
+            robots.dest = r.getInt("dest");
+            robots.value = r.getInt("value");
+            robots.speed = r.getInt("speed");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return robots;
+    }
+
+    /**
+     * Get a list of robots and prints them on the graph.
+     *
+     * @param robotsList
+     */
+    public void drawRobots(List<robot> robotsList) {
+        for (robot r : robotsList) {
+            StdDraw.picture(r.pos.x(), r.pos.y(), "robot.png", 0.001, 0.001);
         }
     }
 
-    public void update(String Jstr){
+    /**
+     * Gets from the server the update information about the robots and updates the robot accordingly.
+     *
+     * @param Jstr
+     */
+    public void update(String Jstr) {
         try {
             JSONObject rob = new JSONObject(Jstr);
             JSONObject r = rob.getJSONObject("Robot");
@@ -125,16 +140,17 @@ public class robot{
      * if the list size is <= 3 , add the node to the queue.
      * else, remove the head and then add the node.
      * this function help us to check if the robot is stuck on 1 edge.
+     *
      * @param i
      */
-    public void checkNode(int i){
-            this.check.remove();
-            this.check.add(i);
+    public void checkNode(int i) {
+        this.check.remove();
+        this.check.add(i);
     }
 
-    public List<robot> fillRobotList(List<String> arr){
+    public List<robot> fillRobotList(List<String> arr) {
         List<robot> temp = new LinkedList<>();
-        for (String rob:arr) {
+        for (String rob : arr) {
             robot r = init(rob);
             temp.add(r);
         }
